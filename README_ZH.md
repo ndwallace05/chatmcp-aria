@@ -140,6 +140,61 @@ flutter pub get
 flutter run -d macos
 ```
 
+### 必要的代码格式化与 Pre-commit Hook
+
+为确保团队代码风格一致，本仓库在每次提交（commit）前强制执行 Dart 格式化。
+
+- 仓库内提供了版本化的 Git 钩子：`.githooks/pre-commit`
+- 在提交时会运行 `dart format .`，并重新 `git add` 变更的文件，然后执行只检查不输出的步骤，确保没有未格式化的文件。
+- 如果存在未格式化的文件，提交会在本地被阻止；此外，CI 也会拒绝不符合格式的 PR。
+
+快速安装（每次克隆后执行一次）：
+
+```bash
+make setup-git-hooks
+```
+
+手动配置（备选）：
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
+
+环境要求（PATH 中至少存在以下其一）：
+
+- Dart SDK，或
+- Flutter（内置 Dart）
+
+示例：
+
+- macOS/Linux（Flutter）：
+  ```bash
+  export PATH="$PATH:$HOME/flutter/bin"
+  which flutter && flutter --version
+  which dart && dart --version
+  ```
+- macOS/Linux（Dart SDK）：
+  ```bash
+  export PATH="$PATH:$HOME/dart-sdk/bin"
+  which dart && dart --version
+  ```
+- Windows（PowerShell）：将 `C:\\src\\flutter\\bin`（或您的 Flutter 路径）加入用户/系统 PATH。验证：
+  ```powershell
+  where flutter
+  where dart
+  ```
+
+IDE 提示：修改 PATH 后请重启 IDE，使其在提交操作时继承最新的环境变量。
+
+CI 校验：
+
+- GitHub Actions 工作流 `check-format` 会在 push/PR 时运行 `dart format --output=none --set-exit-if-changed .`，若有未格式化文件则任务失败。
+
+政策：
+
+- 请不要绕过 hooks（例如使用 `--no-verify`）。即使绕过，本次 PR 也会在 CI 中失败，仍需格式化后再提交。
+
 ### Web版本开发和部署
 
 #### 本地开发

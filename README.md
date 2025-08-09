@@ -176,6 +176,61 @@ After installing, verify with:
 flutter --version
 ```
 
+### Mandatory Code Formatting and Pre-commit Hook
+
+To keep a consistent code style across contributors, this repository enforces Dart formatting on every commit.
+
+- The repository ships a versioned Git hook at `.githooks/pre-commit`.
+- On commit, it runs `dart format .`, re-adds changed files, and then performs a no-output check to ensure nothing remains unformatted.
+- Commits that are not properly formatted will be rejected locally; in addition, CI will fail unformatted PRs.
+
+Quick setup (once per clone):
+
+```bash
+make setup-git-hooks
+```
+
+Manual setup (alternative):
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
+
+Requirements (at least one must be available on PATH):
+
+- Dart SDK, or
+- Flutter (bundles Dart)
+
+Examples:
+
+- macOS/Linux (Flutter):
+  ```bash
+  export PATH="$PATH:$HOME/flutter/bin"
+  which flutter && flutter --version
+  which dart && dart --version
+  ```
+- macOS/Linux (Dart SDK):
+  ```bash
+  export PATH="$PATH:$HOME/dart-sdk/bin"
+  which dart && dart --version
+  ```
+- Windows (PowerShell): Add `C:\\src\\flutter\\bin` (or your Flutter path) to the User/System PATH. Validate via:
+  ```powershell
+  where flutter
+  where dart
+  ```
+
+IDE note: After changing PATH, restart your IDE so VCS operations (commit) inherit the updated environment.
+
+CI enforcement:
+
+- A GitHub Actions workflow `check-format` runs `dart format --output=none --set-exit-if-changed .` on push/PR and will fail if any file is not formatted.
+
+Policy:
+
+- Do not bypass hooks (e.g., `--no-verify`). Such changes will fail in CI and must be reformatted anyway.
+
 ### Clone and Run Locally
 
 ```bash
