@@ -11,10 +11,14 @@ if command -v dart >/dev/null 2>&1; then
 else
   if command -v flutter >/dev/null 2>&1; then
     FLUTTER_BIN="$(command -v flutter)"
-    # Common locations when using Flutter-bundled Dart
+    FLUTTER_DIR="$(dirname "$FLUTTER_BIN")"
+    # Common locations when using Flutter-bundled Dart (Linux/macOS/Windows)
     CANDIDATES=(
-      "$(dirname "$FLUTTER_BIN")/dart"
-      "$(dirname "$FLUTTER_BIN")/cache/dart-sdk/bin/dart"
+      "$FLUTTER_DIR/dart"
+      "$FLUTTER_DIR/dart.bat"
+      "$FLUTTER_DIR/dart.exe"
+      "$FLUTTER_DIR/cache/dart-sdk/bin/dart"
+      "$FLUTTER_DIR/cache/dart-sdk/bin/dart.exe"
     )
     for c in "${CANDIDATES[@]}"; do
       if [ -x "$c" ]; then
@@ -27,8 +31,12 @@ else
   if [ -z "$DART_BIN" ]; then
     if [ -x ".fvm/flutter_sdk/bin/dart" ]; then
       DART_BIN=".fvm/flutter_sdk/bin/dart"
+    elif [ -x ".fvm/flutter_sdk/bin/dart.exe" ]; then
+      DART_BIN=".fvm/flutter_sdk/bin/dart.exe"
     elif [ -x ".fvm/flutter_sdk/bin/cache/dart-sdk/bin/dart" ]; then
       DART_BIN=".fvm/flutter_sdk/bin/cache/dart-sdk/bin/dart"
+    elif [ -x ".fvm/flutter_sdk/bin/cache/dart-sdk/bin/dart.exe" ]; then
+      DART_BIN=".fvm/flutter_sdk/bin/cache/dart-sdk/bin/dart.exe"
     fi
   fi
 fi
