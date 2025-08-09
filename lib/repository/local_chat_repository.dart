@@ -16,39 +16,26 @@ class LocalChatRepository implements ChatRepository {
   }) async {
     // 转换为从 0 开始的 offset 计算
     final offset = (page - 1) * pageSize;
-    
+
     // Build where clause for search
     String? whereClause;
     List<Object?>? whereArgs;
-    
+
     if (searchKeyword != null && searchKeyword.isNotEmpty) {
       whereClause = 'title LIKE ?';
       whereArgs = ['%$searchKeyword%'];
     }
-    
+
     // Get total count
-    final allChats = await _chatDao.query(
-      where: whereClause,
-      whereArgs: whereArgs,
-    );
+    final allChats = await _chatDao.query(where: whereClause, whereArgs: whereArgs);
     final total = allChats.length;
-    
+
     // Get paginated results
-    final chats = await _chatDao.query(
-      where: whereClause,
-      whereArgs: whereArgs,
-      orderBy: 'updatedAt DESC',
-      limit: pageSize,
-      offset: offset,
-    );
-    
+    final chats = await _chatDao.query(where: whereClause, whereArgs: whereArgs, orderBy: 'updatedAt DESC', limit: pageSize, offset: offset);
+
     final hasMore = offset + pageSize < total;
-    
-    return ChatListResult(
-      chats: chats,
-      total: total,
-      hasMore: hasMore,
-    );
+
+    return ChatListResult(chats: chats, total: total, hasMore: hasMore);
   }
 
   @override
@@ -64,17 +51,12 @@ class LocalChatRepository implements ChatRepository {
   @override
   Future<Chat> createChat(Chat chat, List<ChatMessage> messages) async {
     final chatId = await _chatDao.insert(chat);
-    final newChat = Chat(
-      id: chatId,
-      title: chat.title,
-      createdAt: chat.createdAt,
-      updatedAt: chat.updatedAt,
-    );
-    
+    final newChat = Chat(id: chatId, title: chat.title, createdAt: chat.createdAt, updatedAt: chat.updatedAt);
+
     if (messages.isNotEmpty) {
       await addChatMessage(chatId, messages);
     }
-    
+
     return newChat;
   }
 
@@ -97,10 +79,7 @@ class LocalChatRepository implements ChatRepository {
       if (message.role == MessageRole.error) {
         continue;
       }
-      final existingMessages = await _chatMessageDao.query(
-        where: 'messageId = ?',
-        whereArgs: [message.messageId],
-      );
+      final existingMessages = await _chatMessageDao.query(where: 'messageId = ?', whereArgs: [message.messageId]);
       if (existingMessages.isNotEmpty) {
         continue;
       }
@@ -110,11 +89,7 @@ class LocalChatRepository implements ChatRepository {
 
   @override
   Future<List<ChatMessage>> getChatMessages(int chatId) async {
-    final chatMessages = await _chatMessageDao.query(
-      where: 'chatId = ?',
-      whereArgs: [chatId],
-      orderBy: 'createdAt ASC',
-    );
+    final chatMessages = await _chatMessageDao.query(where: 'chatId = ?', whereArgs: [chatId], orderBy: 'createdAt ASC');
     return chatMessages.map((e) => ChatMessage.fromDb(e)).toList();
   }
 }

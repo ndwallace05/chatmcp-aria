@@ -11,22 +11,8 @@ import '../mcp/client/mcp_client_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var defaultInMemoryServers = [
-  {
-    'name': 'Math',
-    'type': 'inmemory',
-    'command': 'math',
-    'env': {},
-    'args': [],
-    'tools': [],
-  },
-  {
-    'name': 'Artifact Instructions',
-    'type': 'inmemory',
-    'command': 'artifact_instructions',
-    'env': {},
-    'args': [],
-    'tools': [],
-  },
+  {'name': 'Math', 'type': 'inmemory', 'command': 'math', 'env': {}, 'args': [], 'tools': []},
+  {'name': 'Artifact Instructions', 'type': 'inmemory', 'command': 'artifact_instructions', 'env': {}, 'args': [], 'tools': []},
 ];
 
 class McpServerProvider extends ChangeNotifier {
@@ -152,9 +138,7 @@ class McpServerProvider extends ChangeNotifier {
     final allServerConfig = await _loadServers();
     final serverConfig = allServerConfig['mcpServers'] as Map<String, dynamic>;
     final servers = Map.fromEntries(serverConfig.entries.where((entry) => entry.value['type'] != 'inmemory'));
-    return {
-      'mcpServers': servers,
-    };
+    return {'mcpServers': servers};
   }
 
   Future<Map<String, dynamic>> loadInMemoryServers() async {
@@ -178,9 +162,7 @@ class McpServerProvider extends ChangeNotifier {
     // 过滤得到所有内存类型服务器
     final servers = Map.fromEntries(serverConfig.entries.where((entry) => entry.value['type'] == 'inmemory'));
 
-    return {
-      'mcpServers': servers,
-    };
+    return {'mcpServers': servers};
   }
 
   Future<void> addMcpServer(Map<String, dynamic> server) async {
@@ -439,9 +421,7 @@ class McpServerProvider extends ChangeNotifier {
           }
         }
 
-        return {
-          'mcpServers': sseServers,
-        };
+        return {'mcpServers': sseServers};
       }
       throw Exception('Failed to load market servers: ${response.statusCode}');
     } catch (e, stackTrace) {

@@ -26,37 +26,26 @@ class LlmIcon extends StatelessWidget {
     final double effectiveSize = size != 16
         ? size
         : (kIsWeb
-            ? 16.0
-            : (Platform.isAndroid || Platform.isIOS)
-                ? 24.0
-                : 16.0);
+              ? 16.0
+              : (Platform.isAndroid || Platform.isIOS)
+              ? 24.0
+              : 16.0);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final defaultColor = isDark ? Colors.white : Colors.black;
 
     final Widget iconWidget;
     if (icon.isNotEmpty) {
-      iconWidget = ColorAwareSvg(
-        assetName: 'assets/logo/$icon.svg',
-        size: effectiveSize,
-        color: color ?? defaultColor,
-      );
+      iconWidget = ColorAwareSvg(assetName: 'assets/logo/$icon.svg', size: effectiveSize, color: color ?? defaultColor);
     } else {
-      iconWidget = ColorAwareSvg(
-        assetName: 'assets/logo/ai-chip.svg',
-        size: effectiveSize,
-        color: color ?? defaultColor,
-      );
+      iconWidget = ColorAwareSvg(assetName: 'assets/logo/ai-chip.svg', size: effectiveSize, color: color ?? defaultColor);
     }
 
     if (tooltip == null) {
       return iconWidget;
     }
 
-    return Tooltip(
-      message: tooltip!,
-      child: iconWidget,
-    );
+    return Tooltip(message: tooltip!, child: iconWidget);
   }
 }
 
@@ -68,12 +57,7 @@ class ColorAwareSvg extends StatelessWidget {
   // 保存检测结果的静态缓存，避免重复检测
   static final Map<String, bool> _colorCache = {};
 
-  const ColorAwareSvg({
-    super.key,
-    required this.assetName,
-    required this.size,
-    required this.color,
-  });
+  const ColorAwareSvg({super.key, required this.assetName, required this.size, required this.color});
 
   // 检测SVG是否包含非黑白颜色
   Future<bool> _detectSvgHasColors(BuildContext context) async {
@@ -92,7 +76,8 @@ class ColorAwareSvg extends StatelessWidget {
       // 检查是否包含除了黑白之外的颜色
       if (svgString.contains('fill="#') || svgString.contains('stroke="#')) {
         // 排除纯黑色 (#000000) 和纯白色 (#FFFFFF)
-        hasColor = !svgString.contains('fill="#000000"') &&
+        hasColor =
+            !svgString.contains('fill="#000000"') &&
             !svgString.contains('fill="#ffffff"') &&
             !svgString.contains('stroke="#000000"') &&
             !svgString.contains('stroke="#ffffff"');
@@ -100,7 +85,8 @@ class ColorAwareSvg extends StatelessWidget {
 
       // 检查是否包含 rgb/rgba/hsl 颜色
       if (!hasColor) {
-        hasColor = svgString.contains('fill="rgb') ||
+        hasColor =
+            svgString.contains('fill="rgb') ||
             svgString.contains('stroke="rgb') ||
             svgString.contains('fill="hsl') ||
             svgString.contains('stroke="hsl');
@@ -127,11 +113,7 @@ class ColorAwareSvg extends StatelessWidget {
       builder: (context, snapshot) {
         // 加载中显示占位图
         if (!snapshot.hasData) {
-          return SizedBox(
-            width: size,
-            height: size,
-            child: const CircularProgressIndicator(strokeWidth: 2),
-          );
+          return SizedBox(width: size, height: size, child: const CircularProgressIndicator(strokeWidth: 2));
         }
 
         // 根据检测结果决定是否应用颜色滤镜
@@ -141,10 +123,7 @@ class ColorAwareSvg extends StatelessWidget {
           width: size,
           height: size,
           allowDrawingOutsideViewBox: true,
-          placeholderBuilder: (context) => Icon(
-            CupertinoIcons.cloud,
-            size: size,
-          ),
+          placeholderBuilder: (context) => Icon(CupertinoIcons.cloud, size: size),
           // 如果SVG有自己的颜色，则不应用colorFilter
           colorFilter: hasOwnColors ? null : ColorFilter.mode(color, BlendMode.srcIn),
         );

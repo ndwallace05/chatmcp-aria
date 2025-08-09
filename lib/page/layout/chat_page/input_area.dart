@@ -93,10 +93,7 @@ class InputAreaState extends State<InputArea> {
 
   Future<void> _pickFiles() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.any,
-      );
+      final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.any);
 
       if (result != null && result.files.isNotEmpty) {
         setState(() {
@@ -111,10 +108,7 @@ class InputAreaState extends State<InputArea> {
 
   Future<void> _pickImages() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.image,
-      );
+      final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.image);
 
       if (result != null && result.files.isNotEmpty) {
         setState(() {
@@ -185,7 +179,8 @@ class InputAreaState extends State<InputArea> {
                   children: _selectedFiles.asMap().entries.map((entry) {
                     final index = entry.key;
                     final file = entry.value;
-                    final isImage = file.extension?.toLowerCase() == 'jpg' ||
+                    final isImage =
+                        file.extension?.toLowerCase() == 'jpg' ||
                         file.extension?.toLowerCase() == 'jpeg' ||
                         file.extension?.toLowerCase() == 'png' ||
                         file.extension?.toLowerCase() == 'gif';
@@ -196,10 +191,7 @@ class InputAreaState extends State<InputArea> {
                         decoration: BoxDecoration(
                           color: AppColors.getInputAreaFileItemBackgroundColor(context),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.getInputAreaBorderColor(context),
-                            width: 1,
-                          ),
+                          border: Border.all(color: AppColors.getInputAreaBorderColor(context), width: 1),
                         ),
                         child: Row(
                           children: [
@@ -215,10 +207,7 @@ class InputAreaState extends State<InputArea> {
                                   const SizedBox(width: 6),
                                   Text(
                                     _truncateFileName(file.name),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context).textTheme.bodyMedium?.color,
-                                    ),
+                                    style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
@@ -228,17 +217,10 @@ class InputAreaState extends State<InputArea> {
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () => _removeFile(index),
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(8),
-                                  bottomRight: Radius.circular(8),
-                                ),
+                                borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 14,
-                                    color: AppColors.getInputAreaIconColor(context),
-                                  ),
+                                  child: Icon(Icons.close, size: 14, color: AppColors.getInputAreaIconColor(context)),
                                 ),
                               ),
                             ),
@@ -253,9 +235,7 @@ class InputAreaState extends State<InputArea> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
             child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.getInputAreaBackgroundColor(context),
-              ),
+              decoration: BoxDecoration(color: AppColors.getInputAreaBackgroundColor(context)),
               child: Focus(
                 onKeyEvent: (node, event) {
                   if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
@@ -297,25 +277,16 @@ class InputAreaState extends State<InputArea> {
                     }),
                   ],
                   keyboardType: TextInputType.multiline,
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: AppColors.getInputAreaTextColor(context),
-                  ),
+                  style: TextStyle(fontSize: 14.0, color: AppColors.getInputAreaTextColor(context)),
                   scrollPhysics: const BouncingScrollPhysics(),
                   decoration: InputDecoration(
                     hintText: l10n.askMeAnything,
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: AppColors.getInputAreaHintTextColor(context),
-                    ),
+                    hintStyle: TextStyle(fontSize: 14.0, color: AppColors.getInputAreaHintTextColor(context)),
                     filled: true,
                     fillColor: AppColors.getInputAreaBackgroundColor(context),
                     hoverColor: Colors.transparent,
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 0,
-                      vertical: 10,
-                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                     isDense: true,
                   ),
                   cursorColor: AppColors.getInputAreaCursorColor(context),
@@ -340,11 +311,7 @@ class InputAreaState extends State<InputArea> {
                       ),
                       const SizedBox(width: 10),
                       if (kIsMobile) ...[
-                        UploadMenu(
-                          disabled: widget.disabled,
-                          onPickImages: _pickImages,
-                          onPickFiles: _pickFiles,
-                        ),
+                        UploadMenu(disabled: widget.disabled, onPickImages: _pickImages, onPickFiles: _pickFiles),
                       ] else ...[
                         InkIcon(
                           icon: CupertinoIcons.plus_app,
@@ -373,7 +340,7 @@ class InputAreaState extends State<InputArea> {
                       _afterSubmitted();
                     },
                     tooltip: AppLocalizations.of(context)!.send,
-                  )
+                  ),
                 ] else ...[
                   const Spacer(),
                   InkIcon(
@@ -385,7 +352,7 @@ class InputAreaState extends State<InputArea> {
                         : null,
                     tooltip: AppLocalizations.of(context)!.cancel,
                   ),
-                ]
+                ],
               ],
             ),
           ),

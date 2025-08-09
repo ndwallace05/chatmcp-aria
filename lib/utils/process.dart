@@ -5,39 +5,18 @@ Future<String> getDefaultPath([String? additionalPath]) async {
   final List<String> defaultPaths = [];
 
   if (Platform.isWindows) {
-    defaultPaths.addAll([
-      'C:\\Windows\\System32',
-      'C:\\Windows',
-      'C:\\Windows\\System32\\Wbem',
-      'C:\\Windows\\System32\\WindowsPowerShell\\v1.0',
-    ]);
+    defaultPaths.addAll(['C:\\Windows\\System32', 'C:\\Windows', 'C:\\Windows\\System32\\Wbem', 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0']);
   } else if (Platform.isMacOS) {
-    defaultPaths.addAll([
-      '/opt/homebrew/bin',
-      '/usr/local/bin',
-      '/usr/bin',
-      '/bin',
-      '/usr/sbin',
-      '/sbin',
-    ]);
+    defaultPaths.addAll(['/opt/homebrew/bin', '/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin']);
   } else {
-    defaultPaths.addAll([
-      '/usr/local/bin',
-      '/usr/bin',
-      '/bin',
-      '/usr/sbin',
-      '/sbin',
-    ]);
+    defaultPaths.addAll(['/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin']);
   }
 
   final String pathSeparator = Platform.isWindows ? ';' : ':';
   final String systemPath = Platform.environment['PATH'] ?? '';
 
   // Combine default paths, system PATH, and additional paths
-  final List<String> allPaths = [
-    ...defaultPaths,
-    ...systemPath.split(pathSeparator),
-  ];
+  final List<String> allPaths = [...defaultPaths, ...systemPath.split(pathSeparator)];
 
   // If additional paths are provided, add them to the list
   if (additionalPath != null && additionalPath.isNotEmpty) {
@@ -54,12 +33,7 @@ Future<bool> isCommandAvailable(String command) async {
     final Map<String, String> env = Map.of(Platform.environment);
     env['PATH'] = await getDefaultPath();
 
-    final result = await Process.run(
-      whichCommand,
-      [command],
-      environment: env,
-      includeParentEnvironment: true,
-    );
+    final result = await Process.run(whichCommand, [command], environment: env, includeParentEnvironment: true);
 
     return result.exitCode == 0;
   } catch (e) {
@@ -145,16 +119,20 @@ env
     await Process.run('chmod', ['+x', scriptFile.path]);
 
     // Execute the script to get environment variables
-    final result = await Process.run(shell, [
-      '-l', // Run in login mode to ensure all configuration files are loaded
-      scriptFile.path
-    ], environment: {
-      'HOME': homeDir,
-      'USER': user,
-      'SHELL': shell,
-      'TERM': 'xterm-256color',
-      'PATH': '/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
-    });
+    final result = await Process.run(
+      shell,
+      [
+        '-l', // Run in login mode to ensure all configuration files are loaded
+        scriptFile.path,
+      ],
+      environment: {
+        'HOME': homeDir,
+        'USER': user,
+        'SHELL': shell,
+        'TERM': 'xterm-256color',
+        'PATH': '/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
+      },
+    );
 
     // Clean up temporary files
     await tempDir.delete(recursive: true);
@@ -224,21 +202,13 @@ Future<Map<String, String>> getDefaultEnv() async {
   return env;
 }
 
-Future<Process> startProcess(
-  String command,
-  List<String> args,
-  Map<String, String> environment,
-) async {
+Future<Process> startProcess(String command, List<String> args, Map<String, String> environment) async {
   final Map<String, String> env = await getDefaultEnv();
   env.addAll(environment); // Add user-provided environment variables
 
   // Validate command exists before starting process
   if (!await isCommandAvailable(command)) {
-    throw ProcessException(
-      command,
-      args,
-      'Command not found: $command. Please check if the command exists and is in PATH.',
-    );
+    throw ProcessException(command, args, 'Command not found: $command. Please check if the command exists and is in PATH.');
   }
 
   return Process.start(

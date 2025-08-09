@@ -11,13 +11,7 @@ import 'dart:convert';
 import 'dart:async';
 
 // 连接状态枚举
-enum ConnectionState {
-  disconnected,
-  connecting,
-  waitingForEndpoint,
-  connected,
-  reconnecting
-}
+enum ConnectionState { disconnected, connecting, waitingForEndpoint, connected, reconnecting }
 
 class SSEClient implements McpClient {
   final ServerConfig _serverConfig;
@@ -40,13 +34,9 @@ class SSEClient implements McpClient {
 
   ConnectionState _connectionState = ConnectionState.disconnected;
 
-  final Map<String, String> _headers = {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Accept': 'application/json; charset=utf-8',
-  };
+  final Map<String, String> _headers = {'Content-Type': 'application/json; charset=utf-8', 'Accept': 'application/json; charset=utf-8'};
 
-  SSEClient({required ServerConfig serverConfig})
-      : _serverConfig = serverConfig {
+  SSEClient({required ServerConfig serverConfig}) : _serverConfig = serverConfig {
     _eventFlux = EventFlux.spawn();
   }
 
@@ -60,11 +50,7 @@ class SSEClient implements McpClient {
     }
     if (message.method == 'ping') {
       Logger.root.info('Received ping message, sending pong response');
-      final pongMessage = JSONRPCMessage.fromJson({
-        'id': message.id,
-        'jsonrpc': message.jsonrpc,
-        'result': {},
-      });
+      final pongMessage = JSONRPCMessage.fromJson({'id': message.id, 'jsonrpc': message.jsonrpc, 'result': {}});
       Logger.root.info('Sending pong response: $pongMessage');
       _sendHttpPost(pongMessage.toJson());
     }
@@ -100,8 +86,7 @@ class SSEClient implements McpClient {
       // 设置endpoint超时定时器
       _endpointTimer = Timer(_endpointTimeout, () {
         if (!_endpointConfirmedCompleter.isCompleted) {
-          _endpointConfirmedCompleter
-              .completeError('Endpoint confirmation timeout');
+          _endpointConfirmedCompleter.completeError('Endpoint confirmation timeout');
         }
       });
 
@@ -120,19 +105,15 @@ class SSEClient implements McpClient {
           },
         ),
         onSuccessCallback: (response) {
-          response?.stream?.listen(
-            (event) {
-              Logger.root.fine(
-                  '收到SSE事件: ${event.event}, ID: ${event.id}, 数据长度: ${event.data.length}字节');
-              _handleSSEEvent(event);
-            },
-          );
+          response?.stream?.listen((event) {
+            Logger.root.fine('收到SSE事件: ${event.event}, ID: ${event.id}, 数据长度: ${event.data.length}字节');
+            _handleSSEEvent(event);
+          });
         },
         onError: (error) {
           Logger.root.severe('SSE连接错误: $error');
           _connectionState = ConnectionState.disconnected;
-          _processStateController
-              .add(ProcessState.error(error, StackTrace.current));
+          _processStateController.add(ProcessState.error(error, StackTrace.current));
         },
         onConnectionClose: () {
           Logger.root.info('SSE连接关闭');
@@ -193,8 +174,7 @@ class SSEClient implements McpClient {
       }
 
       // 构建标准化的endpoint URL
-      final Map<String, String> queryParams =
-          Map.from(parsedUri.queryParameters);
+      final Map<String, String> queryParams = Map.from(parsedUri.queryParameters);
 
       uri.queryParameters.forEach((key, value) {
         queryParams[key] = value;
@@ -230,8 +210,7 @@ class SSEClient implements McpClient {
   }
 
   Future<void> _ensureValidConnection() async {
-    if (_connectionState != ConnectionState.connected ||
-        !_isEndpointConfirmed) {
+    if (_connectionState != ConnectionState.connected || !_isEndpointConfirmed) {
       Logger.root.info('connection state is not valid, try to reconnect');
       await _connect();
     }
@@ -259,16 +238,11 @@ class SSEClient implements McpClient {
       try {
         await _ensureValidConnection();
 
-        final response = await http.post(
-          Uri.parse(_messageEndpoint!),
-          headers: _headers,
-          body: jsonEncode(data),
-        );
+        final response = await http.post(Uri.parse(_messageEndpoint!), headers: _headers, body: jsonEncode(data));
 
         if (response.statusCode >= 400) {
           final errorBody = response.body;
-          throw Exception(
-              'HTTP POST ERROR: ${response.statusCode} - $errorBody');
+          throw Exception('HTTP POST ERROR: ${response.statusCode} - $errorBody');
         }
       } catch (e) {
         Logger.root.severe('HTTP POST failed: $e');
@@ -307,8 +281,7 @@ class SSEClient implements McpClient {
   Future<JSONRPCMessage> sendInitialize() async {
     // 确保连接已经建立
     if (_messageEndpoint == null) {
-      Logger.root.warning(
-          'try to initialize but message endpoint is not established, wait for endpoint to be established...');
+      Logger.root.warning('try to initialize but message endpoint is not established, wait for endpoint to be established...');
       // 等待一段时间以确保SSE连接已建立并获取到端点
       int attempts = 0;
       const maxAttempts = 30; // 增加到30次尝试
@@ -317,8 +290,7 @@ class SSEClient implements McpClient {
       while (_messageEndpoint == null && attempts < maxAttempts) {
         await Future.delayed(delay);
         attempts++;
-        Logger.root.info(
-            'wait for message endpoint to be established: attempt $attempts/$maxAttempts');
+        Logger.root.info('wait for message endpoint to be established: attempt $attempts/$maxAttempts');
 
         // 如果连接已关闭或出错，尝试重新连接
         if (_disposed) {
@@ -328,25 +300,26 @@ class SSEClient implements McpClient {
       }
 
       if (_messageEndpoint == null) {
-        Logger.root.severe(
-            'message endpoint is not established after ${maxAttempts * delay.inMilliseconds / 1000} seconds');
-        throw StateError(
-            'message endpoint is not established, cannot complete initialization');
+        Logger.root.severe('message endpoint is not established after ${maxAttempts * delay.inMilliseconds / 1000} seconds');
+        throw StateError('message endpoint is not established, cannot complete initialization');
       }
     }
 
     Logger.root.info('开始发送初始化请求到 $_messageEndpoint');
 
     // 发送初始化请求
-    final initMessage =
-        JSONRPCMessage(id: 'init-1', method: 'initialize', params: {
-      'protocolVersion': '2024-11-05',
-      'capabilities': {
-        'roots': {'listChanged': true},
-        'sampling': {}
+    final initMessage = JSONRPCMessage(
+      id: 'init-1',
+      method: 'initialize',
+      params: {
+        'protocolVersion': '2024-11-05',
+        'capabilities': {
+          'roots': {'listChanged': true},
+          'sampling': {},
+        },
+        'clientInfo': {'name': 'DartMCPClient', 'version': '1.0.0'},
       },
-      'clientInfo': {'name': 'DartMCPClient', 'version': '1.0.0'}
-    });
+    );
 
     Logger.root.info('初始化请求内容: ${jsonEncode(initMessage.toJson())}');
 
@@ -381,11 +354,7 @@ class SSEClient implements McpClient {
   }
 
   @override
-  Future<JSONRPCMessage> sendToolCall({
-    required String name,
-    required Map<String, dynamic> arguments,
-    String? id,
-  }) async {
+  Future<JSONRPCMessage> sendToolCall({required String name, required Map<String, dynamic> arguments, String? id}) async {
     final message = JSONRPCMessage(
       method: 'tools/call',
       params: {
@@ -400,12 +369,8 @@ class SSEClient implements McpClient {
   }
 
   // 添加一个实用方法来发送符合格式的通知
-  Future<void> _sendNotification(
-      String method, Map<String, dynamic> params) async {
-    final notification = JSONRPCMessage(
-      method: method,
-      params: params,
-    );
+  Future<void> _sendNotification(String method, Map<String, dynamic> params) async {
+    final notification = JSONRPCMessage(method: method, params: params);
 
     await _sendHttpPost(notification.toJson());
   }

@@ -45,8 +45,7 @@ class _ConvSettingState extends State<ConvSetting> {
     // set initial values in the next frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final settingsProvider =
-            Provider.of<SettingsProvider>(context, listen: false);
+        final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
         final generalSetting = settingsProvider.generalSetting;
         _maxMessagesController.text = generalSetting.maxMessages.toString();
         _maxLoopsController.text = generalSetting.maxLoops.toString();
@@ -118,8 +117,7 @@ class _ConvSettingState extends State<ConvSetting> {
   }
 
   // handle server status switch
-  Future<void> _handleServerToggle(
-      BuildContext context, String serverName, bool newValue) async {
+  Future<void> _handleServerToggle(BuildContext context, String serverName, bool newValue) async {
     final provider = Provider.of<McpServerProvider>(context, listen: false);
 
     // update enabled state
@@ -149,8 +147,7 @@ class _ConvSettingState extends State<ConvSetting> {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) {
-        final settingsProvider =
-            Provider.of<SettingsProvider>(context, listen: false);
+        final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
         if (field == 'maxMessages') {
           settingsProvider.updateGeneralSettingsPartially(maxMessages: value);
         } else if (field == 'maxLoops') {
@@ -175,38 +172,19 @@ class _ConvSettingState extends State<ConvSetting> {
           maxWidth: 400,
           padding: EdgeInsets.zero,
           content: _isLoading
-              ? const Center(
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
+              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)))
               : _error != null
-                  ? Center(
-                      child: Text(_error!,
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    )
-                  : Container(
-                      constraints: const BoxConstraints(
-                        maxHeight: 400,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildSettingsSection(context),
-                          ],
-                        ),
-                      ),
-                    ),
+              ? Center(child: Text(_error!, style: Theme.of(context).textTheme.bodyMedium))
+              : Container(
+                  constraints: const BoxConstraints(maxHeight: 400),
+                  child: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [_buildSettingsSection(context)]),
+                  ),
+                ),
           child: Consumer<ServerStateProvider>(
             builder: (context, stateProvider, _) {
               final l10n = AppLocalizations.of(context)!;
-              return InkIcon(
-                icon: CupertinoIcons.gear,
-                tooltip: l10n.settings,
-              );
+              return InkIcon(icon: CupertinoIcons.gear, tooltip: l10n.settings);
             },
           ),
         );
@@ -224,33 +202,18 @@ class _ConvSettingState extends State<ConvSetting> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.conversationSettings,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
+              Text(l10n.conversationSettings, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
 
               // Max Messages settings
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      l10n.maxMessages,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
+                  Expanded(child: Text(l10n.maxMessages, style: Theme.of(context).textTheme.bodyMedium)),
                   Container(
                     width: 120,
                     height: 36,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withAlpha(77),
-                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(77)),
                       borderRadius: BorderRadius.circular(6),
                       color: Theme.of(context).colorScheme.surface,
                     ),
@@ -263,59 +226,34 @@ class _ConvSettingState extends State<ConvSetting> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(6),
-                                bottomLeft: Radius.circular(6),
-                              ),
-                              hoverColor:
-                                  AppColors.getInkIconHoverColor(context),
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(6), bottomLeft: Radius.circular(6)),
+                              hoverColor: AppColors.getInkIconHoverColor(context),
                               onTap: () {
-                                final currentValue =
-                                    int.tryParse(_maxMessagesController.text) ??
-                                        50;
+                                final currentValue = int.tryParse(_maxMessagesController.text) ?? 50;
                                 if (currentValue > 1) {
                                   final newValue = currentValue - 1;
-                                  _maxMessagesController.text =
-                                      newValue.toString();
-                                  _debouncedUpdateSettings(
-                                      'maxMessages', newValue);
+                                  _maxMessagesController.text = newValue.toString();
+                                  _debouncedUpdateSettings('maxMessages', newValue);
                                 }
                               },
                               child: Icon(
                                 Icons.remove,
                                 size: 16,
-                                color: AppColors.getThemeColor(
-                                  context,
-                                  lightColor: Colors.grey[600],
-                                  darkColor: Colors.grey[400],
-                                ),
+                                color: AppColors.getThemeColor(context, lightColor: Colors.grey[600], darkColor: Colors.grey[400]),
                               ),
                             ),
                           ),
                         ),
                         // separator
-                        Container(
-                          width: 1,
-                          height: 20,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .outline
-                              .withAlpha(51),
-                        ),
+                        Container(width: 1, height: 20, color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         // number input
                         Expanded(
                           child: TextField(
                             controller: _maxMessagesController,
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.getThemeTextColor(context),
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(4),
-                            ],
+                            style: TextStyle(fontSize: 14, color: AppColors.getThemeTextColor(context)),
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(4)],
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(vertical: 8),
@@ -323,24 +261,14 @@ class _ConvSettingState extends State<ConvSetting> {
                             ),
                             onChanged: (value) {
                               final intValue = int.tryParse(value);
-                              if (intValue != null &&
-                                  intValue > 0 &&
-                                  intValue <= 1000) {
-                                _debouncedUpdateSettings(
-                                    'maxMessages', intValue);
+                              if (intValue != null && intValue > 0 && intValue <= 1000) {
+                                _debouncedUpdateSettings('maxMessages', intValue);
                               }
                             },
                           ),
                         ),
                         // separator
-                        Container(
-                          width: 1,
-                          height: 20,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .outline
-                              .withAlpha(51),
-                        ),
+                        Container(width: 1, height: 20, color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         // increase button
                         SizedBox(
                           width: 32,
@@ -348,32 +276,20 @@ class _ConvSettingState extends State<ConvSetting> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(6),
-                                bottomRight: Radius.circular(6),
-                              ),
-                              hoverColor:
-                                  AppColors.getInkIconHoverColor(context),
+                              borderRadius: const BorderRadius.only(topRight: Radius.circular(6), bottomRight: Radius.circular(6)),
+                              hoverColor: AppColors.getInkIconHoverColor(context),
                               onTap: () {
-                                final currentValue =
-                                    int.tryParse(_maxMessagesController.text) ??
-                                        50;
+                                final currentValue = int.tryParse(_maxMessagesController.text) ?? 50;
                                 if (currentValue < 1000) {
                                   final newValue = currentValue + 1;
-                                  _maxMessagesController.text =
-                                      newValue.toString();
-                                  _debouncedUpdateSettings(
-                                      'maxMessages', newValue);
+                                  _maxMessagesController.text = newValue.toString();
+                                  _debouncedUpdateSettings('maxMessages', newValue);
                                 }
                               },
                               child: Icon(
                                 Icons.add,
                                 size: 16,
-                                color: AppColors.getThemeColor(
-                                  context,
-                                  lightColor: Colors.grey[600],
-                                  darkColor: Colors.grey[400],
-                                ),
+                                color: AppColors.getThemeColor(context, lightColor: Colors.grey[600], darkColor: Colors.grey[400]),
                               ),
                             ),
                           ),
@@ -386,13 +302,7 @@ class _ConvSettingState extends State<ConvSetting> {
               const SizedBox(height: 8),
               Text(
                 l10n.maxMessagesDescription,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.color
-                          ?.withAlpha(128),
-                    ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(128)),
               ),
 
               const SizedBox(height: 16),
@@ -400,22 +310,12 @@ class _ConvSettingState extends State<ConvSetting> {
               // Max Loops settings
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      l10n.maxLoops,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
+                  Expanded(child: Text(l10n.maxLoops, style: Theme.of(context).textTheme.bodyMedium)),
                   Container(
                     width: 120,
                     height: 36,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withAlpha(77),
-                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(77)),
                       borderRadius: BorderRadius.circular(6),
                       color: Theme.of(context).colorScheme.surface,
                     ),
@@ -428,59 +328,34 @@ class _ConvSettingState extends State<ConvSetting> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(6),
-                                bottomLeft: Radius.circular(6),
-                              ),
-                              hoverColor:
-                                  AppColors.getInkIconHoverColor(context),
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(6), bottomLeft: Radius.circular(6)),
+                              hoverColor: AppColors.getInkIconHoverColor(context),
                               onTap: () {
-                                final currentValue =
-                                    int.tryParse(_maxLoopsController.text) ??
-                                        100;
+                                final currentValue = int.tryParse(_maxLoopsController.text) ?? 100;
                                 if (currentValue > 1) {
                                   final newValue = currentValue - 1;
-                                  _maxLoopsController.text =
-                                      newValue.toString();
-                                  _debouncedUpdateSettings(
-                                      'maxLoops', newValue);
+                                  _maxLoopsController.text = newValue.toString();
+                                  _debouncedUpdateSettings('maxLoops', newValue);
                                 }
                               },
                               child: Icon(
                                 Icons.remove,
                                 size: 16,
-                                color: AppColors.getThemeColor(
-                                  context,
-                                  lightColor: Colors.grey[600],
-                                  darkColor: Colors.grey[400],
-                                ),
+                                color: AppColors.getThemeColor(context, lightColor: Colors.grey[600], darkColor: Colors.grey[400]),
                               ),
                             ),
                           ),
                         ),
                         // separator
-                        Container(
-                          width: 1,
-                          height: 20,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .outline
-                              .withAlpha(51),
-                        ),
+                        Container(width: 1, height: 20, color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         // number input
                         Expanded(
                           child: TextField(
                             controller: _maxLoopsController,
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.getThemeTextColor(context),
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(4),
-                            ],
+                            style: TextStyle(fontSize: 14, color: AppColors.getThemeTextColor(context)),
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(4)],
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(vertical: 8),
@@ -488,23 +363,14 @@ class _ConvSettingState extends State<ConvSetting> {
                             ),
                             onChanged: (value) {
                               final intValue = int.tryParse(value);
-                              if (intValue != null &&
-                                  intValue > 0 &&
-                                  intValue <= 1000) {
+                              if (intValue != null && intValue > 0 && intValue <= 1000) {
                                 _debouncedUpdateSettings('maxLoops', intValue);
                               }
                             },
                           ),
                         ),
                         // separator
-                        Container(
-                          width: 1,
-                          height: 20,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .outline
-                              .withAlpha(51),
-                        ),
+                        Container(width: 1, height: 20, color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         // increase button
                         SizedBox(
                           width: 32,
@@ -512,32 +378,20 @@ class _ConvSettingState extends State<ConvSetting> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(6),
-                                bottomRight: Radius.circular(6),
-                              ),
-                              hoverColor:
-                                  AppColors.getInkIconHoverColor(context),
+                              borderRadius: const BorderRadius.only(topRight: Radius.circular(6), bottomRight: Radius.circular(6)),
+                              hoverColor: AppColors.getInkIconHoverColor(context),
                               onTap: () {
-                                final currentValue =
-                                    int.tryParse(_maxLoopsController.text) ??
-                                        100;
+                                final currentValue = int.tryParse(_maxLoopsController.text) ?? 100;
                                 if (currentValue < 1000) {
                                   final newValue = currentValue + 1;
-                                  _maxLoopsController.text =
-                                      newValue.toString();
-                                  _debouncedUpdateSettings(
-                                      'maxLoops', newValue);
+                                  _maxLoopsController.text = newValue.toString();
+                                  _debouncedUpdateSettings('maxLoops', newValue);
                                 }
                               },
                               child: Icon(
                                 Icons.add,
                                 size: 16,
-                                color: AppColors.getThemeColor(
-                                  context,
-                                  lightColor: Colors.grey[600],
-                                  darkColor: Colors.grey[400],
-                                ),
+                                color: AppColors.getThemeColor(context, lightColor: Colors.grey[600], darkColor: Colors.grey[400]),
                               ),
                             ),
                           ),
@@ -550,13 +404,7 @@ class _ConvSettingState extends State<ConvSetting> {
               const SizedBox(height: 8),
               Text(
                 l10n.maxLoopsDescription,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.color
-                          ?.withAlpha(128),
-                    ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(128)),
               ),
             ],
           ),
@@ -567,8 +415,7 @@ class _ConvSettingState extends State<ConvSetting> {
 
   List<Widget> _buildMenuItems(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final McpServerProvider provider =
-        Provider.of<McpServerProvider>(context, listen: false);
+    final McpServerProvider provider = Provider.of<McpServerProvider>(context, listen: false);
     final List<Widget> menuItems = [];
 
     // handle loading state
@@ -576,14 +423,8 @@ class _ConvSettingState extends State<ConvSetting> {
       return [
         const SizedBox(
           height: 40,
-          child: Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-        )
+          child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))),
+        ),
       ];
     }
 
@@ -592,11 +433,8 @@ class _ConvSettingState extends State<ConvSetting> {
       return [
         SizedBox(
           height: 40,
-          child: Center(
-            child: Text('Load failed: $_error',
-                style: Theme.of(context).textTheme.bodyMedium),
-          ),
-        )
+          child: Center(child: Text('Load failed: $_error', style: Theme.of(context).textTheme.bodyMedium)),
+        ),
       ];
     }
 
@@ -609,12 +447,7 @@ class _ConvSettingState extends State<ConvSetting> {
     menuItems.add(
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Text(
-          l10n.mcpServers,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
+        child: Text(l10n.mcpServers, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -639,53 +472,34 @@ class _ConvSettingState extends State<ConvSetting> {
                 bool isStarting = stateProvider.isStarting(serverName);
 
                 // get server tool count
-                List<Map<String, dynamic>>? serverTools =
-                    provider.tools[serverName];
+                List<Map<String, dynamic>>? serverTools = provider.tools[serverName];
                 int toolCount = serverTools?.length ?? 0;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Text(
-                        serverName,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
+                    Expanded(child: Text(serverName, overflow: TextOverflow.ellipsis, maxLines: 1)),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           child: Container(
                             width: 8,
                             height: 8,
-                            decoration: BoxDecoration(
-                              color: isRunning ? Colors.green : Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: BoxDecoration(color: isRunning ? Colors.green : Colors.grey, shape: BoxShape.circle),
                           ),
                         ),
                         if (isEnabled && isRunning && toolCount > 0)
                           Container(
                             margin: const EdgeInsets.only(right: 8),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withAlpha(51),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: Colors.green.withAlpha(51), borderRadius: BorderRadius.circular(10)),
                             child: Text(
                               '$toolCount tools',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold),
                             ),
                           ),
                         FlutterSwitch(
@@ -698,45 +512,25 @@ class _ConvSettingState extends State<ConvSetting> {
                             }
                           },
                           toggleSize: 20.0,
-                          activeColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.blue,
-                              darkColor: Colors.blue.shade700),
-                          inactiveColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.grey[300]!,
-                              darkColor: Colors.grey[600]!),
-                          activeToggleColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.white,
-                              darkColor: Colors.white),
-                          inactiveToggleColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.blue,
-                              darkColor: Colors.blue.shade300),
+                          activeColor: AppColors.getThemeColor(context, lightColor: Colors.blue, darkColor: Colors.blue.shade700),
+                          inactiveColor: AppColors.getThemeColor(context, lightColor: Colors.grey[300]!, darkColor: Colors.grey[600]!),
+                          activeToggleColor: AppColors.getThemeColor(context, lightColor: Colors.white, darkColor: Colors.white),
+                          inactiveToggleColor: AppColors.getThemeColor(context, lightColor: Colors.blue, darkColor: Colors.blue.shade300),
                           showOnOff: true,
                           activeText: "ON",
                           inactiveText: "OFF",
                           valueFontSize: 10.0,
-                          activeTextColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.white,
-                              darkColor: Colors.white),
-                          inactiveTextColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.black,
-                              darkColor: Colors.white),
+                          activeTextColor: AppColors.getThemeColor(context, lightColor: Colors.white, darkColor: Colors.white),
+                          inactiveTextColor: AppColors.getThemeColor(context, lightColor: Colors.black, darkColor: Colors.white),
                           activeIcon: isStarting
                               ? const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.orange),
-                                  ),
+                                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)),
                                 )
                               : isRunning
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      size: 16,
-                                      color: Colors.green,
-                                    )
-                                  : null,
+                              ? const Icon(Icons.check_circle, size: 16, color: Colors.green)
+                              : null,
                           disabled: isStarting,
                         ),
                       ],

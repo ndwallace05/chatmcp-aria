@@ -4,16 +4,14 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:markdown/markdown.dart' as m;
 
 SpanNodeGeneratorWithTag latexGenerator = SpanNodeGeneratorWithTag(
-    tag: _latexTag,
-    generator: (e, config, visitor) =>
-        LatexNode(e.attributes, e.textContent, config));
+  tag: _latexTag,
+  generator: (e, config, visitor) => LatexNode(e.attributes, e.textContent, config),
+);
 
 const _latexTag = 'latex';
 
 class LatexSyntax extends m.InlineSyntax {
-  LatexSyntax()
-      : super(
-            r'(\$\$[\s\S]*?[\s\S]+?[\s\S]*?\$\$)|(\$.+?\$)|(\\\([\s\S]+?\\\))|(\\\[[\s\S]+?\\\])|(\[[\s\S]+?\])');
+  LatexSyntax() : super(r'(\$\$[\s\S]*?[\s\S]+?[\s\S]*?\$\$)|(\$.+?\$)|(\\\([\s\S]+?\\\))|(\\\[[\s\S]+?\\\])|(\[[\s\S]+?\])');
 
   @override
   bool onMatch(m.InlineParser parser, Match match) {
@@ -24,30 +22,18 @@ class LatexSyntax extends m.InlineSyntax {
     const blockSyntax = '\$\$';
     const inlineSyntax = '\$';
 
-    if (matchValue.startsWith(blockSyntax) &&
-        matchValue.endsWith(blockSyntax) &&
-        (matchValue != blockSyntax) &&
-        matchValue.length > 4) {
+    if (matchValue.startsWith(blockSyntax) && matchValue.endsWith(blockSyntax) && (matchValue != blockSyntax) && matchValue.length > 4) {
       content = matchValue.substring(2, matchValue.length - 2).trim();
       isInline = false;
-    } else if (matchValue.startsWith(inlineSyntax) &&
-        matchValue.endsWith(inlineSyntax) &&
-        matchValue != inlineSyntax &&
-        matchValue.length > 2) {
+    } else if (matchValue.startsWith(inlineSyntax) && matchValue.endsWith(inlineSyntax) && matchValue != inlineSyntax && matchValue.length > 2) {
       content = matchValue.substring(1, matchValue.length - 1);
-    } else if (matchValue.startsWith(r'\[') &&
-        matchValue.endsWith(r'\]') &&
-        matchValue.length > 4) {
+    } else if (matchValue.startsWith(r'\[') && matchValue.endsWith(r'\]') && matchValue.length > 4) {
       content = matchValue.substring(2, matchValue.length - 2);
       isInline = false;
-    } else if (matchValue.startsWith(r'\(') &&
-        matchValue.endsWith(r'\)') &&
-        matchValue.length > 4) {
+    } else if (matchValue.startsWith(r'\(') && matchValue.endsWith(r'\)') && matchValue.length > 4) {
       content = matchValue.substring(2, matchValue.length - 2);
       isInline = true;
-    } else if (matchValue.startsWith('[') &&
-        matchValue.endsWith(']') &&
-        matchValue.length > 2) {
+    } else if (matchValue.startsWith('[') && matchValue.endsWith(']') && matchValue.length > 2) {
       content = matchValue.substring(1, matchValue.length - 1);
       isInline = false;
     }
@@ -62,10 +48,7 @@ class LatexSyntax extends m.InlineSyntax {
 
 class LatexBlockSyntax extends m.BlockSyntax {
   @override
-  RegExp get pattern => RegExp(
-        r'^(?:(\${1,2})(?:\n|$))|(?:(?:\\\[(.+)\\\])(?:\n|$))',
-        multiLine: true,
-      );
+  RegExp get pattern => RegExp(r'^(?:(\${1,2})(?:\n|$))|(?:(?:\\\[(.+)\\\])(?:\n|$))', multiLine: true);
 
   LatexBlockSyntax() : super();
 
@@ -122,25 +105,19 @@ class LatexNode extends SpanNode {
     if (content.isEmpty) return TextSpan(style: style, text: textContent);
 
     return WidgetSpan(
-      alignment: isInline
-          ? PlaceholderAlignment.middle
-          : PlaceholderAlignment.aboveBaseline,
+      alignment: isInline ? PlaceholderAlignment.middle : PlaceholderAlignment.aboveBaseline,
       baseline: TextBaseline.alphabetic,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 800,
-        ),
+        constraints: const BoxConstraints(maxWidth: 800),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Math.tex(
             content,
             mathStyle: isInline ? MathStyle.text : MathStyle.display,
             textStyle: style.copyWith(
-                fontSize: style.fontSize != null
-                    ? (isInline ? style.fontSize : style.fontSize! * 1.2)
-                    : (isInline ? 14.0 : 16.8)),
-            onErrorFallback: (error) => Text('LaTeX Error: $error',
-                style: style.copyWith(color: Colors.red)),
+              fontSize: style.fontSize != null ? (isInline ? style.fontSize : style.fontSize! * 1.2) : (isInline ? 14.0 : 16.8),
+            ),
+            onErrorFallback: (error) => Text('LaTeX Error: $error', style: style.copyWith(color: Colors.red)),
           ),
         ),
       ),

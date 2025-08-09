@@ -38,20 +38,13 @@ class _SettingPageState extends State<SettingPage> {
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorWeight: 5,
             labelStyle: TextStyle(fontSize: kIsMobile ? 10 : 14),
-            tabs: tabs
-                .map((tab) => Tab(
-                      icon: Icon(tab.icon),
-                      text: tab.title,
-                    ))
-                .toList(),
+            tabs: tabs.map((tab) => Tab(icon: Icon(tab.icon), text: tab.title)).toList(),
             onTap: (index) {
               setState(() {});
             },
           ),
         ),
-        body: TabBarView(
-          children: tabs.map((tab) => tab.content).toList(),
-        ),
+        body: TabBarView(children: tabs.map((tab) => tab.content).toList()),
       ),
     );
   }
@@ -63,9 +56,5 @@ class SettingTab {
   final IconData icon;
   final Widget content;
 
-  SettingTab({
-    required this.title,
-    required this.icon,
-    required this.content,
-  });
+  SettingTab({required this.title, required this.icon, required this.content});
 }

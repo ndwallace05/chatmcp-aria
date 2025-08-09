@@ -8,29 +8,19 @@ class JsonRpcResponse {
   final Map<String, dynamic>? error;
   final dynamic id;
 
-  JsonRpcResponse({
-    required this.jsonrpc,
-    this.result,
-    this.error,
-    required this.id,
-  });
+  JsonRpcResponse({required this.jsonrpc, this.result, this.error, required this.id});
 
   factory JsonRpcResponse.fromJson(Map<String, dynamic> json) {
     return JsonRpcResponse(
       jsonrpc: json['jsonrpc'] ?? '2.0',
       id: json['id'],
       result: json['result'],
-      error: json['error'] != null
-          ? Map<String, dynamic>.from(json['error'])
-          : null,
+      error: json['error'] != null ? Map<String, dynamic>.from(json['error']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'jsonrpc': jsonrpc,
-      'id': id,
-    };
+    final Map<String, dynamic> data = {'jsonrpc': jsonrpc, 'id': id};
     // according to JSON-RPC specification, result and error are mutually exclusive
     if (error != null) {
       data['error'] = error;
@@ -52,21 +42,11 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
       case 'initialize':
         result = {
           'protocolVersion': '1.0',
-          'serverInfo': {
-            'name': 'mock-server-dart',
-            'version': '1.0.0',
-          },
+          'serverInfo': {'name': 'mock-server-dart', 'version': '1.0.0'},
           'capabilities': {
-            'prompts': {
-              'listChanged': true,
-            },
-            'resources': {
-              'listChanged': true,
-              'subscribe': true,
-            },
-            'tools': {
-              'listChanged': true,
-            },
+            'prompts': {'listChanged': true},
+            'resources': {'listChanged': true, 'subscribe': true},
+            'tools': {'listChanged': true},
           },
         };
         break;
@@ -76,10 +56,7 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
       case 'resources/list':
         result = {
           'resources': [
-            {
-              'name': 'test-resource',
-              'uri': 'test://resource',
-            },
+            {'name': 'test-resource', 'uri': 'test://resource'},
           ],
         };
         break;
@@ -107,9 +84,7 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
       case 'prompts/list':
         result = {
           'prompts': [
-            {
-              'name': 'test-prompt',
-            },
+            {'name': 'test-prompt'},
           ],
         };
         break;
@@ -120,10 +95,7 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
           'messages': [
             {
               'role': 'assistant',
-              'content': {
-                'type': 'text',
-                'text': 'test message',
-              },
+              'content': {'type': 'text', 'text': 'test message'},
             },
           ],
         };
@@ -150,10 +122,7 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
         // ... execute tool call ...
         result = {
           'content': [
-            {
-              'type': 'text',
-              'text': 'tool result',
-            },
+            {'type': 'text', 'text': 'tool result'},
           ],
         };
         break;
@@ -190,10 +159,5 @@ JsonRpcResponse handleRequest(JSONRPCMessage request) {
     result = null; // ensure result is null when error occurs
   }
 
-  return JsonRpcResponse(
-    jsonrpc: '2.0',
-    id: request.id,
-    result: result,
-    error: error,
-  );
+  return JsonRpcResponse(jsonrpc: '2.0', id: request.id, result: result, error: error);
 }

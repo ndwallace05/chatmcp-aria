@@ -11,15 +11,9 @@ class ClaudeClient extends BaseLLMClient {
   final String baseUrl;
   final Map<String, String> _headers;
 
-  ClaudeClient({
-    required this.apiKey,
-    String? baseUrl,
-  })  : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.anthropic.com' : baseUrl,
-        _headers = {
-          'Content-Type': 'application/json; charset=utf-8',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        };
+  ClaudeClient({required this.apiKey, String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.anthropic.com' : baseUrl,
+      _headers = {'Content-Type': 'application/json; charset=utf-8', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01'};
 
   @override
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
@@ -27,29 +21,20 @@ class ClaudeClient extends BaseLLMClient {
 
     final messages = chatMessageToClaudeMessage(request.messages);
 
-    final body = {
-      'model': request.model,
-      'messages': messages,
-    };
+    final body = {'model': request.model, 'messages': messages};
 
     addModelSettingsToBody(body, request.modelSetting);
 
     if (request.tools != null && request.tools!.isNotEmpty) {
       body['tools'] = {
-        'function_calling': {
-          'tools': request.tools,
-        }
+        'function_calling': {'tools': request.tools},
       };
     }
 
     final endpoint = '$baseUrl/messages';
 
     try {
-      final response = await httpClient.post(
-        Uri.parse(endpoint),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
+      final response = await httpClient.post(Uri.parse(endpoint), headers: _headers, body: jsonEncode(body));
 
       final responseBody = utf8.decode(response.bodyBytes);
       Logger.root.fine('Claude response: $responseBody');
@@ -63,20 +48,16 @@ class ClaudeClient extends BaseLLMClient {
 
       // Parse tool calls if present
       final toolCalls = json['tool_calls']
-          ?.map<ToolCall>((t) => ToolCall(
-                id: t['id'],
-                type: t['type'],
-                function: FunctionCall(
-                  name: t['function']['name'],
-                  arguments: t['function']['arguments'],
-                ),
-              ))
+          ?.map<ToolCall>(
+            (t) => ToolCall(
+              id: t['id'],
+              type: t['type'],
+              function: FunctionCall(name: t['function']['name'], arguments: t['function']['arguments']),
+            ),
+          )
           ?.toList();
 
-      return LLMResponse(
-        content: content,
-        toolCalls: toolCalls,
-      );
+      return LLMResponse(content: content, toolCalls: toolCalls);
     } catch (e) {
       throw await handleError(e, 'Claude', endpoint, jsonEncode(body));
     } finally {
@@ -88,19 +69,13 @@ class ClaudeClient extends BaseLLMClient {
   Stream<LLMResponse> chatStreamCompletion(CompletionRequest request) async* {
     final messages = chatMessageToClaudeMessage(request.messages);
 
-    final body = {
-      'model': request.model,
-      'messages': messages,
-      'stream': true,
-    };
+    final body = {'model': request.model, 'messages': messages, 'stream': true};
 
     addModelSettingsToBody(body, request.modelSetting);
 
     if (request.tools != null && request.tools!.isNotEmpty) {
       body['tools'] = {
-        'function_calling': {
-          'tools': request.tools,
-        }
+        'function_calling': {'tools': request.tools},
       };
       body['tool_choice'] = {'type': 'any'};
     }
@@ -188,11 +163,7 @@ class ClaudeClient extends BaseLLMClient {
   }
 
   @override
-  Future<Map<String, dynamic>> checkToolCall(
-    String model,
-    CompletionRequest request,
-    Map<String, List<Map<String, dynamic>>> toolsResponse,
-  ) async {
+  Future<Map<String, dynamic>> checkToolCall(String model, CompletionRequest request, Map<String, List<Map<String, dynamic>>> toolsResponse) async {
     // Convert tools to Claude's format
     final tools = toolsResponse.entries
         .map((entry) {
@@ -202,41 +173,24 @@ class ClaudeClient extends BaseLLMClient {
               return {
                 'name': tool['name'],
                 'description': tool['description'],
-                'input_schema': {
-                  'type': 'object',
-                  'properties': {},
-                  'required': [],
-                },
+                'input_schema': {'type': 'object', 'properties': {}, 'required': []},
               };
             }
 
             return {
               'name': tool['name'],
               'description': tool['description'],
-              'input_schema': {
-                'type': 'object',
-                'properties': parameters['properties'] ?? {},
-                'required': parameters['required'] ?? [],
-              },
+              'input_schema': {'type': 'object', 'properties': parameters['properties'] ?? {}, 'required': parameters['required'] ?? []},
             };
           }).toList();
         })
         .expand((x) => x)
         .toList();
 
-    final body = {
-      'model': ProviderManager.chatModelProvider.currentModel.name,
-      'messages': request.messages,
-      'tools': tools,
-      'max_tokens': 4096,
-    };
+    final body = {'model': ProviderManager.chatModelProvider.currentModel.name, 'messages': request.messages, 'tools': tools, 'max_tokens': 4096};
 
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/messages'),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
+      final response = await http.post(Uri.parse('$baseUrl/messages'), headers: _headers, body: jsonEncode(body));
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
@@ -247,10 +201,7 @@ class ClaudeClient extends BaseLLMClient {
       // Check if response contains tool calls in the content array
       final contentBlocks = jsonData['content'] as List?;
       if (contentBlocks == null || contentBlocks.isEmpty) {
-        return {
-          'need_tool_call': false,
-          'content': '',
-        };
+        return {'need_tool_call': false, 'content': ''};
       }
 
       // Look for tool_calls in the response
@@ -258,36 +209,17 @@ class ClaudeClient extends BaseLLMClient {
 
       if (toolUseBlocks.isEmpty) {
         // Get text content from the first text block
-        final textBlock = contentBlocks.firstWhere(
-          (block) => block['type'] == 'text',
-          orElse: () => {'text': ''},
-        );
-        return {
-          'need_tool_call': false,
-          'content': textBlock['text'] ?? '',
-        };
+        final textBlock = contentBlocks.firstWhere((block) => block['type'] == 'text', orElse: () => {'text': ''});
+        return {'need_tool_call': false, 'content': textBlock['text'] ?? ''};
       }
 
       // Extract tool calls
-      final toolCalls = toolUseBlocks
-          .map((block) => {
-                'id': block['id'],
-                'name': block['name'],
-                'arguments': block['input'],
-              })
-          .toList();
+      final toolCalls = toolUseBlocks.map((block) => {'id': block['id'], 'name': block['name'], 'arguments': block['input']}).toList();
 
       // Get any accompanying text content
-      final textBlock = contentBlocks.firstWhere(
-        (block) => block['type'] == 'text',
-        orElse: () => {'text': ''},
-      );
+      final textBlock = contentBlocks.firstWhere((block) => block['type'] == 'text', orElse: () => {'text': ''});
 
-      return {
-        'need_tool_call': true,
-        'content': textBlock['text'] ?? '',
-        'tool_calls': toolCalls,
-      };
+      return {'need_tool_call': true, 'content': textBlock['text'] ?? '', 'tool_calls': toolCalls};
     } catch (e) {
       throw await handleError(e, 'Claude', '$baseUrl/messages', jsonEncode(body));
     }
@@ -301,10 +233,7 @@ class ClaudeClient extends BaseLLMClient {
     }
 
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/models'),
-        headers: _headers,
-      );
+      final response = await http.get(Uri.parse('$baseUrl/models'), headers: _headers);
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
@@ -331,34 +260,21 @@ List<Map<String, dynamic>> chatMessageToClaudeMessage(List<ChatMessage> messages
         if (isImageFile(file.fileType)) {
           contentParts.add({
             'type': 'image',
-            'source': {
-              'type': 'base64',
-              'media_type': file.fileType,
-              'data': file.fileContent,
-            },
+            'source': {'type': 'base64', 'media_type': file.fileType, 'data': file.fileContent},
           });
         }
         if (isTextFile(file.fileType)) {
-          contentParts.add({
-            'type': 'text',
-            'text': file.fileContent,
-          });
+          contentParts.add({'type': 'text', 'text': file.fileContent});
         }
       }
     }
 
     // Add text content
     if (message.content != null) {
-      contentParts.add({
-        'type': 'text',
-        'text': message.content,
-      });
+      contentParts.add({'type': 'text', 'text': message.content});
     }
 
-    final json = {
-      'role': message.role == MessageRole.user ? 'user' : 'assistant',
-      'content': contentParts,
-    };
+    final json = {'role': message.role == MessageRole.user ? 'user' : 'assistant', 'content': contentParts};
 
     if (contentParts.length == 1 && message.files == null) {
       json['content'] = message.content ?? '';

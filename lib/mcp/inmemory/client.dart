@@ -34,14 +34,8 @@ class InMemoryClient implements McpClient {
   }
 
   @override
-  Future<JSONRPCMessage> sendToolCall(
-      {required String name,
-      required Map<String, dynamic> arguments,
-      String? id}) async {
-    return sendMessage(JSONRPCMessage(
-        id: id,
-        method: 'tools/call',
-        params: {'name': name, 'arguments': arguments}));
+  Future<JSONRPCMessage> sendToolCall({required String name, required Map<String, dynamic> arguments, String? id}) async {
+    return sendMessage(JSONRPCMessage(id: id, method: 'tools/call', params: {'name': name, 'arguments': arguments}));
   }
 
   @override

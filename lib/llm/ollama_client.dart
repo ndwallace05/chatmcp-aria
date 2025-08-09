@@ -8,21 +8,15 @@ class OllamaClient extends BaseLLMClient {
   final String baseUrl;
   final Map<String, String> _headers;
 
-  OllamaClient({
-    String? baseUrl,
-  })  : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'http://localhost:11434' : baseUrl,
-        _headers = {
-          'Content-Type': 'application/json',
-        };
+  OllamaClient({String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'http://localhost:11434' : baseUrl,
+      _headers = {'Content-Type': 'application/json'};
 
   @override
   Future<List<String>> models() async {
     try {
       final httpClient = BaseLLMClient.createHttpClient();
-      final response = await httpClient.get(
-        Uri.parse("$baseUrl/api/tags"),
-        headers: _headers,
-      );
+      final response = await httpClient.get(Uri.parse("$baseUrl/api/tags"), headers: _headers);
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
@@ -41,17 +35,10 @@ class OllamaClient extends BaseLLMClient {
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
     final messages = request.messages.map((m) {
       final role = m.role == MessageRole.user ? 'user' : 'assistant';
-      return {
-        'role': role,
-        'content': m.content,
-      };
+      return {'role': role, 'content': m.content};
     }).toList();
 
-    final body = {
-      'model': request.model,
-      'messages': messages,
-      'stream': false,
-    };
+    final body = {'model': request.model, 'messages': messages, 'stream': false};
 
     if (request.tools != null && request.tools!.isNotEmpty) {
       body['tools'] = request.tools!;
@@ -61,11 +48,7 @@ class OllamaClient extends BaseLLMClient {
 
     try {
       final httpClient = BaseLLMClient.createHttpClient();
-      final response = await httpClient.post(
-        Uri.parse("$baseUrl/v1/chat/completions"),
-        headers: _headers,
-        body: bodyStr,
-      );
+      final response = await httpClient.post(Uri.parse("$baseUrl/v1/chat/completions"), headers: _headers, body: bodyStr);
 
       final responseBody = utf8.decode(response.bodyBytes);
       Logger.root.fine('Ollama request: $bodyStr');
@@ -81,20 +64,16 @@ class OllamaClient extends BaseLLMClient {
 
       // Parse tool calls
       final toolCalls = message['tool_calls']
-          ?.map<ToolCall>((t) => ToolCall(
-                id: t['id'] ?? '',
-                type: 'function',
-                function: FunctionCall(
-                  name: t['function']['name'],
-                  arguments: jsonEncode(t['function']['arguments']),
-                ),
-              ))
+          ?.map<ToolCall>(
+            (t) => ToolCall(
+              id: t['id'] ?? '',
+              type: 'function',
+              function: FunctionCall(name: t['function']['name'], arguments: jsonEncode(t['function']['arguments'])),
+            ),
+          )
           ?.toList();
 
-      return LLMResponse(
-        content: message['content'] ?? '',
-        toolCalls: toolCalls,
-      );
+      return LLMResponse(content: message['content'] ?? '', toolCalls: toolCalls);
     } catch (e) {
       throw await handleError(e, 'Ollama', '$baseUrl/v1/chat/completions', bodyStr);
     }
@@ -104,17 +83,10 @@ class OllamaClient extends BaseLLMClient {
   Stream<LLMResponse> chatStreamCompletion(CompletionRequest request) async* {
     final messages = request.messages.map((m) {
       final role = m.role == MessageRole.user ? 'user' : 'assistant';
-      return {
-        'role': role,
-        'content': m.content,
-      };
+      return {'role': role, 'content': m.content};
     }).toList();
 
-    final body = {
-      'model': request.model,
-      'messages': messages,
-      'stream': true,
-    };
+    final body = {'model': request.model, 'messages': messages, 'stream': true};
 
     if (request.tools != null && request.tools!.isNotEmpty) {
       body['tools'] = request.tools!;
@@ -158,22 +130,18 @@ class OllamaClient extends BaseLLMClient {
 
           // Parse tool calls
           final toolCalls = delta['tool_calls']
-              ?.map<ToolCall>((t) => ToolCall(
-                    id: t['id'] ?? '',
-                    type: 'function',
-                    function: FunctionCall(
-                      name: t['function']?['name'] ?? '',
-                      arguments: jsonEncode(t['function']?['arguments'] ?? {}),
-                    ),
-                  ))
+              ?.map<ToolCall>(
+                (t) => ToolCall(
+                  id: t['id'] ?? '',
+                  type: 'function',
+                  function: FunctionCall(name: t['function']?['name'] ?? '', arguments: jsonEncode(t['function']?['arguments'] ?? {})),
+                ),
+              )
               ?.toList();
 
           // Only yield when content is not empty or there are tool calls
           if (delta['content'] != null || toolCalls != null) {
-            yield LLMResponse(
-              content: delta['content'],
-              toolCalls: toolCalls,
-            );
+            yield LLMResponse(content: delta['content'], toolCalls: toolCalls);
           }
         } catch (e) {
           Logger.root.severe('Failed to parse stream chunk: $jsonStr $e');

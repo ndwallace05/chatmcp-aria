@@ -53,21 +53,11 @@ void main() async {
   }
 
   try {
-    await Future.wait([
-      ProviderManager.init(),
-      initDb(),
-    ]);
+    await Future.wait([ProviderManager.init(), initDb()]);
 
     var app = MyApp();
 
-    runApp(
-      MultiProvider(
-        providers: [
-          ...ProviderManager.providers,
-        ],
-        child: app,
-      ),
-    );
+    runApp(MultiProvider(providers: [...ProviderManager.providers], child: app));
   } catch (e, stackTrace) {
     Logger.root.severe('Main error: $e\nStack trace:\n$stackTrace');
   }
@@ -93,16 +83,8 @@ class MyApp extends StatelessWidget {
           scaffoldMessengerKey: _scaffoldMessengerKey,
           navigatorKey: navigatorKey,
           title: 'ChatMcp',
-          theme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.light,
-            fontFamily: getPlatformFontFamily(),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.dark,
-            fontFamily: getPlatformFontFamily(),
-          ),
+          theme: ThemeData(useMaterial3: true, brightness: Brightness.light, fontFamily: getPlatformFontFamily()),
+          darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark, fontFamily: getPlatformFontFamily()),
           themeMode: _getThemeMode(settings.generalSetting.theme),
           home: LayoutPage(),
           locale: Locale(settings.generalSetting.locale),
@@ -114,11 +96,7 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('zh'),
-            Locale('tr'),
-          ],
+          supportedLocales: const [Locale('en'), Locale('zh'), Locale('tr')],
         );
       },
     );

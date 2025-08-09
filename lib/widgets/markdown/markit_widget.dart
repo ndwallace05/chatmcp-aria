@@ -16,7 +16,8 @@ class MarkitTestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String testMarkdown = r'''
+    String testMarkdown =
+        r'''
 This image is a math problem, involving the calculation of the cost of anti-slip tiles in a school building. The problem description is as follows:
 
 <think data-name="test1" age="18" start-time="2025-02-07 10:00:00"># test</think status="en">
@@ -28,12 +29,11 @@ This image is a math problem, involving the calculation of the cost of anti-slip
 
 <think name="test" age="18">33333
 
-''' '\n${DateTime.now().toIso8601String()}';
+'''
+        '\n${DateTime.now().toIso8601String()}';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Markit Test'),
-      ),
+      appBar: AppBar(title: const Text('Markit Test')),
       body: Markit(data: testMarkdown),
     );
   }
@@ -56,10 +56,8 @@ class _MarkitState extends State<Markit> {
 
   @override
   Widget build(BuildContext context) {
-
     final currentBrightness = Theme.of(context).brightness;
-    if (widget.data != _cachedData || _cachedMarkdown == null ||  _cachedBrightness != currentBrightness) {
-
+    if (widget.data != _cachedData || _cachedMarkdown == null || _cachedBrightness != currentBrightness) {
       _cachedData = widget.data;
       _cachedBrightness = currentBrightness;
 
@@ -70,9 +68,7 @@ class _MarkitState extends State<Markit> {
         data: data,
         config: MarkdownConfig(
           configs: [
-            PConfig(
-                textStyle: textStyle ??
-                    const TextStyle(fontSize: 14, height: 20 / 14)),
+            PConfig(textStyle: textStyle ?? const TextStyle(fontSize: 14, height: 20 / 14)),
             H1Config(style: const TextStyle(fontSize: 24, height: 24 / 24)),
             H2Config(style: const TextStyle(fontSize: 20, height: 20 / 20)),
             H3Config(style: const TextStyle(fontSize: 16, height: 16 / 16)),
@@ -82,15 +78,9 @@ class _MarkitState extends State<Markit> {
             TableConfig(),
             CodeConfig(),
             LinkConfig(
-              style: const TextStyle(
-                color: Colors.yellow,
-                decoration: TextDecoration.underline,
-              ),
+              style: const TextStyle(color: Colors.yellow, decoration: TextDecoration.underline),
             ),
-            isDark
-                ? PreConfig.darkConfig
-                    .copy(textStyle: const TextStyle(fontSize: 12))
-                : PreConfig().copy(textStyle: const TextStyle(fontSize: 12)),
+            isDark ? PreConfig.darkConfig.copy(textStyle: const TextStyle(fontSize: 12)) : PreConfig().copy(textStyle: const TextStyle(fontSize: 12)),
             DetailConfig(),
           ],
         ),

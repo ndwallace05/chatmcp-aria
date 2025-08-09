@@ -18,9 +18,9 @@ class DbChatMessage {
     DateTime? updatedAt,
     String? messageId,
     this.parentMessageId = '',
-  })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now(),
-        messageId = messageId ?? const Uuid().v4();
+  }) : createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now(),
+       messageId = messageId ?? const Uuid().v4();
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,12 +46,8 @@ class ChatMessageDao extends BaseDao<DbChatMessage> {
       messageId: json['messageId'] ?? '',
       parentMessageId: json['parentMessageId'] ?? '',
       body: json['body'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : DateTime.now(),
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
     );
   }
 
@@ -62,10 +58,6 @@ class ChatMessageDao extends BaseDao<DbChatMessage> {
 
   Future<int> deleteMessages(int chatId) async {
     final db = await database;
-    return db.delete(
-      tableName,
-      where: 'chatId = ?',
-      whereArgs: [chatId],
-    );
+    return db.delete(tableName, where: 'chatId = ?', whereArgs: [chatId]);
   }
 }

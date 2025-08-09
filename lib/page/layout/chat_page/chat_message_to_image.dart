@@ -31,25 +31,14 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Share Chat Image'),
-        leading: IconButton(
-          icon: Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.camera),
-            onPressed: _captureListViewAsImage,
-          ),
-        ],
+        leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+        actions: [IconButton(icon: Icon(Icons.camera), onPressed: _captureListViewAsImage)],
       ),
       body: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(
           scrollbars: false, // 完全禁用滚动条
         ),
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: _buildMessage(),
-        ),
+        child: SingleChildScrollView(controller: _scrollController, child: _buildMessage()),
       ),
     );
   }
@@ -83,10 +72,7 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
     return SizedBox(
       width: screenWidth,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: 20,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,21 +83,9 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        ProviderManager.chatProvider.activeChat!.title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: Text(ProviderManager.chatProvider.activeChat!.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
-                    Text(
-                      "by ChatMcp",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
+                    Text("by ChatMcp", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -153,10 +127,7 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
             data: theme,
             child: Material(
               color: theme.scaffoldBackgroundColor,
-              child: SizedBox(
-                width: screenWidth,
-                child: _buildMessage(),
-              ),
+              child: SizedBox(width: screenWidth, child: _buildMessage()),
             ),
           ),
         ),
@@ -167,10 +138,7 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
         builder: (context) => Positioned(
           left: -screenWidth - 100, // 确保完全在屏幕外
           top: 0,
-          child: SizedBox(
-            width: screenWidth,
-            child: renderWidget,
-          ),
+          child: SizedBox(width: screenWidth, child: renderWidget),
         ),
       );
 
@@ -194,10 +162,8 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
 
       if (kIsDesktop) {
         final path = await FilePicker.platform.saveFile(
-          dialogTitle: ProviderManager.chatProvider.activeChat?.title ??
-              'Save chat image',
-          fileName:
-              'ChatMcp-${ProviderManager.chatProvider.activeChat?.title ?? DateTime.now().millisecondsSinceEpoch}.jpg',
+          dialogTitle: ProviderManager.chatProvider.activeChat?.title ?? 'Save chat image',
+          fileName: 'ChatMcp-${ProviderManager.chatProvider.activeChat?.title ?? DateTime.now().millisecondsSinceEpoch}.jpg',
           type: FileType.custom,
           allowedExtensions: ['jpg'],
         );
@@ -207,23 +173,14 @@ class _ListViewToImageScreenState extends State<ListViewToImageScreen> {
       }
 
       if (kIsMobile) {
-        final title =
-            ProviderManager.chatProvider.activeChat?.title ?? 'Chat Image';
-        final safeTitle = title
-            .replaceAll(RegExp(r'[<>:"/\\|?*]'), '_')
-            .replaceAll(RegExp(r'\s+'), '_');
+        final title = ProviderManager.chatProvider.activeChat?.title ?? 'Chat Image';
+        final safeTitle = title.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_').replaceAll(RegExp(r'\s+'), '_');
 
         final tempDir = await getTemporaryDirectory();
-        final tempFile = io.File(
-            '${tempDir.path}/ChatMcp_${safeTitle}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+        final tempFile = io.File('${tempDir.path}/ChatMcp_${safeTitle}_${DateTime.now().millisecondsSinceEpoch}.jpg');
         await tempFile.writeAsBytes(image);
 
-        await SharePlus.instance.share(
-          ShareParams(
-            files: [XFile(tempFile.path)],
-            subject: "ChatMcp $title",
-          ),
-        );
+        await SharePlus.instance.share(ShareParams(files: [XFile(tempFile.path)], subject: "ChatMcp $title"));
       }
 
       if (mounted) {
@@ -242,21 +199,11 @@ class ScreenshotChatUIMessage extends StatelessWidget {
   final Function(ChatMessage) onRetry;
   final Function(String messageId) onSwitch;
 
-  const ScreenshotChatUIMessage({
-    super.key,
-    required this.messages,
-    required this.availableWidth,
-    required this.onRetry,
-    required this.onSwitch,
-  });
+  const ScreenshotChatUIMessage({super.key, required this.messages, required this.availableWidth, required this.onRetry, required this.onSwitch});
 
   List<ChatMessage> _filterMessages(List<ChatMessage> messages) {
     if (messages.length <= 1) return messages;
-    return messages
-        .where((m) =>
-            m.role != MessageRole.assistant ||
-            (m.role == MessageRole.assistant && m.content != ''))
-        .toList();
+    return messages.where((m) => m.role != MessageRole.assistant || (m.role == MessageRole.assistant && m.content != '')).toList();
   }
 
   BubblePosition _getMessagePosition(int index, int total) {
@@ -266,34 +213,23 @@ class ScreenshotChatUIMessage extends StatelessWidget {
     return BubblePosition.middle;
   }
 
-  Widget _buildMessageGroup(
-      BuildContext context, List<ChatMessage> messages, bool isUser) {
+  Widget _buildMessageGroup(BuildContext context, List<ChatMessage> messages, bool isUser) {
     final filteredMessages = _filterMessages(messages);
 
     if (filteredMessages.isEmpty) return const SizedBox();
 
     if (filteredMessages.length == 1) {
-      return ChatMessageContent(
-        message: filteredMessages[0],
-        onRetry: onRetry,
-        position: BubblePosition.single,
-      );
+      return ChatMessageContent(message: filteredMessages[0], onRetry: onRetry, position: BubblePosition.single);
     }
 
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.getMessageBubbleBackgroundColor(context, isUser),
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: AppColors.getMessageBubbleBackgroundColor(context, isUser), borderRadius: BorderRadius.circular(16)),
       child: Column(
-        crossAxisAlignment:
-            isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: List.generate(
           filteredMessages.length,
           (index) => Padding(
-            padding: EdgeInsets.only(
-              bottom: index == filteredMessages.length - 1 ? 0 : 1,
-            ),
+            padding: EdgeInsets.only(bottom: index == filteredMessages.length - 1 ? 0 : 1),
             child: ChatMessageContent(
               message: filteredMessages[index],
               onRetry: onRetry,
@@ -313,62 +249,44 @@ class ScreenshotChatUIMessage extends StatelessWidget {
     final firstMsg = messages.first;
     final isUser = firstMsg.role == MessageRole.user;
 
-    return Consumer<SettingsProvider>(builder: (context, settings, child) {
-      final showAssistantAvatar = settings.generalSetting.showAssistantAvatar;
-      final showUserAvatar = settings.generalSetting.showUserAvatar;
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, child) {
+        final showAssistantAvatar = settings.generalSetting.showAssistantAvatar;
+        final showUserAvatar = settings.generalSetting.showUserAvatar;
 
-      // 计算头像占用的宽度
-      double avatarWidth = 0;
-      if ((!isUser && showAssistantAvatar) || (isUser && showUserAvatar)) {
-        avatarWidth = 48; // 40px avatar + 8px spacing
-      }
+        // 计算头像占用的宽度
+        double avatarWidth = 0;
+        if ((!isUser && showAssistantAvatar) || (isUser && showUserAvatar)) {
+          avatarWidth = 48; // 40px avatar + 8px spacing
+        }
 
-      // 为消息内容保留固定宽度
-      final messageWidth = availableWidth - avatarWidth;
+        // 为消息内容保留固定宽度
+        final messageWidth = availableWidth - avatarWidth;
 
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(
-          mainAxisAlignment:
-              isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isUser && showAssistantAvatar) ...[
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 6.0),
+          child: Row(
+            mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isUser && showAssistantAvatar) ...[SizedBox(width: 40, child: ChatAvatar(isUser: false)), const SizedBox(width: 8)],
+              // 使用Container代替Flexible，固定宽度
               SizedBox(
-                width: 40,
-                child: ChatAvatar(isUser: false),
+                width: messageWidth,
+                child: Column(
+                  crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    _buildMessageGroup(context, messages, isUser),
+                    if (kIsDesktop && messages.last.role != MessageRole.loading && !isUser)
+                      MessageActions(messages: messages, onRetry: onRetry, onSwitch: onSwitch),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8),
+              if (isUser && showUserAvatar) ...[const SizedBox(width: 8), SizedBox(width: 40, child: ChatAvatar(isUser: true))],
             ],
-            // 使用Container代替Flexible，固定宽度
-            SizedBox(
-              width: messageWidth,
-              child: Column(
-                crossAxisAlignment:
-                    isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  _buildMessageGroup(context, messages, isUser),
-                  if (kIsDesktop &&
-                      messages.last.role != MessageRole.loading &&
-                      !isUser)
-                    MessageActions(
-                      messages: messages,
-                      onRetry: onRetry,
-                      onSwitch: onSwitch,
-                    ),
-                ],
-              ),
-            ),
-            if (isUser && showUserAvatar) ...[
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 40,
-                child: ChatAvatar(isUser: true),
-              ),
-            ],
-          ],
-        ),
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }

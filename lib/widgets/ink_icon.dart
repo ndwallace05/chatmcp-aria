@@ -31,10 +31,10 @@ class InkIcon extends StatelessWidget {
     final double effectiveSize = size != 16
         ? size!
         : (kIsWeb
-            ? 16.0
-            : (Platform.isAndroid || Platform.isIOS)
-                ? 24.0
-                : 16.0);
+              ? 16.0
+              : (Platform.isAndroid || Platform.isIOS)
+              ? 24.0
+              : 16.0);
 
     final Widget iconWidget = Material(
       color: Colors.transparent,
@@ -59,9 +59,6 @@ class InkIcon extends StatelessWidget {
       return iconWidget;
     }
 
-    return Tooltip(
-      message: tooltip!,
-      child: iconWidget,
-    );
+    return Tooltip(message: tooltip!, child: iconWidget);
   }
 }

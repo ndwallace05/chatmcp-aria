@@ -11,11 +11,7 @@ class ToastUtils {
       duration: duration ?? Duration(seconds: 5),
       align: Alignment(0.0, -0.7),
       contentColor: Colors.red.shade600,
-      textStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
+      textStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
     );
   }
 
@@ -28,11 +24,7 @@ class ToastUtils {
       duration: duration ?? Duration(seconds: 4),
       align: Alignment(0.0, -0.7),
       contentColor: Colors.orange.shade600,
-      textStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
+      textStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
     );
   }
 
@@ -45,11 +37,7 @@ class ToastUtils {
       duration: duration ?? Duration(seconds: 3),
       align: Alignment(0.0, -0.7),
       contentColor: Colors.blue.shade600,
-      textStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
+      textStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
     );
   }
 
@@ -62,11 +50,7 @@ class ToastUtils {
       duration: duration ?? Duration(seconds: 3),
       align: Alignment(0.0, -0.7),
       contentColor: Colors.green.shade600,
-      textStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
+      textStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
     );
   }
 
@@ -75,24 +59,13 @@ class ToastUtils {
   /// [color] 背景颜色
   /// [duration] 显示持续时间
   /// [align] 对齐方式
-  static void custom({
-    required String message,
-    required Color color,
-    Duration? duration,
-    Alignment? align,
-    TextStyle? textStyle,
-  }) {
+  static void custom({required String message, required Color color, Duration? duration, Alignment? align, TextStyle? textStyle}) {
     BotToast.showText(
       text: message,
       duration: duration ?? Duration(seconds: 3),
       align: align ?? Alignment(0.0, -0.7),
       contentColor: color,
-      textStyle: textStyle ??
-          TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
+      textStyle: textStyle ?? TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
     );
   }
 }

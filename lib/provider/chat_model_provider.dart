@@ -13,12 +13,13 @@ class ChatModelProvider extends ChangeNotifier {
   // Get the currently selected model
   static const String _modelKey = 'current_model';
   llm_model.Model _currentModel = llm_model.Model(
-      name: "gpt-4o-mini",
-      label: "GPT-4o-mini",
-      providerId: "openai",
-      icon: "openai",
-      providerName: "OpenAI",
-      apiStyle: "openai");
+    name: "gpt-4o-mini",
+    label: "GPT-4o-mini",
+    providerId: "openai",
+    icon: "openai",
+    providerName: "OpenAI",
+    apiStyle: "openai",
+  );
 
   llm_model.Model get currentModel => _currentModel;
 

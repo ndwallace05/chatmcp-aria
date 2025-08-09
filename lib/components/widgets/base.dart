@@ -8,22 +8,12 @@ class Gap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-    );
+    return SizedBox(width: size, height: size);
   }
 }
 
 class CText extends StatelessWidget {
-  const CText({
-    super.key,
-    required this.text,
-    this.size,
-    this.fontWeight,
-    this.overflow,
-    this.color,
-  });
+  const CText({super.key, required this.text, this.size, this.fontWeight, this.overflow, this.color});
 
   final String text;
   final double? size;

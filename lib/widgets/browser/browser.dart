@@ -14,30 +14,17 @@ class SearchResult {
   final String snippet;
   String content = '';
 
-  SearchResult({
-    required this.title,
-    required this.url,
-    required this.snippet,
-    this.content = '',
-  });
+  SearchResult({required this.title, required this.url, required this.snippet, this.content = ''});
 
   factory SearchResult.fromJson(Map<String, dynamic> json) {
-    return SearchResult(
-      title: json['title'] ?? '',
-      url: json['url'] ?? '',
-      snippet: json['snippet'] ?? '',
-      content: json['content'] ?? '',
-    );
+    return SearchResult(title: json['title'] ?? '', url: json['url'] ?? '', snippet: json['snippet'] ?? '', content: json['content'] ?? '');
   }
 }
 
 class BrowserView extends StatefulWidget {
   final String url;
 
-  const BrowserView({
-    super.key,
-    required this.url,
-  });
+  const BrowserView({super.key, required this.url});
 
   @override
   State<BrowserView> createState() => BrowserViewState();
@@ -48,14 +35,13 @@ class BrowserViewState extends State<BrowserView> {
   List<SearchResult> searchResults = [];
 
   final settings = InAppBrowserClassSettings(
-      browserSettings: InAppBrowserSettings(
-        hideUrlBar: true,
-      ),
-      webViewSettings: InAppWebViewSettings(
-          userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          javaScriptEnabled: true,
-          isInspectable: kDebugMode));
+    browserSettings: InAppBrowserSettings(hideUrlBar: true),
+    webViewSettings: InAppWebViewSettings(
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      javaScriptEnabled: true,
+      isInspectable: kDebugMode,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +51,9 @@ class BrowserViewState extends State<BrowserView> {
       tooltip: t.openBrowser,
       onPressed: () {
         browser.openUrlRequest(
-            urlRequest: URLRequest(
-                url: WebUri('http://google.com/search?q=${widget.url}')),
-            settings: settings);
+          urlRequest: URLRequest(url: WebUri('http://google.com/search?q=${widget.url}')),
+          settings: settings,
+        );
         debugPrint(t.openingBrowser);
       },
     );
@@ -86,8 +72,7 @@ class MyInAppBrowser extends InAppBrowser {
     // initialize headless browser for extracting content
     contentWebView = HeadlessInAppWebView(
       initialSettings: InAppWebViewSettings(
-        userAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         javaScriptEnabled: true,
       ),
     );
@@ -121,8 +106,7 @@ class MyInAppBrowser extends InAppBrowser {
       await Future.delayed(const Duration(seconds: 3));
 
       // check page content
-      final pageContent = await controller.evaluateJavascript(
-          source: 'document.documentElement.outerHTML');
+      final pageContent = await controller.evaluateJavascript(source: 'document.documentElement.outerHTML');
 
       final md = html2md.convert(pageContent);
       return md;
@@ -159,8 +143,7 @@ class MyInAppBrowser extends InAppBrowser {
     if (result != null) {
       try {
         final List parsed = jsonDecode(result);
-        searchResults =
-            parsed.map((item) => SearchResult.fromJson(item)).toList();
+        searchResults = parsed.map((item) => SearchResult.fromJson(item)).toList();
 
         List<Map<String, String>> pageDataList = [];
         // iterate to get content of each result

@@ -70,8 +70,7 @@ class _McpToolsState extends State<McpTools> {
   }
 
   // 处理服务器的状态切换
-  Future<void> _handleServerToggle(
-      BuildContext context, String serverName, bool newValue) async {
+  Future<void> _handleServerToggle(BuildContext context, String serverName, bool newValue) async {
     final provider = Provider.of<McpServerProvider>(context, listen: false);
 
     // 更新启用状态
@@ -112,36 +111,20 @@ class _McpToolsState extends State<McpTools> {
           maxWidth: 400,
           padding: EdgeInsets.zero,
           content: _isLoading
-              ? const Center(
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
+              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)))
               : _error != null
-                  ? PopupEmptyState(message: 'Load failed: $_error')
-                  : _cachedServers == null || _cachedServers!.isEmpty
-                      ? const PopupEmptyState(message: 'No available servers')
-                      : SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: _buildMenuItems(context),
-                          ),
-                        ),
+              ? PopupEmptyState(message: 'Load failed: $_error')
+              : _cachedServers == null || _cachedServers!.isEmpty
+              ? const PopupEmptyState(message: 'No available servers')
+              : SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: _buildMenuItems(context)),
+                ),
           child: Consumer<ServerStateProvider>(
             builder: (context, stateProvider, _) {
               return InkIcon(
                 icon: CupertinoIcons.hammer,
                 tooltip: 'MCP Server',
-                child: stateProvider.enabledCount > 0
-                    ? Text(
-                        ' ${stateProvider.enabledCount}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
-                      )
-                    : null,
+                child: stateProvider.enabledCount > 0 ? Text(' ${stateProvider.enabledCount}', style: const TextStyle(fontSize: 12)) : null,
               );
             },
           ),
@@ -151,8 +134,7 @@ class _McpToolsState extends State<McpTools> {
   }
 
   List<Widget> _buildMenuItems(BuildContext context) {
-    final McpServerProvider provider =
-        Provider.of<McpServerProvider>(context, listen: false);
+    final McpServerProvider provider = Provider.of<McpServerProvider>(context, listen: false);
     final List<Widget> menuItems = [];
 
     // 处理加载状态
@@ -160,14 +142,8 @@ class _McpToolsState extends State<McpTools> {
       return [
         const SizedBox(
           height: 40,
-          child: Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-        )
+          child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))),
+        ),
       ];
     }
 
@@ -176,11 +152,8 @@ class _McpToolsState extends State<McpTools> {
       return [
         SizedBox(
           height: 40,
-          child: Center(
-            child: Text('Load failed: $_error',
-                style: Theme.of(context).textTheme.bodyMedium),
-          ),
-        )
+          child: Center(child: Text('Load failed: $_error', style: Theme.of(context).textTheme.bodyMedium)),
+        ),
       ];
     }
 
@@ -189,11 +162,8 @@ class _McpToolsState extends State<McpTools> {
       return [
         SizedBox(
           height: 40,
-          child: Center(
-            child: Text('No available servers',
-                style: Theme.of(context).textTheme.bodyMedium),
-          ),
-        )
+          child: Center(child: Text('No available servers', style: Theme.of(context).textTheme.bodyMedium)),
+        ),
       ];
     }
 
@@ -218,21 +188,14 @@ class _McpToolsState extends State<McpTools> {
                 bool isStarting = stateProvider.isStarting(serverName);
 
                 // 获取服务器工具数量
-                List<Map<String, dynamic>>? serverTools =
-                    provider.tools[serverName];
+                List<Map<String, dynamic>>? serverTools = provider.tools[serverName];
                 int toolCount = serverTools?.length ?? 0;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Text(
-                        serverName,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
+                    Expanded(child: Text(serverName, overflow: TextOverflow.ellipsis, maxLines: 1)),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -244,47 +207,29 @@ class _McpToolsState extends State<McpTools> {
                               showDialog(
                                 context: context,
                                 builder: (context) => Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: SizedBox(
-                                    width: 400,
-                                    height: 500,
-                                    child: McpInfo(serverName: serverName),
-                                  ),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  child: SizedBox(width: 400, height: 500, child: McpInfo(serverName: serverName)),
                                 ),
                               );
                             },
                           ),
                         Container(
                           margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           child: Container(
                             width: 8,
                             height: 8,
-                            decoration: BoxDecoration(
-                              color: isRunning ? Colors.green : Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: BoxDecoration(color: isRunning ? Colors.green : Colors.grey, shape: BoxShape.circle),
                           ),
                         ),
                         if (isEnabled && isRunning && toolCount > 0)
                           Container(
                             margin: const EdgeInsets.only(right: 8),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withAlpha(51),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: Colors.green.withAlpha(51), borderRadius: BorderRadius.circular(10)),
                             child: Text(
                               '$toolCount tools',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold),
                             ),
                           ),
                         FlutterSwitch(
@@ -297,45 +242,25 @@ class _McpToolsState extends State<McpTools> {
                             }
                           },
                           toggleSize: 20.0,
-                          activeColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.blue,
-                              darkColor: Colors.blue.shade700),
-                          inactiveColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.grey[300]!,
-                              darkColor: Colors.grey[600]!),
-                          activeToggleColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.white,
-                              darkColor: Colors.white),
-                          inactiveToggleColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.blue,
-                              darkColor: Colors.blue.shade300),
+                          activeColor: AppColors.getThemeColor(context, lightColor: Colors.blue, darkColor: Colors.blue.shade700),
+                          inactiveColor: AppColors.getThemeColor(context, lightColor: Colors.grey[300]!, darkColor: Colors.grey[600]!),
+                          activeToggleColor: AppColors.getThemeColor(context, lightColor: Colors.white, darkColor: Colors.white),
+                          inactiveToggleColor: AppColors.getThemeColor(context, lightColor: Colors.blue, darkColor: Colors.blue.shade300),
                           showOnOff: true,
                           activeText: "ON",
                           inactiveText: "OFF",
                           valueFontSize: 10.0,
-                          activeTextColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.white,
-                              darkColor: Colors.white),
-                          inactiveTextColor: AppColors.getThemeColor(context,
-                              lightColor: Colors.black,
-                              darkColor: Colors.white),
+                          activeTextColor: AppColors.getThemeColor(context, lightColor: Colors.white, darkColor: Colors.white),
+                          inactiveTextColor: AppColors.getThemeColor(context, lightColor: Colors.black, darkColor: Colors.white),
                           activeIcon: isStarting
                               ? const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.orange),
-                                  ),
+                                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)),
                                 )
                               : isRunning
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      size: 16,
-                                      color: Colors.green,
-                                    )
-                                  : null,
+                              ? const Icon(Icons.check_circle, size: 16, color: Colors.green)
+                              : null,
                           disabled: isStarting,
                         ),
                       ],

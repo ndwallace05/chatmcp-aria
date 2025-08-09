@@ -12,13 +12,7 @@ class DetailConfig extends WidgetConfig {
   final TextStyle? summaryStyle;
   final TextStyle? contentStyle;
 
-  DetailConfig({
-    this.summaryStyle = const TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-    ),
-    this.contentStyle = const TextStyle(fontSize: 14),
-  });
+  DetailConfig({this.summaryStyle = const TextStyle(fontSize: 14, fontWeight: FontWeight.bold), this.contentStyle = const TextStyle(fontSize: 14)});
 }
 
 class DetailsWidget extends StatefulWidget {
@@ -44,10 +38,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
           onTap: () => setState(() => _isExpanded = !_isExpanded),
           child: Row(
             children: [
-              Icon(
-                _isExpanded ? Icons.arrow_drop_down : Icons.arrow_right,
-                size: 20,
-              ),
+              Icon(_isExpanded ? Icons.arrow_drop_down : Icons.arrow_right, size: 20),
               Expanded(child: Text(summary)),
             ],
           ),
@@ -71,22 +62,17 @@ class DetailsNode extends SpanNode {
 
   @override
   InlineSpan build() {
-    return WidgetSpan(
-      child: DetailsWidget(textContent, attributes),
-    );
+    return WidgetSpan(child: DetailsWidget(textContent, attributes));
   }
 }
 
 SpanNodeGeneratorWithTag detailsGenerator = SpanNodeGeneratorWithTag(
   tag: _detailsTag,
-  generator: (e, config, visitor) =>
-      DetailsNode(e.attributes, e.textContent, config),
+  generator: (e, config, visitor) => DetailsNode(e.attributes, e.textContent, config),
 );
 
 class DetailsSyntax extends md.InlineSyntax {
-  DetailsSyntax()
-      : super(
-            r'<details\s*([^>]*)>([^<]*)<summary>(.*?)</summary>(.*?)</details>');
+  DetailsSyntax() : super(r'<details\s*([^>]*)>([^<]*)<summary>(.*?)</summary>(.*?)</details>');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {

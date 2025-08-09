@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' as md;
 
 // 属性匹配正则表达式
-final attributeRegex =
-    RegExp(r'''([\w-]+)\s*=\s*(?:["']([^"'>]+)["']|([^\s>"']+))''');
+final attributeRegex = RegExp(r'''([\w-]+)\s*=\s*(?:["']([^"'>]+)["']|([^\s>"']+))''');
 
 class TagInlineSyntax extends md.InlineSyntax {
   final String tag;
 
-  TagInlineSyntax({required this.tag, bool caseSensitive = false})
-      : super(_getPattern(tag), caseSensitive: caseSensitive);
+  TagInlineSyntax({required this.tag, bool caseSensitive = false}) : super(_getPattern(tag), caseSensitive: caseSensitive);
 
-  static String _getPattern(String tag) =>
-      r'<' + tag + r'\s*([^>]*)>\s*([^<]*)(?:</' + tag + r'\s*([^>]*)>\s*)?';
+  static String _getPattern(String tag) => r'<' + tag + r'\s*([^>]*)>\s*([^<]*)(?:</' + tag + r'\s*([^>]*)>\s*)?';
 
   Map<String, String> _parseAttributes(String attributeString) {
     final attributes = <String, String>{};
@@ -35,8 +32,7 @@ class TagInlineSyntax extends md.InlineSyntax {
   bool onMatch(md.InlineParser parser, Match match) {
     final openingAttributes = _parseAttributes(match[1] ?? '');
     final content = match[2]!.trim();
-    final closingAttributes =
-        match[3] != null ? _parseAttributes(match[3]!) : <String, String>{};
+    final closingAttributes = match[3] != null ? _parseAttributes(match[3]!) : <String, String>{};
 
     final element = md.Element(tag, [md.Text(content)]);
 
@@ -93,9 +89,7 @@ class TagBlockSyntax extends md.BlockSyntax {
   @override
   md.Node parse(md.BlockParser parser) {
     final startMatch = startPattern.firstMatch(parser.current.content);
-    final openingAttributes = startMatch != null
-        ? _parseAttributes(startMatch[1] ?? '')
-        : <String, String>{};
+    final openingAttributes = startMatch != null ? _parseAttributes(startMatch[1] ?? '') : <String, String>{};
 
     final lines = <String>[];
     parser.advance(); // Skip the opening tag

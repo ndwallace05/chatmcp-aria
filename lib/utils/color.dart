@@ -17,19 +17,11 @@ class AppColors {
 
   /// Gets the background color related to the theme
   static Color getThemeBackgroundColor(BuildContext context) {
-    return getThemeColor(
-      context,
-      lightColor: grey[200],
-      darkColor: grey[800],
-    );
+    return getThemeColor(context, lightColor: grey[200], darkColor: grey[800]);
   }
 
   static Color getThemeTextColor(BuildContext context) {
-    return getThemeColor(
-      context,
-      lightColor: Colors.black87,
-      darkColor: Colors.white,
-    );
+    return getThemeColor(context, lightColor: Colors.black87, darkColor: Colors.white);
   }
 
   static Color getLayoutBackgroundColor(BuildContext context) {
@@ -49,11 +41,7 @@ class AppColors {
   }
 
   static Color getSidebarActiveConversationColor(BuildContext context) {
-    return getThemeColor(
-      context,
-      lightColor: AppColors.grey[300],
-      darkColor: AppColors.grey[700],
-    );
+    return getThemeColor(context, lightColor: AppColors.grey[300], darkColor: AppColors.grey[700]);
   }
 
   static Color getToolbarBackgroundColor(BuildContext context) {
@@ -104,8 +92,11 @@ class AppColors {
 
   // message bubble background color
   static Color getMessageBubbleBackgroundColor(BuildContext context, bool isUserMessage) {
-    return getThemeColor(context, lightColor: AppColors.grey[100], darkColor: const Color(0xFF2D2D2D) // 深色主题下使用更明显的背景色
-        );
+    return getThemeColor(
+      context,
+      lightColor: AppColors.grey[100],
+      darkColor: const Color(0xFF2D2D2D), // 深色主题下使用更明显的背景色
+    );
   }
 
   // tool call and tool result text color

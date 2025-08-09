@@ -7,11 +7,10 @@ import 'package:chatmcp/utils/event_bus.dart';
 
 import 'tag.dart';
 
-SpanNodeGeneratorWithTag artifactAntThinkingGenerator =
-    SpanNodeGeneratorWithTag(
-        tag: _artifactAntThinkingTag,
-        generator: (e, config, visitor) =>
-            ArtifactAntThinkingNode(e.attributes, e.textContent, config));
+SpanNodeGeneratorWithTag artifactAntThinkingGenerator = SpanNodeGeneratorWithTag(
+  tag: _artifactAntThinkingTag,
+  generator: (e, config, visitor) => ArtifactAntThinkingNode(e.attributes, e.textContent, config),
+);
 
 const _artifactAntThinkingTag = 'antThinking';
 
@@ -29,8 +28,7 @@ class ArtifactAntThinkingNode extends ThinkNode {
   ArtifactAntThinkingNode(super.attributes, super.textContent, super.config);
   @override
   InlineSpan build() {
-    return WidgetSpan(
-        child: ArtifactAntThinkingWidget(textContent, attributes));
+    return WidgetSpan(child: ArtifactAntThinkingWidget(textContent, attributes));
   }
 }
 
@@ -38,8 +36,7 @@ class ArtifactAntThinkingWidget extends StatelessWidget {
   final String textContent;
   final Map<String, String> attributes;
 
-  const ArtifactAntThinkingWidget(this.textContent, this.attributes,
-      {super.key});
+  const ArtifactAntThinkingWidget(this.textContent, this.attributes, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +44,10 @@ class ArtifactAntThinkingWidget extends StatelessWidget {
   }
 }
 
-SpanNodeGeneratorWithTag artifactAntArtifactGenerator =
-    SpanNodeGeneratorWithTag(
-        tag: _artifactAntArtifactTag,
-        generator: (e, config, visitor) =>
-            ArtifactAntArtifactNode(e.attributes, e.textContent, config));
+SpanNodeGeneratorWithTag artifactAntArtifactGenerator = SpanNodeGeneratorWithTag(
+  tag: _artifactAntArtifactTag,
+  generator: (e, config, visitor) => ArtifactAntArtifactNode(e.attributes, e.textContent, config),
+);
 
 const _artifactAntArtifactTag = 'antArtifact';
 
@@ -69,8 +65,7 @@ class ArtifactAntArtifactNode extends ThinkNode {
   ArtifactAntArtifactNode(super.attributes, super.textContent, super.config);
   @override
   InlineSpan build() {
-    return WidgetSpan(
-        child: ArtifactAntArtifactWidget(textContent, attributes));
+    return WidgetSpan(child: ArtifactAntArtifactWidget(textContent, attributes));
   }
 }
 
@@ -78,12 +73,10 @@ class ArtifactAntArtifactWidget extends StatefulWidget {
   final String textContent;
   final Map<String, String> attributes;
 
-  const ArtifactAntArtifactWidget(this.textContent, this.attributes,
-      {super.key});
+  const ArtifactAntArtifactWidget(this.textContent, this.attributes, {super.key});
 
   @override
-  State<ArtifactAntArtifactWidget> createState() =>
-      _ArtifactAntArtifactWidgetState();
+  State<ArtifactAntArtifactWidget> createState() => _ArtifactAntArtifactWidgetState();
 }
 
 class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
@@ -93,9 +86,7 @@ class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
     String hash = widget.attributes['hash'] ?? '';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        ProviderManager.chatProvider.setPreviewEvent(
-          CodePreviewEvent(hash, widget.textContent, widget.attributes),
-        );
+        ProviderManager.chatProvider.setPreviewEvent(CodePreviewEvent(hash, widget.textContent, widget.attributes));
       }
     });
   }
@@ -109,9 +100,7 @@ class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
     return InkWell(
       onTap: () {
         debugPrint('onTap: $hash');
-        ProviderManager.chatProvider.setPreviewEvent(
-          CodePreviewEvent(hash, widget.textContent, widget.attributes),
-        );
+        ProviderManager.chatProvider.setPreviewEvent(CodePreviewEvent(hash, widget.textContent, widget.attributes));
         ProviderManager.chatProvider.setShowCodePreview(hash, true);
       },
       child: Container(
@@ -119,10 +108,7 @@ class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
         height: 40,
         decoration: BoxDecoration(
           color: AppColors.getArtifactBackgroundColor(context),
-          border: Border.all(
-            color: AppColors.getArtifactBorderColor(context),
-            width: 1.0,
-          ),
+          border: Border.all(color: AppColors.getArtifactBorderColor(context), width: 1.0),
           borderRadius: BorderRadius.circular(8.0),
         ),
         padding: const EdgeInsets.all(8.0),
@@ -130,14 +116,7 @@ class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
+              child: Text(title, overflow: TextOverflow.ellipsis, maxLines: 1, style: TextStyle(fontSize: 14)),
             ),
             if (isClosed)
               Icon(Icons.check_circle, color: Colors.green)
@@ -145,11 +124,8 @@ class _ArtifactAntArtifactWidgetState extends State<ArtifactAntArtifactWidget> {
               SizedBox(
                 width: 12,
                 height: 12,
-                child: CircularProgressIndicator(
-                  color: AppColors.getProgressIndicatorColor(context),
-                  strokeWidth: 1.5,
-                ),
-              )
+                child: CircularProgressIndicator(color: AppColors.getProgressIndicatorColor(context), strokeWidth: 1.5),
+              ),
           ],
         ),
       ),

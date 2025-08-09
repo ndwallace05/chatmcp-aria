@@ -10,9 +10,5 @@ abstract class McpClient {
   Future<JSONRPCMessage> sendInitialize();
   Future<JSONRPCMessage> sendPing();
   Future<JSONRPCMessage> sendToolList();
-  Future<JSONRPCMessage> sendToolCall({
-    required String name,
-    required Map<String, dynamic> arguments,
-    String? id,
-  });
+  Future<JSONRPCMessage> sendToolCall({required String name, required Map<String, dynamic> arguments, String? id});
 }

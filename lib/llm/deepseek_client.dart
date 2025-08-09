@@ -10,24 +10,16 @@ class DeepSeekClient extends BaseLLMClient {
   final String baseUrl;
   final Map<String, String> _headers;
 
-  DeepSeekClient({
-    required this.apiKey,
-    String? baseUrl,
-  })  : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.deepseek.com' : baseUrl,
-        _headers = {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Authorization': 'Bearer $apiKey',
-        };
+  DeepSeekClient({required this.apiKey, String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.deepseek.com' : baseUrl,
+      _headers = {'Content-Type': 'application/json; charset=utf-8', 'Authorization': 'Bearer $apiKey'};
 
   @override
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
     final httpClient = BaseLLMClient.createHttpClient();
 
     try {
-      final body = <String, dynamic>{
-        'model': request.model,
-        'messages': chatMessageToOpenAIMessage(request.messages),
-      };
+      final body = <String, dynamic>{'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages)};
       addModelSettingsToBody(body, request.modelSetting);
 
       if (request.tools != null && request.tools!.isNotEmpty) {
@@ -37,11 +29,7 @@ class DeepSeekClient extends BaseLLMClient {
 
       final bodyStr = jsonEncode(body);
 
-      final response = await httpClient.post(
-        Uri.parse("$baseUrl/v1/chat/completions"),
-        headers: _headers,
-        body: bodyStr,
-      );
+      final response = await httpClient.post(Uri.parse("$baseUrl/v1/chat/completions"), headers: _headers, body: bodyStr);
 
       final responseBody = utf8.decode(response.bodyBytes);
       Logger.root.fine('DeepSeek response: $responseBody');
@@ -55,20 +43,16 @@ class DeepSeekClient extends BaseLLMClient {
 
       // Parse tool calls
       final toolCalls = message['tool_calls']
-          ?.map<ToolCall>((t) => ToolCall(
-                id: t['id'],
-                type: t['type'],
-                function: FunctionCall(
-                  name: t['function']['name'],
-                  arguments: t['function']['arguments'],
-                ),
-              ))
+          ?.map<ToolCall>(
+            (t) => ToolCall(
+              id: t['id'],
+              type: t['type'],
+              function: FunctionCall(name: t['function']['name'], arguments: t['function']['arguments']),
+            ),
+          )
           ?.toList();
 
-      return LLMResponse(
-        content: message['content'],
-        toolCalls: toolCalls,
-      );
+      return LLMResponse(content: message['content'], toolCalls: toolCalls);
     } catch (e) {
       throw await handleError(e, 'DeepSeek', '$baseUrl/v1/chat/completions', jsonEncode({}));
     } finally {
@@ -78,11 +62,7 @@ class DeepSeekClient extends BaseLLMClient {
 
   @override
   Stream<LLMResponse> chatStreamCompletion(CompletionRequest request) async* {
-    final body = {
-      'model': request.model,
-      'messages': chatMessageToOpenAIMessage(request.messages),
-      'stream': true,
-    };
+    final body = {'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages), 'stream': true};
     addModelSettingsToBody(body, request.modelSetting);
 
     try {
@@ -127,14 +107,13 @@ class DeepSeekClient extends BaseLLMClient {
 
           // Parse tool calls
           final toolCalls = delta['tool_calls']
-              ?.map<ToolCall>((t) => ToolCall(
-                    id: t['id'] ?? '',
-                    type: t['type'] ?? '',
-                    function: FunctionCall(
-                      name: t['function']?['name'] ?? '',
-                      arguments: t['function']?['arguments'] ?? '{}',
-                    ),
-                  ))
+              ?.map<ToolCall>(
+                (t) => ToolCall(
+                  id: t['id'] ?? '',
+                  type: t['type'] ?? '',
+                  function: FunctionCall(name: t['function']?['name'] ?? '', arguments: t['function']?['arguments'] ?? '{}'),
+                ),
+              )
               ?.toList();
 
           final reasoningContent = delta != null ? (delta['reasoning_content'] ?? '') : '';
@@ -143,15 +122,9 @@ class DeepSeekClient extends BaseLLMClient {
             reasoningStyle = true;
             if (!reasoningContentStart) {
               reasoningContentStart = true;
-              yield LLMResponse(
-                content: '\n<think start-time="${DateTime.now().toIso8601String()}">\n$reasoningContent',
-                toolCalls: toolCalls,
-              );
+              yield LLMResponse(content: '\n<think start-time="${DateTime.now().toIso8601String()}">\n$reasoningContent', toolCalls: toolCalls);
             } else {
-              yield LLMResponse(
-                content: reasoningContent,
-                toolCalls: toolCalls,
-              );
+              yield LLMResponse(content: reasoningContent, toolCalls: toolCalls);
             }
           }
 
@@ -160,15 +133,9 @@ class DeepSeekClient extends BaseLLMClient {
             if (content.isNotEmpty) {
               if (!reasoningContentEnd) {
                 reasoningContentEnd = true;
-                yield LLMResponse(
-                  content: '\n</think end-time="${DateTime.now().toIso8601String()}">\n$content',
-                  toolCalls: toolCalls,
-                );
+                yield LLMResponse(content: '\n</think end-time="${DateTime.now().toIso8601String()}">\n$content', toolCalls: toolCalls);
               } else {
-                yield LLMResponse(
-                  content: content,
-                  toolCalls: toolCalls,
-                );
+                yield LLMResponse(content: content, toolCalls: toolCalls);
               }
             }
           } else {
@@ -182,10 +149,7 @@ class DeepSeekClient extends BaseLLMClient {
                 content = content.replaceAll('</think>', '</think end-time="${DateTime.now().toIso8601String()}">');
               }
 
-              yield LLMResponse(
-                content: content,
-                toolCalls: toolCalls,
-              );
+              yield LLMResponse(content: content, toolCalls: toolCalls);
             }
           }
         } catch (e, trace) {
@@ -209,10 +173,7 @@ class DeepSeekClient extends BaseLLMClient {
     final httpClient = BaseLLMClient.createHttpClient();
 
     try {
-      final response = await httpClient.get(
-        Uri.parse("$baseUrl/v1/models"),
-        headers: _headers,
-      );
+      final response = await httpClient.get(Uri.parse("$baseUrl/v1/models"), headers: _headers);
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');

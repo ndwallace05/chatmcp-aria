@@ -54,12 +54,7 @@ class _WindowButton extends StatefulWidget {
   final String tooltip;
   final bool isCloseButton;
 
-  const _WindowButton({
-    required this.icon,
-    required this.onPressed,
-    required this.tooltip,
-    this.isCloseButton = false,
-  });
+  const _WindowButton({required this.icon, required this.onPressed, required this.tooltip, this.isCloseButton = false});
 
   @override
   _WindowButtonState createState() => _WindowButtonState();
@@ -75,11 +70,6 @@ class _WindowButtonState extends State<_WindowButton> {
 
     backgroundColor = widget.isCloseButton ? Colors.red : (isDark ? Colors.white24 : Colors.black12);
 
-    return InkIcon(
-      icon: widget.icon,
-      onTap: widget.onPressed,
-      hoverColor: backgroundColor,
-      tooltip: widget.tooltip,
-    );
+    return InkIcon(icon: widget.icon, onTap: widget.onPressed, hoverColor: backgroundColor, tooltip: widget.tooltip);
   }
 }

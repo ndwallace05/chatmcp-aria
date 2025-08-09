@@ -92,8 +92,10 @@ class LLMFactoryHelper {
       // If no matching provider is found, use default OpenAI
       Logger.root.warning('No matching provider found: ${currentModel.providerId}, using default OpenAI configuration');
 
-      var openAISetting = ProviderManager.settingsProvider.apiSettings.firstWhere((element) => element.providerId == "openai",
-          orElse: () => LLMProviderSetting(apiKey: '', apiEndpoint: '', providerId: 'openai'));
+      var openAISetting = ProviderManager.settingsProvider.apiSettings.firstWhere(
+        (element) => element.providerId == "openai",
+        orElse: () => LLMProviderSetting(apiKey: '', apiEndpoint: '', providerId: 'openai'),
+      );
 
       return OpenAIClient(apiKey: openAISetting.apiKey, baseUrl: openAISetting.apiEndpoint);
     }

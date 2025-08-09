@@ -50,7 +50,7 @@ class _SidebarPanelState extends State<SidebarPanel> {
   void _onSearchChanged(String value) {
     // Cancel previous timer
     _debounceTimer?.cancel();
-    
+
     // Start new timer
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _performSearch(value);
@@ -70,31 +70,15 @@ class _SidebarPanelState extends State<SidebarPanel> {
               child: Row(
                 children: [
                   if (kIsWindows || kIsLinux || kIsMobile || kIsBrowser) ...[
-                    Image.asset(
-                      'assets/logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
+                    Image.asset('assets/logo.png', width: 24, height: 24),
                     const Gap(size: 8),
-                    CText(
-                      text: 'ChatMCP',
-                      size: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    CText(text: 'ChatMCP', size: 12, fontWeight: FontWeight.w700),
                   ],
                   const Spacer(),
-                  InkIcon(
-                    icon: CupertinoIcons.search,
-                    onTap: toggleSearchVisibility,
-                    tooltip: AppLocalizations.of(context)!.search,
-                  ),
+                  InkIcon(icon: CupertinoIcons.search, onTap: toggleSearchVisibility, tooltip: AppLocalizations.of(context)!.search),
                   if (kIsDesktop) ...[
                     const Gap(size: 8),
-                    InkIcon(
-                      icon: CupertinoIcons.sidebar_left,
-                      onTap: widget.onToggle,
-                      tooltip: AppLocalizations.of(context)!.toggleSidebar,
-                    ),
+                    InkIcon(icon: CupertinoIcons.sidebar_left, onTap: widget.onToggle, tooltip: AppLocalizations.of(context)!.toggleSidebar),
                   ],
                 ],
               ),
@@ -108,11 +92,7 @@ class _SidebarPanelState extends State<SidebarPanel> {
                   height: 32,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: AppColors.getThemeColor(
-                      context,
-                      lightColor: Colors.grey[300],
-                      darkColor: Colors.grey[600],
-                    ),
+                    color: AppColors.getThemeColor(context, lightColor: Colors.grey[300], darkColor: Colors.grey[600]),
                   ),
                   child: TextField(
                     controller: _searchController,
@@ -142,11 +122,7 @@ class _SidebarPanelState extends State<SidebarPanel> {
               ),
 
             // 中间区域 - 聊天历史列表
-            Expanded(
-              child: ChatHistoryList(
-                chatProvider: chatProvider,
-              ),
-            ),
+            Expanded(child: ChatHistoryList(chatProvider: chatProvider)),
 
             // 底部区域
             SidebarToolbar(chatProvider: chatProvider),
@@ -160,10 +136,7 @@ class _SidebarPanelState extends State<SidebarPanel> {
 class ChatHistoryList extends StatefulWidget {
   final ChatProvider chatProvider;
 
-  const ChatHistoryList({
-    super.key,
-    required this.chatProvider,
-  });
+  const ChatHistoryList({super.key, required this.chatProvider});
 
   @override
   State<ChatHistoryList> createState() => _ChatHistoryListState();
@@ -177,7 +150,7 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    
+
     // Load initial data if empty
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.chatProvider.chats.isEmpty) {
@@ -196,28 +169,24 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
   void _scrollListener() {
     // 如果已经在加载，不重复触发
     if (_isLoadingMore) return;
-    
+
     // 检查是否滚动到接近底部
     final scrollPosition = _scrollController.position;
-    final isNearBottom = scrollPosition.pixels >= 
-        scrollPosition.maxScrollExtent - PaginationConfig.loadMoreTriggerDistance;
-    
+    final isNearBottom = scrollPosition.pixels >= scrollPosition.maxScrollExtent - PaginationConfig.loadMoreTriggerDistance;
+
     // 只有在接近底部且有更多数据时才加载
-    if (isNearBottom && 
-        widget.chatProvider.hasMoreChats && 
-        !widget.chatProvider.isLoadingChats && 
-        widget.chatProvider.chats.isNotEmpty) {
+    if (isNearBottom && widget.chatProvider.hasMoreChats && !widget.chatProvider.isLoadingChats && widget.chatProvider.chats.isNotEmpty) {
       _triggerLoadMore();
     }
   }
 
   void _triggerLoadMore() async {
     if (_isLoadingMore) return;
-    
+
     setState(() {
       _isLoadingMore = true;
     });
-    
+
     try {
       await widget.chatProvider.loadMoreChats();
     } finally {
@@ -271,10 +240,7 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
       return Center(
         child: Text(
           l10n.welcomeMessage,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.6 * 255).round()),
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.6 * 255).round()), fontSize: 14),
         ),
       );
     }
@@ -311,16 +277,16 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
 
   Widget _buildItem(BuildContext context, Map<String, List<dynamic>> groupedChats, int index) {
     int currentIndex = 0;
-    
+
     for (final entry in groupedChats.entries) {
       if (entry.value.isEmpty) continue;
-      
+
       // Check if this is the header
       if (currentIndex == index) {
         return _buildGroupHeader(entry.key);
       }
       currentIndex++;
-      
+
       // Check if this is within the group items
       if (index < currentIndex + entry.value.length) {
         final itemIndex = index - currentIndex;
@@ -328,7 +294,7 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
       }
       currentIndex += entry.value.length;
     }
-    
+
     return const SizedBox.shrink();
   }
 
@@ -347,10 +313,7 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
   }
 
   Widget _buildChatItem(dynamic chat) {
-    return ChatHistoryItem(
-      chat: chat,
-      chatProvider: widget.chatProvider,
-    );
+    return ChatHistoryItem(chat: chat, chatProvider: widget.chatProvider);
   }
 
   Widget _buildFooter() {
@@ -369,20 +332,12 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
             SizedBox(
               width: 16,
               height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
             ),
             const SizedBox(width: 12),
             Text(
               AppLocalizations.of(context)!.downloadingData,
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.7 * 255).round()),
-              ),
+              style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.7 * 255).round())),
             ),
           ],
         ),
@@ -394,10 +349,7 @@ class _ChatHistoryListState extends State<ChatHistoryList> {
         child: Text(
           '—— ${AppLocalizations.of(context)!.noMoreData} ——',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.5 * 255).round()),
-          ),
+          style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.5 * 255).round())),
         ),
       );
     } else {
@@ -411,11 +363,7 @@ class ChatHistoryItem extends StatelessWidget {
   final dynamic chat;
   final ChatProvider chatProvider;
 
-  const ChatHistoryItem({
-    super.key,
-    required this.chat,
-    required this.chatProvider,
-  });
+  const ChatHistoryItem({super.key, required this.chat, required this.chatProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -468,11 +416,7 @@ class ChatHistoryItem extends StatelessWidget {
       title: Row(
         children: [
           Expanded(
-            child: CText(
-              text: chat.title.replaceAll('\n', ' '),
-              size: 12,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: CText(text: chat.title.replaceAll('\n', ' '), size: 12, overflow: TextOverflow.ellipsis),
           ),
         ],
       ),
@@ -548,12 +492,7 @@ class ChatHistoryItem extends StatelessWidget {
             Positioned(
               left: left,
               top: position.dy,
-              child: Material(
-                elevation: 4.0,
-                borderRadius: BorderRadius.circular(8.0),
-                color: backgroundColor,
-                child: content,
-              ),
+              child: Material(elevation: 4.0, borderRadius: BorderRadius.circular(8.0), color: backgroundColor, child: content),
             ),
           ],
         );
@@ -568,14 +507,9 @@ class ChatHistoryItem extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: Text(l10n.confirmDelete),
         content: Text(l10n.confirmDeleteSelected),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () {
               chatProvider.deleteChat(chat.id);
@@ -592,10 +526,7 @@ class ChatHistoryItem extends StatelessWidget {
 class SidebarToolbar extends StatelessWidget {
   final ChatProvider chatProvider;
 
-  const SidebarToolbar({
-    super.key,
-    required this.chatProvider,
-  });
+  const SidebarToolbar({super.key, required this.chatProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -606,12 +537,7 @@ class SidebarToolbar extends StatelessWidget {
           _buildSettingsButton(context),
           const Gap(size: 4),
           _buildSelectModeButton(context),
-          if (chatProvider.isSelectMode) ...[
-            const Gap(size: 4),
-            _buildSelectAllButton(context),
-            const Gap(size: 4),
-            _buildDeleteButton(context),
-          ],
+          if (chatProvider.isSelectMode) ...[const Gap(size: 4), _buildSelectAllButton(context), const Gap(size: 4), _buildDeleteButton(context)],
           const Spacer(),
           const AppInfo(),
           const Gap(size: 4),
@@ -621,11 +547,7 @@ class SidebarToolbar extends StatelessWidget {
   }
 
   Widget _buildSettingsButton(BuildContext context) {
-    return InkIcon(
-      icon: CupertinoIcons.settings,
-      onTap: () => _showSettingsDialog(context),
-      tooltip: AppLocalizations.of(context)!.settings,
-    );
+    return InkIcon(icon: CupertinoIcons.settings, onTap: () => _showSettingsDialog(context), tooltip: AppLocalizations.of(context)!.settings);
   }
 
   Widget _buildSelectModeButton(BuildContext context) {
@@ -660,19 +582,12 @@ class SidebarToolbar extends StatelessWidget {
 
   void _showSettingsDialog(BuildContext context) {
     if (kIsMobile) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const SettingPage(),
-        ),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingPage()));
     } else {
       showDialog(
         context: context,
         builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: SizedBox(
@@ -693,14 +608,9 @@ class SidebarToolbar extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: Text(l10n.confirmDelete),
         content: Text(l10n.confirmDeleteSelected),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () {
               chatProvider.deleteSelectedChats();

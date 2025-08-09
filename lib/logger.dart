@@ -55,10 +55,7 @@ void initializeLogger() async {
             !frame.contains('dart:async') &&
             !frame.contains('dart:io') &&
             frame.contains('package:chatmcp/'),
-        orElse: () => frames.firstWhere(
-          (frame) => frame.contains('package:chatmcp/'),
-          orElse: () => frames[0],
-        ),
+        orElse: () => frames.firstWhere((frame) => frame.contains('package:chatmcp/'), orElse: () => frames[0]),
       );
 
       // Extract filename and line number
@@ -68,8 +65,7 @@ void initializeLogger() async {
         final line = match.group(2);
         caller = '$file:$line';
       } else {
-        final flutterMatch = RegExp(r'#\d+\s+.*\s+\((.+?):(\d+)(?::\d+)?\)')
-            .firstMatch(callerFrame);
+        final flutterMatch = RegExp(r'#\d+\s+.*\s+\((.+?):(\d+)(?::\d+)?\)').firstMatch(callerFrame);
         if (flutterMatch != null) {
           final file = flutterMatch.group(1);
           final line = flutterMatch.group(2);
@@ -79,8 +75,7 @@ void initializeLogger() async {
     }
 
     final levelColor = getLevelColor(record.level);
-    final logMessage =
-        '${record.level.name}: ${caller ?? 'unknown'}: ${record.message}';
+    final logMessage = '${record.level.name}: ${caller ?? 'unknown'}: ${record.message}';
 
     // In development mode, print colored logs to console
     assert(() {
