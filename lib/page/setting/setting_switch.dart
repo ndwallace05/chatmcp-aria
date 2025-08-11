@@ -24,22 +24,14 @@ class SettingSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       title: Text(
         title,
-        style: TextStyle(
-          fontSize: titleFontSize,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+        style: TextStyle(fontSize: titleFontSize, color: Theme.of(context).colorScheme.onSurface),
       ),
       subtitle: Text(
         subtitle,
-        style: TextStyle(
-          fontSize: subtitleFontSize,
-          color:
-              Theme.of(context).colorScheme.onSurface.withAlpha(subtitleAlpha),
-        ),
+        style: TextStyle(fontSize: subtitleFontSize, color: Theme.of(context).colorScheme.onSurface.withAlpha(subtitleAlpha)),
       ),
       trailing: SizedBox(
         width: 35.0,

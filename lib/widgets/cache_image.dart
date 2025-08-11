@@ -8,19 +8,14 @@ import 'dart:io' show Platform;
 class CacheImage extends StatelessWidget {
   final String imageUrl;
 
-  const CacheImage({
-    super.key,
-    required this.imageUrl,
-  });
+  const CacheImage({super.key, required this.imageUrl});
 
   Future<void> _downloadImage(BuildContext context) async {
     // 获取全局上下文
     final scaffoldContext = Navigator.of(context).context;
     try {
       if (!scaffoldContext.mounted) return;
-      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-        const SnackBar(content: Text('start to save image...')),
-      );
+      ScaffoldMessenger.of(scaffoldContext).showSnackBar(const SnackBar(content: Text('start to save image...')));
 
       // 从缓存中获取文件
       var fileInfo = await DefaultCacheManager().getFileFromCache(imageUrl);
@@ -37,8 +32,7 @@ class CacheImage extends StatelessWidget {
 
         // 从URL中提取文件扩展名
         final extension = imageUrl.split('.').last.split('?').first;
-        final fileName =
-            'image_${DateTime.now().millisecondsSinceEpoch}.$extension';
+        final fileName = 'image_${DateTime.now().millisecondsSinceEpoch}.$extension';
         final savePath = '${dir.path}/$fileName';
 
         // 复制文件
@@ -64,11 +58,7 @@ class CacheImage extends StatelessWidget {
         SnackBar(
           content: Text('save image failed: ${e.toString()}'),
           backgroundColor: Colors.red,
-          action: SnackBarAction(
-            label: 'retry',
-            textColor: Colors.white,
-            onPressed: () => _downloadImage(scaffoldContext),
-          ),
+          action: SnackBarAction(label: 'retry', textColor: Colors.white, onPressed: () => _downloadImage(scaffoldContext)),
         ),
       );
     }
@@ -81,16 +71,8 @@ class CacheImage extends StatelessWidget {
       child: CachedNetworkImage(
         height: 200,
         imageUrl: imageUrl,
-        placeholder: (context, url) => Container(
-          height: 200,
-          alignment: Alignment.center,
-          child: const CircularProgressIndicator(),
-        ),
-        errorWidget: (context, url, error) => Container(
-          height: 200,
-          alignment: Alignment.center,
-          child: const Icon(Icons.error),
-        ),
+        placeholder: (context, url) => Container(height: 200, alignment: Alignment.center, child: const CircularProgressIndicator()),
+        errorWidget: (context, url, error) => Container(height: 200, alignment: Alignment.center, child: const Icon(Icons.error)),
         fit: BoxFit.cover,
       ),
     );
@@ -100,15 +82,10 @@ class CacheImage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         child: Stack(
           children: [
-            CachedNetworkImage(
-              imageUrl: imageUrl,
-              fit: BoxFit.contain,
-            ),
+            CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.contain),
             Positioned(
               right: 8,
               top: 8,

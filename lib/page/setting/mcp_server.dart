@@ -29,11 +29,7 @@ class _McpServerState extends State<McpServer> {
 
   // 标签映射：内部标识符 -> 显示文本
   Map<String, String> _getTabLabels(AppLocalizations l10n) {
-    return {
-      'all': l10n.all,
-      'installed': l10n.installed,
-      'inmemory': 'inmemory',
-    };
+    return {'all': l10n.all, 'installed': l10n.installed, 'inmemory': 'inmemory'};
   }
 
   // 验证URL是否合法
@@ -70,25 +66,17 @@ class _McpServerState extends State<McpServer> {
                     color: Theme.of(context).colorScheme.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.outline.withAlpha(26),
-                      ),
+                      side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
                     ),
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
                         hintText: l10n.searchServer,
-                        prefixIcon: Icon(
-                          CupertinoIcons.search,
-                          color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                        ),
+                        prefixIcon: Icon(CupertinoIcons.search, color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                       onChanged: (value) => setState(() {}),
                     ),
                   ),
@@ -123,11 +111,7 @@ class _McpServerState extends State<McpServer> {
                                   },
                                 ),
                                 const SizedBox(width: 8),
-                                _buildActionButton(
-                                  icon: CupertinoIcons.refresh,
-                                  tooltip: l10n.refresh,
-                                  onPressed: () => setState(() {}),
-                                ),
+                                _buildActionButton(icon: CupertinoIcons.refresh, tooltip: l10n.refresh, onPressed: () => setState(() {})),
                               ],
                             ),
                           ],
@@ -163,11 +147,7 @@ class _McpServerState extends State<McpServer> {
                                   },
                                 ),
                                 const SizedBox(width: 8),
-                                _buildActionButton(
-                                  icon: CupertinoIcons.refresh,
-                                  tooltip: l10n.refresh,
-                                  onPressed: () => setState(() {}),
-                                ),
+                                _buildActionButton(icon: CupertinoIcons.refresh, tooltip: l10n.refresh, onPressed: () => setState(() {})),
                               ],
                             ),
                           ],
@@ -183,14 +163,12 @@ class _McpServerState extends State<McpServer> {
                       future: (_selectedTab == 'all'
                           ? provider.loadMarketServers()
                           : _selectedTab == 'inmemory'
-                              ? provider.loadInMemoryServers()
-                              : provider.loadServers()),
+                          ? provider.loadInMemoryServers()
+                          : provider.loadServers()),
                       key: ValueKey('server_list_$_refreshCounter'),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                            child: CupertinoActivityIndicator(),
-                          );
+                          return const Center(child: CupertinoActivityIndicator());
                         }
 
                         if (snapshot.hasError) {
@@ -198,18 +176,9 @@ class _McpServerState extends State<McpServer> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  CupertinoIcons.exclamationmark_circle,
-                                  size: 48,
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
+                                Icon(CupertinoIcons.exclamationmark_circle, size: 48, color: Theme.of(context).colorScheme.error),
                                 const SizedBox(height: 16),
-                                Text(
-                                  'Failed to load: ${snapshot.error}',
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                ),
+                                Text('Failed to load: ${snapshot.error}', style: TextStyle(color: Theme.of(context).colorScheme.error)),
                               ],
                             ),
                           );
@@ -223,18 +192,11 @@ class _McpServerState extends State<McpServer> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    CupertinoIcons.desktopcomputer,
-                                    size: 64,
-                                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                                  ),
+                                  Icon(CupertinoIcons.desktopcomputer, size: 64, color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                                   const SizedBox(height: 16),
                                   Text(
                                     l10n.noServerConfigs,
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                                      fontSize: 16,
-                                    ),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153), fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -247,13 +209,7 @@ class _McpServerState extends State<McpServer> {
                               final serverName = servers.keys.elementAt(index);
                               final serverConfig = servers[serverName];
 
-                              return _buildServerCard(
-                                context,
-                                serverName,
-                                serverConfig,
-                                provider,
-                                serverConfig['installed'] ?? false,
-                              );
+                              return _buildServerCard(context, serverName, serverConfig, provider, serverConfig['installed'] ?? false);
                             },
                           );
                         }
@@ -280,13 +236,7 @@ class _McpServerState extends State<McpServer> {
     return false;
   }
 
-  Widget _buildServerCard(
-    BuildContext context,
-    String serverName,
-    dynamic serverConfig,
-    McpServerProvider provider,
-    bool installed,
-  ) {
+  Widget _buildServerCard(BuildContext context, String serverName, dynamic serverConfig, McpServerProvider provider, bool installed) {
     final l10n = AppLocalizations.of(context)!;
     bool serverActive = isActive(serverName);
 
@@ -296,31 +246,21 @@ class _McpServerState extends State<McpServer> {
       color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outline.withAlpha(26),
-        ),
+        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              serverActive ? CupertinoIcons.checkmark : CupertinoIcons.desktopcomputer,
-              color: Theme.of(context).colorScheme.primary,
-              size: 20,
-            ),
+            Icon(serverActive ? CupertinoIcons.checkmark : CupertinoIcons.desktopcomputer, color: Theme.of(context).colorScheme.primary, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Row(
                 children: [
                   Text(
                     serverName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -331,20 +271,13 @@ class _McpServerState extends State<McpServer> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primaryContainer.withAlpha(80),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary.withAlpha(30),
-                          width: 1,
-                        ),
+                        border: Border.all(color: Theme.of(context).colorScheme.primary.withAlpha(30), width: 1),
                       ),
                       child: Text(
                         (serverConfig['type'] ?? '').toString().toLowerCase(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.onSurface.withAlpha(180),
-                        ),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(180)),
                       ),
-                    )
+                    ),
                   ],
                 ],
               ),
@@ -375,11 +308,7 @@ class _McpServerState extends State<McpServer> {
               ),
               const Gap(size: 10),
               if (provider.mcpServerIsRunning(serverName))
-                _buildActionButton(
-                  icon: CupertinoIcons.info_circle,
-                  tooltip: "info",
-                  onPressed: () => _showInfoDialog(context, serverName),
-                ),
+                _buildActionButton(icon: CupertinoIcons.info_circle, tooltip: "info", onPressed: () => _showInfoDialog(context, serverName)),
               const Gap(size: 10),
               _buildActionButton(
                 icon: CupertinoIcons.pencil,
@@ -395,30 +324,20 @@ class _McpServerState extends State<McpServer> {
               ),
             ] else ...[
               ElevatedButton.icon(
-                icon: Icon(
-                  CupertinoIcons.cloud_download,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+                icon: Icon(CupertinoIcons.cloud_download, color: Theme.of(context).colorScheme.onPrimary),
                 label: Text(l10n.install),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () async {
                   final cmdExists = await isCommandAvailable(serverConfig['command']);
                   if (!cmdExists) {
-                    showErrorDialog(
-                      context,
-                      l10n.commandNotExist(serverConfig['command'], getPlatformPath() ?? ''),
-                    );
+                    showErrorDialog(context, l10n.commandNotExist(serverConfig['command'], getPlatformPath() ?? ''));
                   } else {
-                    Logger.root.info(
-                      'Install server configuration: $serverName ${serverConfig['command']} ${serverConfig['args']}',
-                    );
+                    Logger.root.info('Install server configuration: $serverName ${serverConfig['command']} ${serverConfig['args']}');
                     await _showEditDialog(context, serverName, provider, serverConfig);
                   }
                 },
@@ -435,19 +354,16 @@ class _McpServerState extends State<McpServer> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Scaffold(
-                  body: SafeArea(
-                    child: McpInfo(serverName: serverName),
-                  ),
-                )),
+          builder: (context) => Scaffold(
+            body: SafeArea(child: McpInfo(serverName: serverName)),
+          ),
+        ),
       );
     } else {
       showDialog(
         context: context,
         builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: SizedBox(
@@ -479,24 +395,15 @@ class _McpServerState extends State<McpServer> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: color ?? Theme.of(context).colorScheme.primary.withAlpha(51),
-              ),
+              border: Border.all(color: color ?? Theme.of(context).colorScheme.primary.withAlpha(51)),
             ),
             child: isLoading
                 ? SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: color ?? Theme.of(context).colorScheme.primary,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: color ?? Theme.of(context).colorScheme.primary),
                   )
-                : Icon(
-                    icon,
-                    size: 18,
-                    color: color ?? Theme.of(context).colorScheme.primary,
-                  ),
+                : Icon(icon, size: 18, color: color ?? Theme.of(context).colorScheme.primary),
           ),
         ),
       ),
@@ -508,11 +415,7 @@ class _McpServerState extends State<McpServer> {
     return FilterChip(
       label: Text(
         displayLabel,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
-          fontSize: 14,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-        ),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 14, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
       ),
       selected: isSelected,
       onSelected: (selected) {
@@ -524,19 +427,12 @@ class _McpServerState extends State<McpServer> {
       selectedColor: Theme.of(context).colorScheme.primary.withAlpha(31),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-          color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline.withAlpha(26),
-        ),
+        side: BorderSide(color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline.withAlpha(26)),
       ),
     );
   }
 
-  Future<void> _showEditDialog(
-    BuildContext context,
-    String serverName,
-    McpServerProvider provider,
-    Map<String, dynamic>? newServerConfig,
-  ) async {
+  Future<void> _showEditDialog(BuildContext context, String serverName, McpServerProvider provider, Map<String, dynamic>? newServerConfig) async {
     if (!context.mounted) return;
 
     var config = await provider.loadServers();
@@ -548,7 +444,8 @@ class _McpServerState extends State<McpServer> {
 
     if (!context.mounted) return;
 
-    final serverConfig = newServerConfig ??
+    final serverConfig =
+        newServerConfig ??
         servers[serverName] as Map<String, dynamic>? ??
         {
           'type': 'sse', // streamable, sse, stdio, inmemory
@@ -580,15 +477,10 @@ class _McpServerState extends State<McpServer> {
         barrierDismissible: false,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             title: Text(
               'MCP Server - ${serverName.isEmpty ? l10n.addProvider : serverName}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             content: SingleChildScrollView(
               child: FormBuilder(
@@ -602,38 +494,23 @@ class _McpServerState extends State<McpServer> {
                         initialValue: resultServerName,
                         decoration: InputDecoration(
                           labelText: l10n.serverName,
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-                          ),
+                          hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                            ),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                            ),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                           ),
-                          prefixIcon: Icon(
-                            CupertinoIcons.command,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 20,
-                          ),
+                          prefixIcon: Icon(CupertinoIcons.command, color: Theme.of(context).colorScheme.primary, size: 20),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
+                        style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return l10n.fieldRequired;
@@ -653,48 +530,24 @@ class _McpServerState extends State<McpServer> {
                         labelText: l10n.serverType,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                         ),
-                        prefixIcon: Icon(
-                          CupertinoIcons.gear,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
-                        ),
+                        prefixIcon: Icon(CupertinoIcons.gear, color: Theme.of(context).colorScheme.primary, size: 20),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       items: [
-                        DropdownMenuItem(
-                          value: 'sse',
-                          child: Text('SSE'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'stdio',
-                          child: Text('STDIO'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'streamable',
-                          child: Text('Streamable'),
-                        ),
-                        if (isEdit)
-                          DropdownMenuItem(
-                            value: 'inmemory',
-                            enabled: false,
-                            child: Text('InMemory'),
-                          ),
+                        DropdownMenuItem(value: 'sse', child: Text('SSE')),
+                        DropdownMenuItem(value: 'stdio', child: Text('STDIO')),
+                        DropdownMenuItem(value: 'streamable', child: Text('Streamable')),
+                        if (isEdit) DropdownMenuItem(value: 'inmemory', enabled: false, child: Text('InMemory')),
                       ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -711,38 +564,23 @@ class _McpServerState extends State<McpServer> {
                       decoration: InputDecoration(
                         labelText: l10n.command,
                         hintText: l10n.commandExample,
-                        hintStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-                        ),
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                         ),
-                        prefixIcon: Icon(
-                          CupertinoIcons.command,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
-                        ),
+                        prefixIcon: Icon(CupertinoIcons.command, color: Theme.of(context).colorScheme.primary, size: 20),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return l10n.fieldRequired;
@@ -757,38 +595,23 @@ class _McpServerState extends State<McpServer> {
                       decoration: InputDecoration(
                         labelText: l10n.arguments,
                         hintText: l10n.argumentsExample,
-                        hintStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-                        ),
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                         ),
-                        prefixIcon: Icon(
-                          CupertinoIcons.command,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
-                        ),
+                        prefixIcon: Icon(CupertinoIcons.command, color: Theme.of(context).colorScheme.primary, size: 20),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                     ),
                     const SizedBox(height: 16),
                     FormBuilderTextField(
@@ -798,54 +621,30 @@ class _McpServerState extends State<McpServer> {
                       decoration: InputDecoration(
                         labelText: l10n.environmentVariables,
                         hintText: l10n.envVarsFormat,
-                        hintStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-                        ),
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                         ),
-                        prefixIcon: Icon(
-                          CupertinoIcons.command,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
-                        ),
+                        prefixIcon: Icon(CupertinoIcons.command, color: Theme.of(context).colorScheme.primary, size: 20),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                     ),
                     const SizedBox(height: 16),
                     FormBuilderCheckbox(
                       name: 'auto_approve',
                       initialValue: autoApprove,
-                      title: Text(
-                        l10n.autoApprove,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.zero,
-                      ),
+                      title: Text(l10n.autoApprove, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
+                      decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
                     ),
                   ],
                 ),
@@ -856,9 +655,7 @@ class _McpServerState extends State<McpServer> {
                 onPressed: () {
                   Navigator.pop(dialogContext, false);
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                ),
+                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.primary),
                 child: Text(l10n.cancel),
               ),
               TextButton(
@@ -907,10 +704,7 @@ class _McpServerState extends State<McpServer> {
                       if (parts.length < 2) {
                         return MapEntry(parts[0].trim(), '');
                       }
-                      return MapEntry(
-                        parts[0].trim(),
-                        parts.sublist(1).join('=').trim(),
-                      );
+                      return MapEntry(parts[0].trim(), parts.sublist(1).join('=').trim());
                     }),
                   );
 
@@ -953,10 +747,7 @@ class _McpServerState extends State<McpServer> {
                   foregroundColor: Theme.of(context).colorScheme.primary,
                   backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(31),
                 ),
-                child: Text(
-                  l10n.save,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+                child: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
             ],
             backgroundColor: Theme.of(context).colorScheme.surface,
@@ -974,29 +765,17 @@ class _McpServerState extends State<McpServer> {
     }
   }
 
-  Future<void> _showDeleteConfirmDialog(
-    BuildContext context,
-    String serverName,
-    McpServerProvider provider,
-  ) async {
+  Future<void> _showDeleteConfirmDialog(BuildContext context, String serverName, McpServerProvider provider) async {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         title: Text(l10n.confirmDelete),
         content: Text(l10n.confirmDeleteServer(serverName)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.delete)),
         ],
       ),
     );
@@ -1014,17 +793,10 @@ class _McpServerState extends State<McpServer> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         title: Text(l10n.error),
         content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.ok),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.ok))],
       ),
     );
   }

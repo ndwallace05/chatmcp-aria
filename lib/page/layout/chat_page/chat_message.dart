@@ -22,37 +22,21 @@ class FileAttachment extends StatelessWidget {
   final String name;
   final String fileType;
 
-  const FileAttachment({
-    super.key,
-    required this.path,
-    required this.name,
-    required this.fileType,
-  });
+  const FileAttachment({super.key, required this.path, required this.name, required this.fileType});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 6,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.getFileAttachmentBackgroundColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: fileType.startsWith('image')
-          ? _buildImagePreview(context)
-          : _buildFilePreview(),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+      decoration: BoxDecoration(color: AppColors.getFileAttachmentBackgroundColor(context), borderRadius: BorderRadius.circular(16)),
+      child: fileType.startsWith('image') ? _buildImagePreview(context) : _buildFilePreview(),
     );
   }
 
   Widget _buildImagePreview(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.6,
-        maxHeight: 300,
-      ),
+      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6, maxHeight: 300),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Image.file(
@@ -61,18 +45,11 @@ class FileAttachment extends StatelessWidget {
           errorBuilder: (context, error, stackTrace) {
             return Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.getFileAttachmentBackgroundColor(context),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: AppColors.getFileAttachmentBackgroundColor(context), borderRadius: BorderRadius.circular(8)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.broken_image,
-                    color: AppColors.getImageErrorIconColor(context),
-                    size: 32,
-                  ),
+                  Icon(Icons.broken_image, color: AppColors.getImageErrorIconColor(context), size: 32),
                   Text(l10n.brokenImage),
                 ],
               ),
@@ -90,12 +67,7 @@ class FileAttachment extends StatelessWidget {
         const Icon(Icons.attach_file, size: 16),
         const SizedBox(width: 4),
         Flexible(
-          child: Text(
-            name,
-            style: const TextStyle(fontSize: 12),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
+          child: Text(name, style: const TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis, maxLines: 1),
         ),
       ],
     );
@@ -110,11 +82,7 @@ class MessageLongPressMenu extends StatelessWidget {
   final ChatMessage message;
   final Function(ChatMessage) onRetry;
 
-  const MessageLongPressMenu({
-    super.key,
-    required this.message,
-    required this.onRetry,
-  });
+  const MessageLongPressMenu({super.key, required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -126,16 +94,9 @@ class MessageLongPressMenu extends StatelessWidget {
           leading: const Icon(Icons.copy_outlined),
           title: Text(l10n.copy),
           onTap: () {
-            Clipboard.setData(ClipboardData(
-              text: message.content ?? '',
-            ));
+            Clipboard.setData(ClipboardData(text: message.content ?? ''));
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.copied),
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.copied), duration: const Duration(seconds: 2)));
           },
         ),
         if (message.role != MessageRole.user)
@@ -162,20 +123,11 @@ class ChatUIMessage extends StatelessWidget {
   final Function(ChatMessage) onRetry;
   final Function(String messageId) onSwitch;
 
-  const ChatUIMessage({
-    super.key,
-    required this.messages,
-    required this.onRetry,
-    required this.onSwitch,
-  });
+  const ChatUIMessage({super.key, required this.messages, required this.onRetry, required this.onSwitch});
 
   List<ChatMessage> _filterMessages(List<ChatMessage> messages) {
     if (messages.length <= 1) return messages;
-    return messages
-        .where((m) =>
-            m.role != MessageRole.assistant ||
-            (m.role == MessageRole.assistant && m.content != ''))
-        .toList();
+    return messages.where((m) => m.role != MessageRole.assistant || (m.role == MessageRole.assistant && m.content != '')).toList();
   }
 
   BubblePosition _getMessagePosition(int index, int total) {
@@ -185,8 +137,7 @@ class ChatUIMessage extends StatelessWidget {
     return BubblePosition.middle;
   }
 
-  Widget _buildMessageGroup(
-      BuildContext context, List<ChatMessage> messages, bool isUser) {
+  Widget _buildMessageGroup(BuildContext context, List<ChatMessage> messages, bool isUser) {
     final filteredMessages = _filterMessages(messages);
     if (filteredMessages.isEmpty) return const SizedBox();
 
@@ -200,19 +151,13 @@ class ChatUIMessage extends StatelessWidget {
     }
 
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.getMessageBubbleBackgroundColor(context, isUser),
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: AppColors.getMessageBubbleBackgroundColor(context, isUser), borderRadius: BorderRadius.circular(16)),
       child: Column(
-        crossAxisAlignment:
-            isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: List.generate(
           filteredMessages.length,
           (index) => Padding(
-            padding: EdgeInsets.only(
-              bottom: index == filteredMessages.length - 1 ? 0 : 1,
-            ),
+            padding: EdgeInsets.only(bottom: index == filteredMessages.length - 1 ? 0 : 1),
             child: ChatMessageContent(
               key: ValueKey(filteredMessages[index].messageId),
               message: filteredMessages[index],
@@ -233,51 +178,34 @@ class ChatUIMessage extends StatelessWidget {
     final firstMsg = messages.first;
     final isUser = firstMsg.role == MessageRole.user;
 
-    return Consumer<SettingsProvider>(builder: (context, settings, child) {
-      final showAssistantAvatar = settings.generalSetting.showAssistantAvatar;
-      final showUserAvatar = settings.generalSetting.showUserAvatar;
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, child) {
+        final showAssistantAvatar = settings.generalSetting.showAssistantAvatar;
+        final showUserAvatar = settings.generalSetting.showUserAvatar;
 
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(
-          mainAxisAlignment:
-              isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isUser && showAssistantAvatar) ...[
-              SizedBox(
-                width: 40,
-                child: ChatAvatar(isUser: false),
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 6.0),
+          child: Row(
+            mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isUser && showAssistantAvatar) ...[SizedBox(width: 40, child: ChatAvatar(isUser: false)), const SizedBox(width: 8)],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    _buildMessageGroup(context, messages, isUser),
+                    if (messages.last.role != MessageRole.loading)
+                      MessageActions(messages: messages, onRetry: onRetry, onSwitch: onSwitch, isUser: isUser),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8),
+              if (isUser && showUserAvatar) ...[const SizedBox(width: 8), SizedBox(width: 40, child: ChatAvatar(isUser: true))],
             ],
-            Flexible(
-              child: Column(
-                crossAxisAlignment:
-                    isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  _buildMessageGroup(context, messages, isUser),
-                  if (messages.last.role != MessageRole.loading)
-                    MessageActions(
-                      messages: messages,
-                      onRetry: onRetry,
-                      onSwitch: onSwitch,
-                      isUser: isUser,
-                    ),
-                ],
-              ),
-            ),
-            if (isUser && showUserAvatar) ...[
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 40,
-                child: ChatAvatar(isUser: true),
-              ),
-            ],
-          ],
-        ),
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -315,53 +243,46 @@ class ChatMessageContent extends StatelessWidget {
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: message.files!
-                .map((file) => FileAttachment(
-                      path: file.path!,
-                      name: file.name,
-                      fileType: file.fileType,
-                    ))
-                .toList(),
+            children: message.files!.map((file) => FileAttachment(path: file.path!, name: file.name, fileType: file.fileType)).toList(),
           ),
         ),
       );
     }
     final bubbleKey = message.messageId;
-    if ((message.role == MessageRole.user ||
-            message.role == MessageRole.assistant) &&
-        message.content != null) {
-      messages.add(MessageBubble(
-        key: ValueKey('${bubbleKey}_content'),
-        message: message,
-        position: position,
-        useTransparentBackground: useTransparentBackground,
-      ));
+    if ((message.role == MessageRole.user || message.role == MessageRole.assistant) && message.content != null) {
+      messages.add(
+        MessageBubble(
+          key: ValueKey('${bubbleKey}_content'),
+          message: message,
+          position: position,
+          useTransparentBackground: useTransparentBackground,
+        ),
+      );
     }
 
     if (message.toolCalls != null && message.toolCalls!.isNotEmpty) {
-      messages.add(MessageBubble(
-        key: ValueKey('${bubbleKey}_tool_calls'),
-        message: message,
-        position: position,
-        useTransparentBackground: useTransparentBackground,
-      ));
+      messages.add(
+        MessageBubble(
+          key: ValueKey('${bubbleKey}_tool_calls'),
+          message: message,
+          position: position,
+          useTransparentBackground: useTransparentBackground,
+        ),
+      );
     }
 
     if (message.role == MessageRole.tool && message.toolCallId != null) {
-      messages.add(MessageBubble(
-        key: ValueKey('${bubbleKey}_tool_result'),
-        message: message,
-        position: position,
-        useTransparentBackground: useTransparentBackground,
-      ));
+      messages.add(
+        MessageBubble(
+          key: ValueKey('${bubbleKey}_tool_result'),
+          message: message,
+          position: position,
+          useTransparentBackground: useTransparentBackground,
+        ),
+      );
     }
 
-    return Column(
-      crossAxisAlignment: message.role == MessageRole.user
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
-      children: messages,
-    );
+    return Column(crossAxisAlignment: message.role == MessageRole.user ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: messages);
   }
 
   @override
@@ -370,10 +291,7 @@ class ChatMessageContent extends StatelessWidget {
       onLongPress: () {
         showModalBottomSheet(
           context: context,
-          builder: (context) => MessageLongPressMenu(
-            message: message,
-            onRetry: onRetry,
-          ),
+          builder: (context) => MessageLongPressMenu(message: message, onRetry: onRetry),
         );
       },
       child: _buildMessage(context),
@@ -387,12 +305,7 @@ class ChatMessageContent extends StatelessWidget {
 /// - [middle] The middle bubble
 /// - [last] The last bubble
 /// - [single] The single bubble
-enum BubblePosition {
-  first,
-  middle,
-  last,
-  single,
-}
+enum BubblePosition { first, middle, last, single }
 
 /// Message bubble is used to display the message bubble in the chat message.
 ///
@@ -404,29 +317,18 @@ class MessageBubble extends StatelessWidget {
   final BubblePosition position;
   final bool useTransparentBackground;
 
-  const MessageBubble({
-    super.key,
-    required this.message,
-    this.position = BubblePosition.single,
-    this.useTransparentBackground = false,
-  });
+  const MessageBubble({super.key, required this.message, this.position = BubblePosition.single, this.useTransparentBackground = false});
 
   BorderRadius _getBorderRadius() {
     const double radius = 16.0;
 
     switch (position) {
       case BubblePosition.first:
-        return const BorderRadius.only(
-          topLeft: Radius.circular(radius),
-          topRight: Radius.circular(radius),
-        );
+        return const BorderRadius.only(topLeft: Radius.circular(radius), topRight: Radius.circular(radius));
       case BubblePosition.middle:
         return BorderRadius.zero;
       case BubblePosition.last:
-        return const BorderRadius.only(
-          bottomLeft: Radius.circular(radius),
-          bottomRight: Radius.circular(radius),
-        );
+        return const BorderRadius.only(bottomLeft: Radius.circular(radius), bottomRight: Radius.circular(radius));
       case BubblePosition.single:
         return const BorderRadius.all(Radius.circular(radius));
     }
@@ -451,29 +353,13 @@ class MessageBubble extends StatelessWidget {
 
     switch (position) {
       case BubblePosition.first:
-        return const EdgeInsets.only(
-          left: horizontal,
-          right: horizontal,
-          top: verticalNormal,
-          bottom: 0,
-        );
+        return const EdgeInsets.only(left: horizontal, right: horizontal, top: verticalNormal, bottom: 0);
       case BubblePosition.middle:
-        return const EdgeInsets.symmetric(
-          horizontal: horizontal,
-          vertical: 0,
-        );
+        return const EdgeInsets.symmetric(horizontal: horizontal, vertical: 0);
       case BubblePosition.last:
-        return const EdgeInsets.only(
-          left: horizontal,
-          right: horizontal,
-          top: 0,
-          bottom: verticalNormal,
-        );
+        return const EdgeInsets.only(left: horizontal, right: horizontal, top: 0, bottom: verticalNormal);
       case BubblePosition.single:
-        return const EdgeInsets.symmetric(
-          horizontal: horizontal,
-          vertical: verticalNormal,
-        );
+        return const EdgeInsets.symmetric(horizontal: horizontal, vertical: verticalNormal);
     }
   }
 
@@ -483,16 +369,13 @@ class MessageBubble extends StatelessWidget {
       margin: _getMargin(),
       padding: _getPadding(),
       decoration: BoxDecoration(
-        color: useTransparentBackground
-            ? Colors.transparent
-            : AppColors.getMessageBubbleBackgroundColor(
-                context, message.role == MessageRole.user),
+        color: useTransparentBackground ? Colors.transparent : AppColors.getMessageBubbleBackgroundColor(context, message.role == MessageRole.user),
         borderRadius: _getBorderRadius(),
       ),
       child: message.content != null
           ? message.role == MessageRole.user
-              ? Markit(data: (message.content!).trim())
-              : Markit(data: (message.content!).trim())
+                ? Markit(data: (message.content!).trim())
+                : Markit(data: (message.content!).trim())
           : const Text(''),
     );
   }
@@ -504,10 +387,7 @@ class MessageBubble extends StatelessWidget {
 class ToolCallWidget extends StatelessWidget {
   final ChatMessage message;
 
-  const ToolCallWidget({
-    super.key,
-    required this.message,
-  });
+  const ToolCallWidget({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -518,11 +398,7 @@ class ToolCallWidget extends StatelessWidget {
         initiallyExpanded: false,
         title: Text(
           l10n.toolCall(message.toolCalls![0]['function']['name']),
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.getToolCallTextColor(),
-            fontStyle: FontStyle.italic,
-          ),
+          style: TextStyle(fontSize: 12, color: AppColors.getToolCallTextColor(), fontStyle: FontStyle.italic),
         ),
         content: Markit(
           data: (message.toolCalls?.isNotEmpty ?? false)
@@ -530,8 +406,7 @@ class ToolCallWidget extends StatelessWidget {
                   '```json',
                   const JsonEncoder.withIndent('  ').convert({
                     "name": message.toolCalls![0]['function']['name'],
-                    "arguments": json
-                        .decode(message.toolCalls![0]['function']['arguments']),
+                    "arguments": json.decode(message.toolCalls![0]['function']['arguments']),
                   }),
                   '```',
                 ].join('\n')
@@ -548,10 +423,7 @@ class ToolCallWidget extends StatelessWidget {
 class ToolResultWidget extends StatelessWidget {
   final ChatMessage message;
 
-  const ToolResultWidget({
-    super.key,
-    required this.message,
-  });
+  const ToolResultWidget({super.key, required this.message});
 
   Widget _buildContent(BuildContext context) {
     return SelectableText(message.content ?? '');
@@ -564,9 +436,7 @@ class ToolResultWidget extends StatelessWidget {
       case 'call_generate_image':
         try {
           final jsonData = json.decode(message.content ?? '');
-          return Markit(
-              data:
-                  "```json\n${const JsonEncoder.withIndent('  ').convert(jsonData)}\n```");
+          return Markit(data: "```json\n${const JsonEncoder.withIndent('  ').convert(jsonData)}\n```");
         } catch (e) {
           return Markit(data: "```\n${message.content}\n```");
         }
@@ -584,11 +454,7 @@ class ToolResultWidget extends StatelessWidget {
         initiallyExpanded: false,
         title: Text(
           l10n.toolResult(message.toolCallId!.replaceFirst('call_', '')),
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.getToolCallTextColor(),
-            fontStyle: FontStyle.italic,
-          ),
+          style: TextStyle(fontSize: 12, color: AppColors.getToolCallTextColor(), fontStyle: FontStyle.italic),
         ),
         content: _buildFactory(context),
       ),
@@ -602,19 +468,13 @@ class ToolResultWidget extends StatelessWidget {
 class ChatAvatar extends StatelessWidget {
   final bool isUser;
 
-  const ChatAvatar({
-    super.key,
-    required this.isUser,
-  });
+  const ChatAvatar({super.key, required this.isUser});
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundColor: AppColors.getChatAvatarBackgroundColor(),
-      child: Icon(
-        isUser ? Icons.person : Icons.android,
-        color: AppColors.getChatAvatarIconColor(),
-      ),
+      child: Icon(isUser ? Icons.person : Icons.android, color: AppColors.getChatAvatarIconColor()),
     );
   }
 }

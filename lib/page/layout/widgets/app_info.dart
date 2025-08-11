@@ -13,12 +13,7 @@ class AppInfo extends StatelessWidget {
   final String? githubUrl;
   final String? licenseInfo;
 
-  const AppInfo({
-    super.key,
-    this.appWebsite,
-    this.githubUrl = 'https://github.com/daodao97/chatmcp',
-    this.licenseInfo = 'Apache License 2.0',
-  });
+  const AppInfo({super.key, this.appWebsite, this.githubUrl = 'https://github.com/daodao97/chatmcp', this.licenseInfo = 'Apache License 2.0'});
 
   Future<String> _getAppVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
@@ -36,9 +31,7 @@ class AppInfo extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         child: Container(
           width: kIsMobile ? null : 450,
           padding: const EdgeInsets.all(24),
@@ -46,44 +39,24 @@ class AppInfo extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Logo
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/logo.png',
-                  width: 80,
-                  height: 80,
-                ),
-              ),
+              ClipRRect(borderRadius: BorderRadius.circular(8.0), child: Image.asset('assets/logo.png', width: 80, height: 80)),
               const SizedBox(height: 16),
 
               // App Name
               Text(
                 'ChatMCP',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.getThemeTextColor(context),
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.getThemeTextColor(context)),
               ),
 
               // Version
-              Text(
-                'v$version',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.getThemeTextColor(context).withAlpha(120),
-                ),
-              ),
+              Text('v$version', style: TextStyle(fontSize: 16, color: AppColors.getThemeTextColor(context).withAlpha(120))),
               const SizedBox(height: 16),
 
               // Description
               Text(
                 l10n.appDescription,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.getThemeTextColor(context),
-                ),
+                style: TextStyle(fontSize: 14, color: AppColors.getThemeTextColor(context)),
               ),
               const SizedBox(height: 24),
 
@@ -91,28 +64,11 @@ class AppInfo extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (appWebsite != null)
-                    _buildLinkButton(
-                      context,
-                      LlmIcon(icon: "github"),
-                      l10n.visitWebsite,
-                      appWebsite!,
-                    ),
+                  if (appWebsite != null) _buildLinkButton(context, LlmIcon(icon: "github"), l10n.visitWebsite, appWebsite!),
                   if (appWebsite != null && githubUrl != null) const SizedBox(width: 12),
-                  if (githubUrl != null)
-                    _buildLinkButton(
-                      context,
-                      LlmIcon(icon: "github"),
-                      'GitHub',
-                      githubUrl!,
-                    ),
+                  if (githubUrl != null) _buildLinkButton(context, LlmIcon(icon: "github"), 'GitHub', githubUrl!),
                   const SizedBox(width: 12),
-                  UpgradeNotice(
-                    owner: 'daodao97',
-                    repo: 'chatmcp',
-                    showCheckUpdate: true,
-                    autoCheck: true,
-                  ),
+                  UpgradeNotice(owner: 'daodao97', repo: 'chatmcp', showCheckUpdate: true, autoCheck: true),
                 ],
               ),
 
@@ -139,21 +95,13 @@ class AppInfo extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: AppColors.getInkIconHoverColor(context),
-          borderRadius: BorderRadius.circular(20),
-        ),
+        decoration: BoxDecoration(color: AppColors.getInkIconHoverColor(context), borderRadius: BorderRadius.circular(20)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             icon,
             const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: AppColors.getThemeTextColor(context),
-              ),
-            ),
+            Text(label, style: TextStyle(color: AppColors.getThemeTextColor(context))),
           ],
         ),
       ),

@@ -8,14 +8,7 @@ class JSONRPCMessage {
   final dynamic result;
   final dynamic error;
 
-  JSONRPCMessage({
-    this.id,
-    this.jsonrpc = '2.0',
-    this.method,
-    this.params,
-    this.result,
-    this.error,
-  });
+  JSONRPCMessage({this.id, this.jsonrpc = '2.0', this.method, this.params, this.result, this.error});
 
   factory JSONRPCMessage.fromJson(Map<String, dynamic> json) {
     return JSONRPCMessage(
@@ -29,9 +22,7 @@ class JSONRPCMessage {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {
-      'jsonrpc': jsonrpc
-    };
+    final Map<String, dynamic> json = {'jsonrpc': jsonrpc};
 
     if (method != null) json['method'] = method;
     if (id != null) json['id'] = id;

@@ -60,11 +60,7 @@ class StartSSEOptions {
   /// 覆盖与重播消息关联的消息ID
   final String? replayMessageId;
 
-  StartSSEOptions({
-    this.resumptionToken,
-    this.onResumptionToken,
-    this.replayMessageId,
-  });
+  StartSSEOptions({this.resumptionToken, this.onResumptionToken, this.replayMessageId});
 }
 
 /// Streamable HTTP客户端实现
@@ -99,11 +95,8 @@ class StreamableClient implements McpClient {
   /// 关闭连接回调
   Function()? onClose;
 
-  StreamableClient({
-    required this.serverConfig,
-    StreamableHTTPReconnectionOptions? reconnectionOptions,
-  }) : _reconnectionOptions =
-            reconnectionOptions ?? const StreamableHTTPReconnectionOptions() {
+  StreamableClient({required this.serverConfig, StreamableHTTPReconnectionOptions? reconnectionOptions})
+    : _reconnectionOptions = reconnectionOptions ?? const StreamableHTTPReconnectionOptions() {
     if (serverConfig.command.startsWith('http')) {
       _url = serverConfig.command;
     } else {
@@ -113,10 +106,7 @@ class StreamableClient implements McpClient {
 
   /// 获取通用HTTP头
   Future<Map<String, String>> _commonHeaders() async {
-    final headers = <String, String>{
-      'Accept': 'application/json, text/event-stream',
-      'Content-Type': 'application/json',
-    };
+    final headers = <String, String>{'Accept': 'application/json, text/event-stream', 'Content-Type': 'application/json'};
 
     if (_sessionId != null) {
       headers['mcp-session-id'] = _sessionId!;
@@ -151,10 +141,7 @@ class StreamableClient implements McpClient {
           throw UnauthorizedError();
         }
 
-        throw StreamableHTTPError(
-          response.statusCode,
-          'Failed to connect to SSE stream: ${response.reasonPhrase}',
-        );
+        throw StreamableHTTPError(response.statusCode, 'Failed to connect to SSE stream: ${response.reasonPhrase}');
       }
 
       // 处理会话ID
@@ -198,15 +185,9 @@ class StreamableClient implements McpClient {
 
   /// 计算重连延迟
   int _calculateReconnectionDelay(int attemptIndex) {
-    final delay = _reconnectionOptions.initialReconnectionDelay *
-        _reconnectionOptions.reconnectionDelayGrowFactor.pow(attemptIndex);
+    final delay = _reconnectionOptions.initialReconnectionDelay * _reconnectionOptions.reconnectionDelayGrowFactor.pow(attemptIndex);
 
-    return delay
-        .clamp(
-          _reconnectionOptions.initialReconnectionDelay.toDouble(),
-          _reconnectionOptions.maxReconnectionDelay.toDouble(),
-        )
-        .toInt();
+    return delay.clamp(_reconnectionOptions.initialReconnectionDelay.toDouble(), _reconnectionOptions.maxReconnectionDelay.toDouble()).toInt();
   }
 
   /// 处理SSE流
@@ -216,12 +197,10 @@ class StreamableClient implements McpClient {
     String? lastEventId;
 
     // 确保流是可以多次监听的广播流
-    final broadcastStream =
-        stream.isBroadcast ? stream : stream.asBroadcastStream();
+    final broadcastStream = stream.isBroadcast ? stream : stream.asBroadcastStream();
 
     // 解码UTF-8并拆分为行
-    final lineStream =
-        broadcastStream.transform(utf8.decoder).transform(const LineSplitter());
+    final lineStream = broadcastStream.transform(utf8.decoder).transform(const LineSplitter());
 
     // SSE处理变量
     String? eventName;
@@ -285,11 +264,7 @@ class StreamableClient implements McpClient {
           if (lastEventId != null) {
             try {
               _scheduleReconnection(
-                StartSSEOptions(
-                  resumptionToken: lastEventId,
-                  onResumptionToken: onResumptionToken,
-                  replayMessageId: replayMessageId,
-                ),
+                StartSSEOptions(resumptionToken: lastEventId, onResumptionToken: onResumptionToken, replayMessageId: replayMessageId),
                 0,
               );
             } catch (reconnectError) {
@@ -304,11 +279,7 @@ class StreamableClient implements McpClient {
           if (lastEventId != null) {
             try {
               _scheduleReconnection(
-                StartSSEOptions(
-                  resumptionToken: lastEventId,
-                  onResumptionToken: onResumptionToken,
-                  replayMessageId: replayMessageId,
-                ),
+                StartSSEOptions(resumptionToken: lastEventId, onResumptionToken: onResumptionToken, replayMessageId: replayMessageId),
                 0,
               );
             } catch (reconnectError) {
@@ -357,11 +328,7 @@ class StreamableClient implements McpClient {
       final headers = await _commonHeaders();
       final completer = Completer<JSONRPCMessage>();
 
-      final response = await _httpClient.post(
-        Uri.parse(_url),
-        headers: headers,
-        body: jsonEncode(message.toJson()),
-      );
+      final response = await _httpClient.post(Uri.parse(_url), headers: headers, body: jsonEncode(message.toJson()));
 
       // 处理会话ID
       final sessionIdValue = response.headers['mcp-session-id'];
@@ -375,10 +342,7 @@ class StreamableClient implements McpClient {
           throw UnauthorizedError();
         }
 
-        throw StreamableHTTPError(
-          response.statusCode,
-          'Error POSTing to endpoint (HTTP ${response.statusCode}): ${response.body}',
-        );
+        throw StreamableHTTPError(response.statusCode, 'Error POSTing to endpoint (HTTP ${response.statusCode}): ${response.body}');
       }
 
       // 如果响应是202 Accepted，没有主体需要处理
@@ -426,23 +390,22 @@ class StreamableClient implements McpClient {
           onMessage = completerOnMessage;
 
           // 处理SSE流
-          _handleSseStream(
-            responseBodyStream,
-            StartSSEOptions(),
-          );
+          _handleSseStream(responseBodyStream, StartSSEOptions());
 
           // 设置超时
-          return completer.future.timeout(
-            const Duration(seconds: 30),
-            onTimeout: () {
-              // 恢复原始消息处理器
-              onMessage = oldOnMessage;
-              throw TimeoutException('Request timed out: ${message.id}');
-            },
-          ).whenComplete(() {
-            // 请求完成后恢复原始消息处理器
-            onMessage = oldOnMessage;
-          });
+          return completer.future
+              .timeout(
+                const Duration(seconds: 30),
+                onTimeout: () {
+                  // 恢复原始消息处理器
+                  onMessage = oldOnMessage;
+                  throw TimeoutException('Request timed out: ${message.id}');
+                },
+              )
+              .whenComplete(() {
+                // 请求完成后恢复原始消息处理器
+                onMessage = oldOnMessage;
+              });
         } else if (contentType?.contains('application/json') == true) {
           // 对于非流式服务器，我们可能会得到直接的JSON响应
           final data = jsonDecode(response.body);
@@ -460,10 +423,7 @@ class StreamableClient implements McpClient {
         }
       }
 
-      throw StreamableHTTPError(
-        -1,
-        'Unexpected response or content type: $contentType',
-      );
+      throw StreamableHTTPError(-1, 'Unexpected response or content type: $contentType');
     } catch (error) {
       onError?.call(error);
       rethrow;
@@ -480,12 +440,9 @@ class StreamableClient implements McpClient {
         'protocolVersion': '2024-11-05',
         'capabilities': {
           'roots': {'listChanged': true},
-          'sampling': {}
+          'sampling': {},
         },
-        'clientInfo': {
-          'name': 'DartMCPStreamableClient',
-          'version': '1.0.0',
-        }
+        'clientInfo': {'name': 'DartMCPStreamableClient', 'version': '1.0.0'},
       },
     );
 
@@ -493,10 +450,7 @@ class StreamableClient implements McpClient {
     Logger.root.info('Initialization request response: $initResponse');
 
     // 发送初始化完成通知
-    final notifyMessage = JSONRPCMessage(
-      method: 'notifications/initialized',
-      params: {},
-    );
+    final notifyMessage = JSONRPCMessage(method: 'notifications/initialized', params: {});
 
     await sendMessage(notifyMessage);
     return initResponse;
@@ -515,11 +469,7 @@ class StreamableClient implements McpClient {
   }
 
   @override
-  Future<JSONRPCMessage> sendToolCall({
-    required String name,
-    required Map<String, dynamic> arguments,
-    String? id,
-  }) async {
+  Future<JSONRPCMessage> sendToolCall({required String name, required Map<String, dynamic> arguments, String? id}) async {
     final message = JSONRPCMessage(
       method: 'tools/call',
       params: {
@@ -542,18 +492,11 @@ class StreamableClient implements McpClient {
     try {
       final headers = await _commonHeaders();
 
-      final response = await _httpClient.delete(
-        Uri.parse(_url),
-        headers: headers,
-      );
+      final response = await _httpClient.delete(Uri.parse(_url), headers: headers);
 
       // 我们特别处理405作为有效响应
-      if (!response.statusCode.toString().startsWith('2') &&
-          response.statusCode != 405) {
-        throw StreamableHTTPError(
-          response.statusCode,
-          'Failed to terminate session: ${response.reasonPhrase}',
-        );
+      if (!response.statusCode.toString().startsWith('2') && response.statusCode != 405) {
+        throw StreamableHTTPError(response.statusCode, 'Failed to terminate session: ${response.reasonPhrase}');
       }
 
       _sessionId = null;

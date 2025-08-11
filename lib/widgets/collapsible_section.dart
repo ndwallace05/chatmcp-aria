@@ -7,13 +7,7 @@ class CollapsibleSection extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final bool initiallyExpanded;
 
-  const CollapsibleSection({
-    super.key,
-    required this.title,
-    required this.content,
-    this.padding,
-    this.initiallyExpanded = false,
-  });
+  const CollapsibleSection({super.key, required this.title, required this.content, this.padding, this.initiallyExpanded = false});
 
   @override
   State<CollapsibleSection> createState() => _CollapsibleSectionState();
@@ -40,23 +34,12 @@ class _CollapsibleSectionState extends State<CollapsibleSection> {
             onTap: () => setState(() => _isExpanded = !_isExpanded),
             child: Row(
               children: [
-                Icon(
-                  _isExpanded
-                      ? Icons.keyboard_arrow_down
-                      : Icons.keyboard_arrow_right,
-                  size: 16,
-                  color: AppColors.grey[600],
-                ),
+                Icon(_isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right, size: 16, color: AppColors.grey[600]),
                 Expanded(child: widget.title),
               ],
             ),
           ),
-          if (_isExpanded)
-            Padding(
-              padding:
-                  widget.padding ?? const EdgeInsets.only(top: 4.0, left: 8.0),
-              child: widget.content,
-            ),
+          if (_isExpanded) Padding(padding: widget.padding ?? const EdgeInsets.only(top: 4.0, left: 8.0), child: widget.content),
         ],
       ),
     );

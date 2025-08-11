@@ -3,9 +3,9 @@ import 'package:markdown_widget/markdown_widget.dart';
 import 'package:chatmcp/utils/color.dart';
 
 SpanNodeGeneratorWithTag inlineCodeGenerator = SpanNodeGeneratorWithTag(
-    tag: _code,
-    generator: (e, config, visitor) =>
-        InlineCodeNode(e.attributes, e.textContent, config));
+  tag: _code,
+  generator: (e, config, visitor) => InlineCodeNode(e.attributes, e.textContent, config),
+);
 
 const _code = 'code';
 
@@ -22,11 +22,7 @@ class InlineCodeNode extends SpanNode {
         builder: (context) => Container(
           padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 1.0),
           decoration: BoxDecoration(
-            color: AppColors.getThemeColor(
-              context,
-              lightColor: AppColors.grey[200],
-              darkColor: AppColors.grey[800],
-            ),
+            color: AppColors.getThemeColor(context, lightColor: AppColors.grey[200], darkColor: AppColors.grey[800]),
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Text(
@@ -34,8 +30,7 @@ class InlineCodeNode extends SpanNode {
             style: TextStyle(
               fontFamily: 'monospace',
               fontSize: config.p.textStyle.fontSize,
-              color: config.p.textStyle.color ??
-                  AppColors.getThemeTextColor(context),
+              color: config.p.textStyle.color ?? AppColors.getThemeTextColor(context),
             ),
           ),
         ),

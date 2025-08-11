@@ -13,12 +13,7 @@ class Tabs extends StatefulWidget {
   final int selectedIndex;
   final void Function(int) onTap;
 
-  const Tabs({
-    super.key,
-    required this.tabs,
-    required this.selectedIndex,
-    required this.onTap,
-  });
+  const Tabs({super.key, required this.tabs, required this.selectedIndex, required this.onTap});
 
   @override
   State<Tabs> createState() => _TabsState();
@@ -45,18 +40,9 @@ class _TabsState extends State<Tabs> {
             itemBuilder: (context, index) {
               return ListTile(
                 leading: widget.tabs[index].icon != null
-                    ? Icon(
-                        widget.tabs[index].icon as IconData,
-                        color:
-                            _selectedIndex == index ? Colors.blue : Colors.grey,
-                      )
+                    ? Icon(widget.tabs[index].icon as IconData, color: _selectedIndex == index ? Colors.blue : Colors.grey)
                     : null,
-                title: Text(
-                  widget.tabs[index].text ?? '',
-                  style: TextStyle(
-                    color: _selectedIndex == index ? Colors.blue : Colors.grey,
-                  ),
-                ),
+                title: Text(widget.tabs[index].text ?? '', style: TextStyle(color: _selectedIndex == index ? Colors.blue : Colors.grey)),
                 selected: _selectedIndex == index,
                 selectedTileColor: Colors.blue.withAlpha(26),
                 selectedColor: Colors.blue,
@@ -70,9 +56,7 @@ class _TabsState extends State<Tabs> {
           ),
         ),
         // 右侧配置内容
-        Expanded(
-          child: widget.tabs[_selectedIndex].child ?? Container(),
-        ),
+        Expanded(child: widget.tabs[_selectedIndex].child ?? Container()),
       ],
     );
   }

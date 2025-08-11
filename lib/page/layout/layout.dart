@@ -51,19 +51,12 @@ class _LayoutPageState extends State<LayoutPage> {
 
   void _showSettingsDialog(BuildContext context) {
     if (kIsMobile) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const SettingPage(),
-        ),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingPage()));
     } else {
       showDialog(
         context: context,
         builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
@@ -84,11 +77,7 @@ class _LayoutPageState extends State<LayoutPage> {
                 child: Container(
                   width: 250,
                   color: AppColors.getThemeBackgroundColor(context),
-                  child: SafeArea(
-                    child: SidebarPanel(
-                      onToggle: () {},
-                    ),
-                  ),
+                  child: SafeArea(child: SidebarPanel(onToggle: () {})),
                 ),
               ),
             )
@@ -100,20 +89,13 @@ class _LayoutPageState extends State<LayoutPage> {
               Container(
                 width: 250,
                 color: AppColors.getSidebarBackgroundColor(context),
-                child: SidebarPanel(
-                  onToggle: _toggleSidebar,
-                ),
+                child: SidebarPanel(onToggle: _toggleSidebar),
               ),
             Expanded(
               child: Column(
                 children: [
-                  TopToolbar(
-                    hideSidebar: hideSidebar,
-                    onToggleSidebar: _toggleSidebar,
-                  ),
-                  Expanded(
-                    child: ChatPage(),
-                  ),
+                  TopToolbar(hideSidebar: hideSidebar, onToggleSidebar: _toggleSidebar),
+                  Expanded(child: ChatPage()),
                 ],
               ),
             ),
@@ -132,13 +114,7 @@ class _LayoutPageState extends State<LayoutPage> {
     return Consumer<ChatModelProvider>(
       builder: (context, chatModelProvider, child) {
         return kIsMobile
-            ? KeyboardDismisser(
-                gestures: [
-                  GestureType.onTap,
-                  GestureType.onPanUpdateDownDirection,
-                ],
-                child: _buildLayout(),
-              )
+            ? KeyboardDismisser(gestures: [GestureType.onTap, GestureType.onPanUpdateDownDirection], child: _buildLayout())
             : _buildLayout();
       },
     );

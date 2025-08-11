@@ -8,21 +8,11 @@ import 'serve_state_provider.dart';
 
 class ProviderManager {
   static List<ChangeNotifierProvider> providers = [
-    ChangeNotifierProvider<SettingsProvider>(
-      create: (_) => SettingsProvider(),
-    ),
-    ChangeNotifierProvider<McpServerProvider>(
-      create: (_) => McpServerProvider(),
-    ),
-    ChangeNotifierProvider<ChatProvider>(
-      create: (_) => ChatProvider(),
-    ),
-    ChangeNotifierProvider<ChatModelProvider>(
-      create: (_) => ChatModelProvider(),
-    ),
-    ChangeNotifierProvider<ServerStateProvider>(
-      create: (_) => ServerStateProvider(),
-    ),
+    ChangeNotifierProvider<SettingsProvider>(create: (_) => SettingsProvider()),
+    ChangeNotifierProvider<McpServerProvider>(create: (_) => McpServerProvider()),
+    ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
+    ChangeNotifierProvider<ChatModelProvider>(create: (_) => ChatModelProvider()),
+    ChangeNotifierProvider<ServerStateProvider>(create: (_) => ServerStateProvider()),
     // Add other Providers here
   ];
 

@@ -11,23 +11,15 @@ class OpenAIClient extends BaseLLMClient {
   final String baseUrl;
   final Map<String, String> _headers;
 
-  OpenAIClient({
-    required this.apiKey,
-    String? baseUrl,
-  })  : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.openai.com/v1' : baseUrl,
-        _headers = {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Authorization': 'Bearer $apiKey',
-        };
+  OpenAIClient({required this.apiKey, String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://api.openai.com/v1' : baseUrl,
+      _headers = {'Content-Type': 'application/json; charset=utf-8', 'Authorization': 'Bearer $apiKey'};
 
   @override
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
     final httpClient = BaseLLMClient.createHttpClient();
 
-    final body = {
-      'model': request.model,
-      'messages': chatMessageToOpenAIMessage(request.messages),
-    };
+    final body = {'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages)};
 
     addModelSettingsToBody(body, request.modelSetting);
 
@@ -42,11 +34,7 @@ class OpenAIClient extends BaseLLMClient {
     final endpoint = getEndpoint(baseUrl, "/chat/completions");
 
     try {
-      final response = await httpClient.post(
-        Uri.parse(endpoint),
-        headers: _headers,
-        body: bodyStr,
-      );
+      final response = await httpClient.post(Uri.parse(endpoint), headers: _headers, body: bodyStr);
 
       final responseBody = utf8.decode(response.bodyBytes);
       Logger.root.fine('OpenAI response: $responseBody');
@@ -61,20 +49,16 @@ class OpenAIClient extends BaseLLMClient {
 
       // Parse tool calls
       final toolCalls = message['tool_calls']
-          ?.map<ToolCall>((t) => ToolCall(
-                id: t['id'],
-                type: t['type'],
-                function: FunctionCall(
-                  name: t['function']['name'],
-                  arguments: t['function']['arguments'],
-                ),
-              ))
+          ?.map<ToolCall>(
+            (t) => ToolCall(
+              id: t['id'],
+              type: t['type'],
+              function: FunctionCall(name: t['function']['name'], arguments: t['function']['arguments']),
+            ),
+          )
           ?.toList();
 
-      return LLMResponse(
-        content: message['content'],
-        toolCalls: toolCalls,
-      );
+      return LLMResponse(content: message['content'], toolCalls: toolCalls);
     } catch (e) {
       throw await handleError(e, 'OpenAI', endpoint, bodyStr);
     } finally {
@@ -86,11 +70,7 @@ class OpenAIClient extends BaseLLMClient {
   Stream<LLMResponse> chatStreamCompletion(CompletionRequest request) async* {
     final httpClient = BaseLLMClient.createHttpClient();
 
-    final body = {
-      'model': request.model,
-      'messages': chatMessageToOpenAIMessage(request.messages),
-      'stream': true,
-    };
+    final body = {'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages), 'stream': true};
 
     addModelSettingsToBody(body, request.modelSetting);
 
@@ -130,21 +110,17 @@ class OpenAIClient extends BaseLLMClient {
           if (delta == null) continue;
 
           final toolCalls = delta['tool_calls']
-              ?.map<ToolCall>((t) => ToolCall(
-                    id: t['id'] ?? '',
-                    type: t['type'] ?? '',
-                    function: FunctionCall(
-                      name: t['function']?['name'] ?? '',
-                      arguments: t['function']?['arguments'] ?? '{}',
-                    ),
-                  ))
+              ?.map<ToolCall>(
+                (t) => ToolCall(
+                  id: t['id'] ?? '',
+                  type: t['type'] ?? '',
+                  function: FunctionCall(name: t['function']?['name'] ?? '', arguments: t['function']?['arguments'] ?? '{}'),
+                ),
+              )
               ?.toList();
 
           if (delta['content'] != null || toolCalls != null) {
-            yield LLMResponse(
-              content: delta['content'],
-              toolCalls: toolCalls,
-            );
+            yield LLMResponse(content: delta['content'], toolCalls: toolCalls);
           }
         } catch (e) {
           Logger.root.severe('Failed to parse event data: $data $e');
@@ -168,10 +144,7 @@ class OpenAIClient extends BaseLLMClient {
     final httpClient = BaseLLMClient.createHttpClient();
 
     try {
-      final response = await httpClient.get(
-        Uri.parse(getEndpoint(baseUrl, "/models")),
-        headers: _headers,
-      );
+      final response = await httpClient.get(Uri.parse(getEndpoint(baseUrl, "/models")), headers: _headers);
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
@@ -183,12 +156,7 @@ class OpenAIClient extends BaseLLMClient {
       return models;
     } catch (e, trace) {
       Logger.root.severe('Failed to get model list: $e, trace: $trace');
-      throw LLMException(
-        name: 'OpenAI',
-        endpoint: getEndpoint(baseUrl, "/models"),
-        requestBody: '',
-        originalError: e,
-      );
+      throw LLMException(name: 'OpenAI', endpoint: getEndpoint(baseUrl, "/models"), requestBody: '', originalError: e);
     } finally {
       httpClient.close();
     }
@@ -197,9 +165,7 @@ class OpenAIClient extends BaseLLMClient {
 
 List<Map<String, dynamic>> chatMessageToOpenAIMessage(List<ChatMessage> messages) {
   return messages.map((message) {
-    final json = <String, dynamic>{
-      'role': message.role.value,
-    };
+    final json = <String, dynamic>{'role': message.role.value};
 
     // If there is both text content and files, use array format
     if (message.content != null || message.files != null) {
@@ -211,26 +177,18 @@ List<Map<String, dynamic>> chatMessageToOpenAIMessage(List<ChatMessage> messages
           if (isImageFile(file.fileType)) {
             contentParts.add({
               'type': 'image_url',
-              'image_url': {
-                "url": "data:${file.fileType};base64,${file.fileContent}",
-              },
+              'image_url': {"url": "data:${file.fileType};base64,${file.fileContent}"},
             });
           }
           if (isTextFile(file.fileType)) {
-            contentParts.add({
-              'type': 'text',
-              'text': file.fileContent,
-            });
+            contentParts.add({'type': 'text', 'text': file.fileContent});
           }
         }
       }
 
       // Add text content
       if (message.content != null) {
-        contentParts.add({
-          'type': 'text',
-          'text': message.content,
-        });
+        contentParts.add({'type': 'text', 'text': message.content});
       }
 
       // If there is only one text content and no files, use simple string format

@@ -93,10 +93,7 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
       // 获取GitHub最新release版本
       final apiUrl = 'https://api.github.com/repos/${widget.owner}/${widget.repo}/releases/latest';
 
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {'Accept': 'application/vnd.github.v3+json'},
-      ).timeout(const Duration(seconds: 10));
+      final response = await http.get(Uri.parse(apiUrl), headers: {'Accept': 'application/vnd.github.v3+json'}).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -120,33 +117,18 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
           }
         } else if (!widget.autoCheck && mounted) {
           // 手动检查模式下，如果没有新版本也要显示提示
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("已是最新版本"),
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("已是最新版本"), duration: const Duration(seconds: 2)));
         }
       } else {
         debugPrint('GitHub API请求失败，状态码: ${response.statusCode}');
         if (!widget.autoCheck && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("检查更新失败"),
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("检查更新失败"), duration: const Duration(seconds: 2)));
         }
       }
     } catch (e) {
       debugPrint('检查更新出错: $e');
       if (!widget.autoCheck && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("检查更新失败"),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("检查更新失败"), duration: const Duration(seconds: 2)));
       }
     } finally {
       if (mounted) {
@@ -194,17 +176,13 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
           await launchUrl(url, mode: LaunchMode.externalApplication);
         } else {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.openUrlFailed)),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.openUrlFailed)));
           }
         }
       } catch (e) {
         debugPrint('打开URL错误: $e');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.openUrlFailed)),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.openUrlFailed)));
         }
       }
     }
@@ -272,11 +250,7 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
                   Flexible(
                     child: Text(
                       l10n.newVersionFound(_newVersion),
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -303,22 +277,13 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _isChecking
-                  ? const SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
+                  ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.update, size: 14, color: Colors.grey),
               if (!isVeryNarrow) ...[
                 const SizedBox(width: 4),
                 Text(
                   _isChecking ? l10n.checkingForUpdates : l10n.checkUpdate,
-                  style: TextStyle(
-                    color: AppColors.getThemeTextColor(context),
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: AppColors.getThemeTextColor(context), fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -346,9 +311,7 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
               Text(l10n.newVersionFound(_newVersion)),
             ],
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -363,14 +326,9 @@ class _UpgradeNoticeState extends State<UpgradeNotice> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor,
-                      ),
+                      border: Border.all(color: Theme.of(context).dividerColor),
                     ),
-                    child: Markit(
-                      data: _releaseNotes,
-                      textStyle: const TextStyle(fontSize: 12),
-                    ),
+                    child: Markit(data: _releaseNotes, textStyle: const TextStyle(fontSize: 12)),
                   ),
                 ],
               ],

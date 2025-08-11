@@ -55,11 +55,7 @@ class NetworkSyncService {
 
       // Health check
       router.get('/health', (Request request) {
-        return Response.ok(json.encode({
-          'status': 'ok',
-          'timestamp': DateTime.now().toIso8601String(),
-          'device': Platform.operatingSystem,
-        }));
+        return Response.ok(json.encode({'status': 'ok', 'timestamp': DateTime.now().toIso8601String(), 'device': Platform.operatingSystem}));
       });
 
       final handler = Pipeline().addMiddleware(corsHeaders()).addMiddleware(logRequests()).addHandler(router.call);
@@ -99,14 +95,9 @@ class NetworkSyncService {
         'displayName': '${Platform.localHostname} (${Platform.operatingSystem})',
       };
 
-      return Response.ok(
-        json.encode(info),
-        headers: {'Content-Type': 'application/json'},
-      );
+      return Response.ok(json.encode(info), headers: {'Content-Type': 'application/json'});
     } catch (e) {
-      return Response.internalServerError(
-        body: json.encode({'error': e.toString()}),
-      );
+      return Response.internalServerError(body: json.encode({'error': e.toString()}));
     }
   }
 
@@ -117,16 +108,11 @@ class NetworkSyncService {
 
       return Response.ok(
         json.encode(data),
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Disposition': 'attachment; filename="chatmcp_backup.json"',
-        },
+        headers: {'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="chatmcp_backup.json"'},
       );
     } catch (e) {
       Logger.root.severe('Failed to export data: $e');
-      return Response.internalServerError(
-        body: json.encode({'error': 'Failed to export data: ${e.toString()}'}),
-      );
+      return Response.internalServerError(body: json.encode({'error': 'Failed to export data: ${e.toString()}'}));
     }
   }
 
@@ -138,16 +124,10 @@ class NetworkSyncService {
 
       await _importAllData(data);
 
-      return Response.ok(json.encode({
-        'success': true,
-        'message': 'Data imported successfully',
-        'timestamp': DateTime.now().toIso8601String(),
-      }));
+      return Response.ok(json.encode({'success': true, 'message': 'Data imported successfully', 'timestamp': DateTime.now().toIso8601String()}));
     } catch (e) {
       Logger.root.severe('Failed to import data: $e');
-      return Response.badRequest(
-        body: json.encode({'error': 'Failed to import data: ${e.toString()}'}),
-      );
+      return Response.badRequest(body: json.encode({'error': 'Failed to import data: ${e.toString()}'}));
     }
   }
 
@@ -202,9 +182,7 @@ class NetworkSyncService {
       final response = await dio.post(
         '$serverUrl/import',
         data: json.encode(data),
-        options: Options(
-          headers: {'Content-Type': 'application/json'},
-        ),
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
@@ -341,10 +319,7 @@ class NetworkSyncService {
     return {
       'version': '1.0',
       'timestamp': DateTime.now().toIso8601String(),
-      'device': {
-        'name': Platform.localHostname,
-        'platform': Platform.operatingSystem,
-      },
+      'device': {'name': Platform.localHostname, 'platform': Platform.operatingSystem},
       'chat': chatData,
       'chat_message': messageData,
       'settings': settings,
@@ -450,22 +425,10 @@ class SyncServerHistory {
   final DateTime lastConnected;
   final String displayName;
 
-  SyncServerHistory({
-    required this.url,
-    required this.deviceName,
-    required this.platform,
-    required this.lastConnected,
-    required this.displayName,
-  });
+  SyncServerHistory({required this.url, required this.deviceName, required this.platform, required this.lastConnected, required this.displayName});
 
   Map<String, dynamic> toJson() {
-    return {
-      'url': url,
-      'deviceName': deviceName,
-      'platform': platform,
-      'lastConnected': lastConnected.toIso8601String(),
-      'displayName': displayName,
-    };
+    return {'url': url, 'deviceName': deviceName, 'platform': platform, 'lastConnected': lastConnected.toIso8601String(), 'displayName': displayName};
   }
 
   factory SyncServerHistory.fromJson(Map<String, dynamic> json) {

@@ -152,9 +152,64 @@ flutter run -d linux
 flutter run -d macos
 ```
 
+### Zorunlu Kod Formatı ve Pre-commit Hook
+
+Katkı verenler arasında tutarlı bir kod stili sağlamak için, bu depoda her commit öncesi Dart formatlaması zorunludur.
+
+- Sürüm kontrolünde bulunan bir Git hook dosyası `.githooks/pre-commit` ile gelir.
+- Commit sırasında `dart format .` çalıştırılır, değişen dosyalar yeniden `git add` edilir ve ardından hiçbir dosyanın format dışı kalmadığını doğrulayan bir kontrol yapılır.
+- Yerelde format dışı commit’ler reddedilir; ayrıca CI üzerinde de format dışı PR’lar kırılır.
+
+Hızlı kurulum (her klon sonrası bir defa):
+
+```bash
+make setup-git-hooks
+```
+
+El ile kurulum (alternatif):
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
+
+Gereksinimler (PATH üzerinde en az biri olmalı):
+
+- Dart SDK, veya
+- Flutter (Dart içerir)
+
+Örnekler:
+
+- macOS/Linux (Flutter):
+  ```bash
+  export PATH="$PATH:$HOME/flutter/bin"
+  which flutter && flutter --version
+  which dart && dart --version
+  ```
+- macOS/Linux (Dart SDK):
+  ```bash
+  export PATH="$PATH:$HOME/dart-sdk/bin"
+  which dart && dart --version
+  ```
+- Windows (PowerShell): Kullanıcı/Sistem PATH’ine `C:\\src\\flutter\\bin` (veya Flutter kurulu yolunuz) ekleyin. Doğrulama:
+  ```powershell
+  where flutter
+  where dart
+  ```
+
+IDE notu: PATH’i değiştirdikten sonra IDE’nizi yeniden başlatın; commit işlemleri güncel ortam değişkenlerini miras almalıdır.
+
+CI doğrulaması:
+
+- GitHub Actions `check-format` workflow’u push/PR’larda `dart format --output=none --set-exit-if-changed .` çalıştırır ve format dışı dosyalar varsa job kırılır.
+
+Politika:
+
+- Hook’ları atlamayın (örn. `--no-verify`). Bu durumda da CI kırılacak ve yine formatlamanız gerekecektir.
+
 - Windows:
 ```shell
-flutter run -d macos
+flutter run -d windows
 ```
 
 - Android(emulator or gerçek cihaz):

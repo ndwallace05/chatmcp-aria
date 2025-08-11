@@ -95,11 +95,7 @@ class DatabaseHelper {
       Logger.root.info('Step 1.4: Opening database connection and running migrations');
       final db = await databaseFactory.openDatabase(
         dbPath,
-        options: OpenDatabaseOptions(
-          version: currentVersion,
-          onCreate: schemaManager.onCreate,
-          onUpgrade: schemaManager.onUpgrade,
-        ),
+        options: OpenDatabaseOptions(version: currentVersion, onCreate: schemaManager.onCreate, onUpgrade: schemaManager.onUpgrade),
       );
 
       Logger.root.info('Step 1.5: Database connection established and migrations completed');
@@ -116,10 +112,7 @@ class DatabaseMigration {
   final int version;
   final List<String> sql;
 
-  const DatabaseMigration({
-    required this.version,
-    required this.sql,
-  });
+  const DatabaseMigration({required this.version, required this.sql});
 }
 
 Future<void> initDb() async {

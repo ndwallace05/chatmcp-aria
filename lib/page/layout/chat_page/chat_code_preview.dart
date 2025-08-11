@@ -14,10 +14,7 @@ import 'package:flutter_highlight/flutter_highlight.dart';
 
 class ChatCodePreview extends StatefulWidget {
   final CodePreviewEvent codePreviewEvent;
-  const ChatCodePreview({
-    super.key,
-    required this.codePreviewEvent,
-  });
+  const ChatCodePreview({super.key, required this.codePreviewEvent});
 
   @override
   State<ChatCodePreview> createState() => _ChatCodePreviewState();
@@ -62,8 +59,7 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
     setState(() => _webViewKey = UniqueKey());
   }
 
-  CodePreviewEvent? get codePreviewEvent =>
-      ProviderManager.chatProvider.artifactEvent;
+  CodePreviewEvent? get codePreviewEvent => ProviderManager.chatProvider.artifactEvent;
 
   Widget _buildToolBar() {
     var t = AppLocalizations.of(context)!;
@@ -103,8 +99,7 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
               // copy button
               TextButton(
                 onPressed: () {
-                  Clipboard.setData(
-                      ClipboardData(text: widget.codePreviewEvent.textContent));
+                  Clipboard.setData(ClipboardData(text: widget.codePreviewEvent.textContent));
                 },
                 style: IconButton.styleFrom(
                   iconSize: 16,
@@ -112,28 +107,16 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: Text(
-                  t.copy,
-                  style: TextStyle(
-                    fontSize: 9,
-                    height: 1,
-                    color: AppColors.getInactiveTextColor(context),
-                  ),
-                ),
+                child: Text(t.copy, style: TextStyle(fontSize: 9, height: 1, color: AppColors.getInactiveTextColor(context))),
               ),
               const SizedBox(width: 4),
               TextButton(
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: _showCode
-                      ? AppColors.getCodeTabActiveColor(context)
-                      : AppColors.getCodeTabInactiveColor(context),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                  backgroundColor: _showCode ? AppColors.getCodeTabActiveColor(context) : AppColors.getCodeTabInactiveColor(context),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                 ),
                 onPressed: () {
                   setState(() {
@@ -145,9 +128,7 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
                   style: TextStyle(
                     fontSize: 9,
                     height: 1,
-                    color: _showCode
-                        ? Theme.of(context).primaryColor
-                        : AppColors.getInactiveTextColor(context),
+                    color: _showCode ? Theme.of(context).primaryColor : AppColors.getInactiveTextColor(context),
                   ),
                 ),
               ),
@@ -158,11 +139,8 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: AppColors.getTextButtonColor(context),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   ),
                   onPressed: () {
                     setState(() {
@@ -174,25 +152,17 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
                     style: TextStyle(
                       fontSize: 9,
                       height: 1,
-                      color: !_showCode
-                          ? Theme.of(context).primaryColor
-                          : AppColors.getInactiveTextColor(context),
+                      color: !_showCode ? Theme.of(context).primaryColor : AppColors.getInactiveTextColor(context),
                     ),
                   ),
                 ),
-              ]
+              ],
             ],
           ),
           const Spacer(),
           Text(
-            widget.codePreviewEvent.attributes['type']?.isEmpty ?? true
-                ? 'text'
-                : widget.codePreviewEvent.attributes['type']!,
-            style: TextStyle(
-              color: AppColors.getCodeLanguageTextColor(context),
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
+            widget.codePreviewEvent.attributes['type']?.isEmpty ?? true ? 'text' : widget.codePreviewEvent.attributes['type']!,
+            style: TextStyle(color: AppColors.getCodeLanguageTextColor(context), fontSize: 10, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -203,23 +173,12 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
     var t = AppLocalizations.of(context)!;
     return InAppWebView(
       key: _webViewKey,
-      initialSettings: InAppWebViewSettings(
-        javaScriptEnabled: true,
-        transparentBackground: true,
-        isInspectable: kDebugMode,
-      ),
-      initialUrlRequest: URLRequest(
-        url: WebUri('http://localhost:$sandboxServerPort'),
-        headers: {
-          'Content-Type': 'text/html; charset=UTF-8',
-        },
-      ),
+      initialSettings: InAppWebViewSettings(javaScriptEnabled: true, transparentBackground: true, isInspectable: kDebugMode),
+      initialUrlRequest: URLRequest(url: WebUri('http://localhost:$sandboxServerPort'), headers: {'Content-Type': 'text/html; charset=UTF-8'}),
       onLoadStop: (controller, url) async {
         await Future.delayed(const Duration(milliseconds: 1000));
         // 注入并执行 JavaScript 代码
-        await controller.evaluateJavascript(
-            source:
-                '''updateCode("${Uri.encodeComponent(codePreviewEvent?.textContent ?? '')}")''');
+        await controller.evaluateJavascript(source: '''updateCode("${Uri.encodeComponent(codePreviewEvent?.textContent ?? '')}")''');
       },
       onCreateWindow: (controller, request) => Future.value(false),
       onReceivedError: (controller, request, error) {
@@ -240,9 +199,7 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
             Text(t.loadContentFailed),
             const SizedBox(height: 8),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getToolbarBackgroundColor(context),
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.getToolbarBackgroundColor(context)),
               onPressed: () {
                 setState(() {
                   _hasError = false;
@@ -280,15 +237,12 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
       language = "c";
     }
 
-    final sandboxServerPort =
-        ProviderManager.settingsProvider.sandboxServerPort;
+    final sandboxServerPort = ProviderManager.settingsProvider.sandboxServerPort;
 
     if (!_supportPreview) {
       return Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.getCodePreviewBorderColor(context),
-          ),
+          border: Border.all(color: AppColors.getCodePreviewBorderColor(context)),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -315,9 +269,7 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: AppColors.getCodePreviewBorderColor(context),
-        ),
+        border: Border.all(color: AppColors.getCodePreviewBorderColor(context)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -327,12 +279,8 @@ class _ChatCodePreviewState extends State<ChatCodePreview> {
           Expanded(
             child: !_showCode
                 ? (language == "html"
-                    ? HtmlView(
-                        html: codePreviewEvent?.textContent ?? '',
-                      )
-                    : _buildSandboxWebView(
-                        sandboxServerPort: sandboxServerPort,
-                      ))
+                      ? HtmlView(html: codePreviewEvent?.textContent ?? '')
+                      : _buildSandboxWebView(sandboxServerPort: sandboxServerPort))
                 : SingleChildScrollView(
                     child: SizedBox(
                       width: double.infinity,

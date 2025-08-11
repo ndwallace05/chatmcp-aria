@@ -23,41 +23,24 @@ class ChatSetting extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionTitle(
-                  context,
-                  l10n.modelSettings,
-                  CupertinoIcons.slider_horizontal_3,
-                ),
+                _buildSectionTitle(context, l10n.modelSettings, CupertinoIcons.slider_horizontal_3),
                 const SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
                     color: colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: colorScheme.outline.withAlpha(26),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.shadow.withAlpha(13),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    border: Border.all(color: colorScheme.outline.withAlpha(26), width: 1),
+                    boxShadow: [BoxShadow(color: colorScheme.shadow.withAlpha(13), blurRadius: 10, offset: const Offset(0, 2))],
                   ),
                   child: Column(
                     children: [
                       _buildSliderWithLabel(
                         context: context,
-                        label: l10n.temperature(
-                            modelSetting.temperature.toStringAsFixed(2)),
+                        label: l10n.temperature(modelSetting.temperature.toStringAsFixed(2)),
                         value: modelSetting.temperature,
                         min: 0.0,
                         max: 2.0,
-                        onChanged: (value) => _updateModelSettings(
-                          settingsProvider,
-                          temperature: value,
-                        ),
+                        onChanged: (value) => _updateModelSettings(settingsProvider, temperature: value),
                         tooltip: l10n.temperatureTooltip,
                       ),
                       _buildDivider(context),
@@ -67,10 +50,7 @@ class ChatSetting extends StatelessWidget {
                         value: modelSetting.topP,
                         min: 0.0,
                         max: 1.0,
-                        onChanged: (value) => _updateModelSettings(
-                          settingsProvider,
-                          topP: value,
-                        ),
+                        onChanged: (value) => _updateModelSettings(settingsProvider, topP: value),
                         tooltip: l10n.topPTooltip,
                       ),
                       _buildDivider(context),
@@ -78,38 +58,27 @@ class ChatSetting extends StatelessWidget {
                         context: context,
                         label: l10n.maxTokens,
                         value: modelSetting.maxTokens,
-                        onChanged: (value) => _updateModelSettings(
-                          settingsProvider,
-                          maxTokens: value,
-                        ),
+                        onChanged: (value) => _updateModelSettings(settingsProvider, maxTokens: value),
                         tooltip: l10n.maxTokensTooltip,
                       ),
                       _buildDivider(context),
                       _buildSliderWithLabel(
                         context: context,
-                        label: l10n.frequencyPenalty(
-                            modelSetting.frequencyPenalty.toStringAsFixed(2)),
+                        label: l10n.frequencyPenalty(modelSetting.frequencyPenalty.toStringAsFixed(2)),
                         value: modelSetting.frequencyPenalty,
                         min: -2.0,
                         max: 2.0,
-                        onChanged: (value) => _updateModelSettings(
-                          settingsProvider,
-                          frequencyPenalty: value,
-                        ),
+                        onChanged: (value) => _updateModelSettings(settingsProvider, frequencyPenalty: value),
                         tooltip: l10n.frequencyPenaltyTooltip,
                       ),
                       _buildDivider(context),
                       _buildSliderWithLabel(
                         context: context,
-                        label: l10n.presencePenalty(
-                            modelSetting.presencePenalty.toStringAsFixed(2)),
+                        label: l10n.presencePenalty(modelSetting.presencePenalty.toStringAsFixed(2)),
                         value: modelSetting.presencePenalty,
                         min: -2.0,
                         max: 2.0,
-                        onChanged: (value) => _updateModelSettings(
-                          settingsProvider,
-                          presencePenalty: value,
-                        ),
+                        onChanged: (value) => _updateModelSettings(settingsProvider, presencePenalty: value),
                         tooltip: l10n.presencePenaltyTooltip,
                       ),
                     ],
@@ -121,34 +90,19 @@ class ChatSetting extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: colorScheme.primary.withAlpha(51),
-                        width: 1,
-                      ),
+                      border: Border.all(color: colorScheme.primary.withAlpha(51), width: 1),
                     ),
                     child: TextButton.icon(
                       onPressed: () => _resetModelSettings(settingsProvider),
-                      icon: Icon(
-                        CupertinoIcons.refresh_thin,
-                        size: 18,
-                        color: colorScheme.primary,
-                      ),
+                      icon: Icon(CupertinoIcons.refresh_thin, size: 18, color: colorScheme.primary),
                       label: Text(
                         'Reset',
-                        style: TextStyle(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w500),
                       ),
                       style: TextButton.styleFrom(
                         foregroundColor: colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                   ),
@@ -170,25 +124,13 @@ class ChatSetting extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: colorScheme.primary.withAlpha(26),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: colorScheme.primary,
-            ),
+            decoration: BoxDecoration(color: colorScheme.primary.withAlpha(26), borderRadius: BorderRadius.circular(8)),
+            child: Icon(icon, size: 20, color: colorScheme.primary),
           ),
           const SizedBox(width: 12),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-              letterSpacing: -0.5,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colorScheme.onSurface, letterSpacing: -0.5),
           ),
         ],
       ),
@@ -196,12 +138,7 @@ class ChatSetting extends StatelessWidget {
   }
 
   Widget _buildDivider(BuildContext context) {
-    return Divider(
-      height: 1,
-      indent: 20,
-      endIndent: 20,
-      color: Theme.of(context).colorScheme.outline.withAlpha(21),
-    );
+    return Divider(height: 1, indent: 20, endIndent: 20, color: Theme.of(context).colorScheme.outline.withAlpha(21));
   }
 
   Widget _buildSliderWithLabel({
@@ -226,26 +163,15 @@ class ChatSetting extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: colorScheme.onSurface,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: colorScheme.onSurface),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withAlpha(26),
-                  borderRadius: BorderRadius.circular(6),
-                ),
+                decoration: BoxDecoration(color: colorScheme.primary.withAlpha(26), borderRadius: BorderRadius.circular(6)),
                 child: Text(
                   value.toStringAsFixed(2),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.primary,
-                  ),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colorScheme.primary),
                 ),
               ),
             ],
@@ -253,14 +179,7 @@ class ChatSetting extends StatelessWidget {
           if (tooltip != null)
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                tooltip,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurface.withAlpha(153),
-                  height: 1.3,
-                ),
-              ),
+              child: Text(tooltip, style: TextStyle(fontSize: 13, color: colorScheme.onSurface.withAlpha(153), height: 1.3)),
             ),
           const SizedBox(height: 12),
           SliderTheme(
@@ -273,12 +192,7 @@ class ChatSetting extends StatelessWidget {
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
             ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
+            child: Slider(value: value, min: min, max: max, onChanged: onChanged),
           ),
         ],
       ),
@@ -302,59 +216,32 @@ class ChatSetting extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: colorScheme.onSurface),
           ),
           if (tooltip != null)
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                tooltip,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurface.withAlpha(153),
-                  height: 1.3,
-                ),
-              ),
+              child: Text(tooltip, style: TextStyle(fontSize: 13, color: colorScheme.onSurface.withAlpha(153), height: 1.3)),
             ),
           const SizedBox(height: 12),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: colorScheme.outline.withAlpha(51),
-                width: 1,
-              ),
+              border: Border.all(color: colorScheme.outline.withAlpha(51), width: 1),
             ),
             child: TextField(
               controller: TextEditingController(text: value?.toString() ?? ''),
               keyboardType: TextInputType.number,
-              style: TextStyle(
-                fontSize: 15,
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 15, color: colorScheme.onSurface, fontWeight: FontWeight.w500),
               decoration: InputDecoration(
                 hintText: l10n.enterMaxTokens,
-                hintStyle: TextStyle(
-                  color: colorScheme.onSurface.withAlpha(128),
-                  fontWeight: FontWeight.normal,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
+                hintStyle: TextStyle(color: colorScheme.onSurface.withAlpha(128), fontWeight: FontWeight.normal),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
                 ),
               ),
               onChanged: (value) {
@@ -381,17 +268,11 @@ class ChatSetting extends StatelessWidget {
   }) {
     final currentSettings = provider.modelSetting;
     provider.updateModelSettings(
-      temperature: temperature != null
-          ? _roundToOneDecimal(temperature)
-          : currentSettings.temperature,
+      temperature: temperature != null ? _roundToOneDecimal(temperature) : currentSettings.temperature,
       maxTokens: maxTokens,
       topP: topP != null ? _roundToOneDecimal(topP) : currentSettings.topP,
-      frequencyPenalty: frequencyPenalty != null
-          ? _roundToOneDecimal(frequencyPenalty)
-          : currentSettings.frequencyPenalty,
-      presencePenalty: presencePenalty != null
-          ? _roundToOneDecimal(presencePenalty)
-          : currentSettings.presencePenalty,
+      frequencyPenalty: frequencyPenalty != null ? _roundToOneDecimal(frequencyPenalty) : currentSettings.frequencyPenalty,
+      presencePenalty: presencePenalty != null ? _roundToOneDecimal(presencePenalty) : currentSettings.presencePenalty,
     );
   }
 

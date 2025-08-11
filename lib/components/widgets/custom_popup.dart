@@ -55,19 +55,10 @@ class BasePopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveArrowColor =
-        arrowColor ?? AppColors.getSidebarBackgroundColor(context);
-    final effectiveBackgroundColor =
-        backgroundColor ?? AppColors.getSidebarBackgroundColor(context);
+    final effectiveArrowColor = arrowColor ?? AppColors.getSidebarBackgroundColor(context);
+    final effectiveBackgroundColor = backgroundColor ?? AppColors.getSidebarBackgroundColor(context);
     final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(8);
-    final effectiveBoxShadow = boxShadow ??
-        [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ];
+    final effectiveBoxShadow = boxShadow ?? [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(0, 2))];
 
     return CustomPopup(
       showArrow: showArrow,
@@ -75,10 +66,7 @@ class BasePopup extends StatelessWidget {
       backgroundColor: effectiveBackgroundColor,
       contentPadding: EdgeInsets.all(0),
       content: Container(
-        constraints: BoxConstraints(
-          maxWidth: maxWidth ?? 280,
-          maxHeight: maxHeight ?? MediaQuery.of(context).size.height * 0.6,
-        ),
+        constraints: BoxConstraints(maxWidth: maxWidth ?? 280, maxHeight: maxHeight ?? MediaQuery.of(context).size.height * 0.6),
         margin: margin,
         padding: padding ?? const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -168,29 +156,16 @@ class _SearchablePopupState extends State<SearchablePopup> {
                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 4.0),
                 child: TextField(
                   controller: _searchController,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.getThemeTextColor(context),
-                      ),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.getThemeTextColor(context)),
                   decoration: InputDecoration(
                     hintText: widget.searchHint,
-                    hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.getInactiveTextColor(context),
-                        ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 16,
-                      color: AppColors.getInactiveTextColor(context),
-                    ),
+                    hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.getInactiveTextColor(context)),
+                    prefixIcon: Icon(Icons.search, size: 16, color: AppColors.getInactiveTextColor(context)),
                     isDense: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                     filled: true,
-                    fillColor: widget.backgroundColor ??
-                        AppColors.getSidebarBackgroundColor(context),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    fillColor: widget.backgroundColor ?? AppColors.getSidebarBackgroundColor(context),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   ),
                   onChanged: (value) {
                     popupSetState(() {
@@ -201,9 +176,7 @@ class _SearchablePopupState extends State<SearchablePopup> {
                 ),
               ),
               // 内容区域
-              Flexible(
-                child: widget.contentBuilder(_searchText),
-              ),
+              Flexible(child: widget.contentBuilder(_searchText)),
             ],
           );
         },
@@ -230,31 +203,18 @@ class PopupListItem extends StatelessWidget {
   /// 选中时的颜色
   final Color? selectedColor;
 
-  const PopupListItem({
-    super.key,
-    required this.child,
-    this.onTap,
-    this.isSelected = false,
-    this.padding,
-    this.selectedColor,
-  });
+  const PopupListItem({super.key, required this.child, this.onTap, this.isSelected = false, this.padding, this.selectedColor});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
             Expanded(child: child),
-            if (isSelected)
-              Icon(
-                Icons.check,
-                size: 14,
-                color: selectedColor ?? AppColors.getTextButtonColor(context),
-              ),
+            if (isSelected) Icon(Icons.check, size: 14, color: selectedColor ?? AppColors.getTextButtonColor(context)),
           ],
         ),
       ),
@@ -273,12 +233,7 @@ class PopupGroupHeader extends StatelessWidget {
   /// 内边距
   final EdgeInsetsGeometry? padding;
 
-  const PopupGroupHeader({
-    super.key,
-    required this.title,
-    this.icon,
-    this.padding,
-  });
+  const PopupGroupHeader({super.key, required this.title, this.icon, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -286,16 +241,8 @@ class PopupGroupHeader extends StatelessWidget {
       padding: padding ?? const EdgeInsets.fromLTRB(16, 6, 16, 2),
       child: Row(
         children: [
-          if (icon != null) ...[
-            icon!,
-            const SizedBox(width: 8),
-          ],
-          Text(
-            title,
-            style: TextStyle(
-              color: AppColors.getThemeTextColor(context),
-            ),
-          ),
+          if (icon != null) ...[icon!, const SizedBox(width: 8)],
+          Text(title, style: TextStyle(color: AppColors.getThemeTextColor(context))),
         ],
       ),
     );
@@ -316,22 +263,11 @@ class PopupDivider extends StatelessWidget {
   /// 分隔线颜色
   final Color? color;
 
-  const PopupDivider({
-    super.key,
-    this.height = 1,
-    this.indent = 8,
-    this.endIndent = 8,
-    this.color,
-  });
+  const PopupDivider({super.key, this.height = 1, this.indent = 8, this.endIndent = 8, this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
-      height: height,
-      indent: indent,
-      endIndent: endIndent,
-      color: color ?? AppColors.getCodePreviewBorderColor(context),
-    );
+    return Divider(height: height, indent: indent, endIndent: endIndent, color: color ?? AppColors.getCodePreviewBorderColor(context));
   }
 }
 
@@ -343,24 +279,14 @@ class PopupEmptyState extends StatelessWidget {
   /// 文本样式
   final TextStyle? textStyle;
 
-  const PopupEmptyState({
-    super.key,
-    required this.message,
-    this.textStyle,
-  });
+  const PopupEmptyState({super.key, required this.message, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text(
-          message,
-          style: textStyle ??
-              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.getInactiveTextColor(context),
-                  ),
-        ),
+        child: Text(message, style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.getInactiveTextColor(context))),
       ),
     );
   }
@@ -385,13 +311,7 @@ class CustomPopupWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePopup(
-      showArrow: showArrow,
-      arrowColor: arrowColor,
-      backgroundColor: backgroundColor,
-      content: content,
-      child: child,
-    );
+    return BasePopup(showArrow: showArrow, arrowColor: arrowColor, backgroundColor: backgroundColor, content: content, child: child);
   }
 }
 
@@ -415,13 +335,7 @@ class CustomPopupRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 现在使用 BasePopup 而不是直接使用 flutter_popup 包
-    return BasePopup(
-      showArrow: showArrow,
-      arrowColor: arrowColor,
-      backgroundColor: backgroundColor,
-      content: content,
-      child: child,
-    );
+    return BasePopup(showArrow: showArrow, arrowColor: arrowColor, backgroundColor: backgroundColor, content: content, child: child);
   }
 }
 

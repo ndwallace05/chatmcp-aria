@@ -23,32 +23,14 @@ class File {
   final String fileType;
   final String fileContent;
 
-  File({
-    required this.name,
-    required this.path,
-    required this.size,
-    required this.fileType,
-    this.fileContent = '',
-  });
+  File({required this.name, required this.path, required this.size, required this.fileType, this.fileContent = ''});
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'path': path,
-      'size': size,
-      'fileType': fileType,
-      'fileContent': fileContent,
-    };
+    return {'name': name, 'path': path, 'size': size, 'fileType': fileType, 'fileContent': fileContent};
   }
 
   factory File.fromJson(Map<String, dynamic> json) {
-    return File(
-      name: json['name'],
-      path: json['path'],
-      size: json['size'],
-      fileType: json['fileType'],
-      fileContent: json['fileContent'],
-    );
+    return File(name: json['name'], path: json['path'], size: json['size'], fileType: json['fileType'], fileContent: json['fileContent']);
   }
 }
 
@@ -78,14 +60,11 @@ class ChatMessage {
     this.childMessageIds,
     String? messageId,
     String? parentMessageId,
-  })  : messageId = messageId ?? Uuid().v4(),
-        parentMessageId = parentMessageId ?? '';
+  }) : messageId = messageId ?? Uuid().v4(),
+       parentMessageId = parentMessageId ?? '';
 
   Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{
-      'role': role.value,
-      if (content != null) 'content': content,
-    };
+    final json = <String, dynamic>{'role': role.value, if (content != null) 'content': content};
 
     if (role == MessageRole.tool && name != null && toolCallId != null) {
       json['name'] = name!;
@@ -118,25 +97,19 @@ class ChatMessage {
   }
 
   factory ChatMessage.fromDb(DbChatMessage dbChatMessage) {
-    return ChatMessage.fromJson(dbChatMessage.messageId,
-        dbChatMessage.parentMessageId, jsonDecode(dbChatMessage.body));
+    return ChatMessage.fromJson(dbChatMessage.messageId, dbChatMessage.parentMessageId, jsonDecode(dbChatMessage.body));
   }
 
-  factory ChatMessage.fromJson(
-      String messageId, String parentMessageId, Map<String, dynamic> json) {
+  factory ChatMessage.fromJson(String messageId, String parentMessageId, Map<String, dynamic> json) {
     // Handle type conversion for toolCalls
     List<Map<String, dynamic>>? toolCalls;
     if (json['tool_calls'] != null) {
-      toolCalls = (json['tool_calls'] as List)
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
+      toolCalls = (json['tool_calls'] as List).map((item) => Map<String, dynamic>.from(item)).toList();
     }
 
     List<File>? files;
     if (json['files'] != null) {
-      files = (json['files'] as List)
-          .map((item) => File.fromJson(Map<String, dynamic>.from(item)))
-          .toList();
+      files = (json['files'] as List).map((item) => File.fromJson(Map<String, dynamic>.from(item))).toList();
     }
 
     return ChatMessage(
@@ -158,19 +131,10 @@ class ChatMessage {
   }
 
   DbChatMessage toDb(int chatId) {
-    return DbChatMessage(
-      chatId: chatId,
-      messageId: messageId,
-      parentMessageId: parentMessageId,
-      body: toString(),
-    );
+    return DbChatMessage(chatId: chatId, messageId: messageId, parentMessageId: parentMessageId, body: toString());
   }
 
-  ChatMessage copyWith(
-      {String? messageId,
-      String? parentMessageId,
-      String? content,
-      MessageRole? role}) {
+  ChatMessage copyWith({String? messageId, String? parentMessageId, String? content, MessageRole? role}) {
     return ChatMessage(
       messageId: messageId ?? this.messageId,
       parentMessageId: parentMessageId ?? this.parentMessageId,
@@ -191,36 +155,21 @@ class ToolCall {
   final String type;
   final FunctionCall function;
 
-  ToolCall({
-    required this.id,
-    required this.type,
-    required this.function,
-  });
+  ToolCall({required this.id, required this.type, required this.function});
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': type,
-        'function': function.toJson(),
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'type': type, 'function': function.toJson()};
 }
 
 class FunctionCall {
   final String name;
   final String arguments;
 
-  FunctionCall({
-    required this.name,
-    required this.arguments,
-  });
+  FunctionCall({required this.name, required this.arguments});
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'arguments': arguments,
-      };
+  Map<String, dynamic> toJson() => {'name': name, 'arguments': arguments};
 
   // Parse arguments to Map
-  Map<String, dynamic> get parsedArguments =>
-      json.decode(arguments) as Map<String, dynamic>;
+  Map<String, dynamic> get parsedArguments => json.decode(arguments) as Map<String, dynamic>;
 }
 
 class LLMResponse {
@@ -228,16 +177,9 @@ class LLMResponse {
   final List<ToolCall>? toolCalls;
   final bool needToolCall;
 
-  LLMResponse({
-    this.content,
-    this.toolCalls,
-  }) : needToolCall = toolCalls != null && toolCalls.isNotEmpty;
+  LLMResponse({this.content, this.toolCalls}) : needToolCall = toolCalls != null && toolCalls.isNotEmpty;
 
-  Map<String, dynamic> toJson() => {
-        'content': content,
-        'tool_calls': toolCalls?.map((t) => t.toJson()).toList(),
-        'need_tool_call': needToolCall,
-      };
+  Map<String, dynamic> toJson() => {'content': content, 'tool_calls': toolCalls?.map((t) => t.toJson()).toList(), 'need_tool_call': needToolCall};
 }
 
 class Model {
@@ -272,14 +214,14 @@ class Model {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'label': label,
-        'provider': providerId,
-        'icon': icon,
-        'providerName': providerName,
-        'apiStyle': apiStyle,
-        'priority': priority,
-      };
+    'name': name,
+    'label': label,
+    'provider': providerId,
+    'icon': icon,
+    'providerName': providerName,
+    'apiStyle': apiStyle,
+    'priority': priority,
+  };
 
   @override
   String toString() => jsonEncode(toJson());
@@ -292,11 +234,5 @@ class CompletionRequest {
   final bool stream;
   ChatSetting? modelSetting;
 
-  CompletionRequest({
-    required this.model,
-    required this.messages,
-    this.tools,
-    this.stream = false,
-    this.modelSetting,
-  });
+  CompletionRequest({required this.model, required this.messages, this.tools, this.stream = false, this.modelSetting});
 }

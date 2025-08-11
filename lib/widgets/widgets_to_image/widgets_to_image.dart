@@ -17,19 +17,13 @@ class WidgetsToImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!captureAll) {
-      return RepaintBoundary(
-        key: controller.containerKey,
-        child: child,
-      );
+      return RepaintBoundary(key: controller.containerKey, child: child);
     }
 
     // 使用SingleChildScrollView包装，确保所有内容都被渲染
     return RepaintBoundary(
       key: controller.containerKey,
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: child,
-      ),
+      child: SingleChildScrollView(physics: const NeverScrollableScrollPhysics(), child: child),
     );
   }
 }

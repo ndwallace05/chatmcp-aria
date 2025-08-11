@@ -42,3 +42,10 @@ clean:
 release-android: clean android-verify android-build-all android-summary
 
 .PHONY: lan dep upgrade android-keystore android-verify android-apk android-apk-split android-aab android-build android-build-all android-summary clean release-android
+
+# --- Team tooling ---
+setup-git-hooks:
+	git config core.hooksPath .githooks
+	chmod +x .githooks/pre-commit
+
+.PHONY: setup-git-hooks

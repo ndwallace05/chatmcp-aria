@@ -6,22 +6,14 @@ class ExpandableRow extends StatelessWidget {
   final bool isExpanded;
   final EdgeInsetsGeometry? padding;
 
-  const ExpandableRow({
-    super.key,
-    required this.children,
-    required this.isExpanded,
-    this.padding,
-  });
+  const ExpandableRow({super.key, required this.children, required this.isExpanded, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         ...children,
-        Icon(
-          isExpanded ? Icons.expand_less : Icons.expand_more,
-          color: Theme.of(context).iconTheme.color?.withAlpha(128),
-        ),
+        Icon(isExpanded ? Icons.expand_less : Icons.expand_more, color: Theme.of(context).iconTheme.color?.withAlpha(128)),
       ],
     );
   }
@@ -95,17 +87,8 @@ class _ExpandableWidgetState extends State<ExpandableWidget> {
           ),
           if (_isExpanded)
             DefaultTextStyle(
-              style: DefaultTextStyle.of(context).style.copyWith(
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.color
-                        ?.withAlpha(179),
-                  ),
-              child: Padding(
-                padding: widget.contentPadding,
-                child: widget.expandedContent,
-              ),
+              style: DefaultTextStyle.of(context).style.copyWith(color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha(179)),
+              child: Padding(padding: widget.contentPadding, child: widget.expandedContent),
             ),
         ],
       ),

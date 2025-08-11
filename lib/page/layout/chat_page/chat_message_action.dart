@@ -10,13 +10,7 @@ class MessageActions extends StatelessWidget {
   final Function(String messageId) onSwitch;
   final bool isUser;
 
-  const MessageActions({
-    super.key,
-    required this.messages,
-    required this.onRetry,
-    required this.onSwitch,
-    this.isUser = false,
-  });
+  const MessageActions({super.key, required this.messages, required this.onRetry, required this.onSwitch, this.isUser = false});
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +24,11 @@ class MessageActions extends StatelessWidget {
           IconButton(
             iconSize: 14,
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            constraints: const BoxConstraints(
-              minWidth: 20,
-              minHeight: 20,
-            ),
+            constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
             icon: const Icon(Icons.copy_outlined),
             onPressed: () {
-              Clipboard.setData(ClipboardData(
-                text: messages.map((m) => m.content ?? '').join('\n'),
-              ));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(t.copiedToClipboard),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
+              Clipboard.setData(ClipboardData(text: messages.map((m) => m.content ?? '').join('\n')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t.copiedToClipboard), duration: const Duration(seconds: 2)));
             },
           ),
           // Retry button - only for assistant messages
@@ -52,10 +36,7 @@ class MessageActions extends StatelessWidget {
             IconButton(
               iconSize: 14,
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              constraints: const BoxConstraints(
-                minWidth: 20,
-                minHeight: 20,
-              ),
+              constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
               icon: const Icon(Icons.refresh),
               onPressed: () {
                 onRetry(messages.last);
@@ -63,18 +44,14 @@ class MessageActions extends StatelessWidget {
               tooltip: t.retry,
             ),
           // Branch switch - only for assistant messages
-          if (!isUser &&
-              messages.first.brotherMessageIds != null &&
-              messages.first.brotherMessageIds!.isNotEmpty)
-            _buildBranchSwitchWidget(messages),
+          if (!isUser && messages.first.brotherMessageIds != null && messages.first.brotherMessageIds!.isNotEmpty) _buildBranchSwitchWidget(messages),
         ],
       ),
     );
   }
 
   Widget _buildBranchSwitchWidget(List<ChatMessage> messages) {
-    int index =
-        messages.first.brotherMessageIds!.indexOf(messages.first.messageId) + 1;
+    int index = messages.first.brotherMessageIds!.indexOf(messages.first.messageId) + 1;
     int length = messages.first.brotherMessageIds!.length;
 
     return Row(
@@ -83,16 +60,8 @@ class MessageActions extends StatelessWidget {
         IconButton(
           iconSize: 14,
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(
-            minWidth: 20,
-            minHeight: 20,
-          ),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 12,
-            color:
-                index == 1 ? AppColors.getMessageBranchDisabledColor() : null,
-          ),
+          constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+          icon: Icon(Icons.arrow_back_ios, size: 12, color: index == 1 ? AppColors.getMessageBranchDisabledColor() : null),
           onPressed: index == 1
               ? null
               : () {
@@ -101,28 +70,13 @@ class MessageActions extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: Text(
-            '$index/$length',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.getMessageBranchIndicatorTextColor(),
-            ),
-          ),
+          child: Text('$index/$length', style: TextStyle(fontSize: 12, color: AppColors.getMessageBranchIndicatorTextColor())),
         ),
         IconButton(
           iconSize: 14,
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(
-            minWidth: 20,
-            minHeight: 20,
-          ),
-          icon: Icon(
-            Icons.arrow_forward_ios,
-            size: 12,
-            color: index == length
-                ? AppColors.getMessageBranchDisabledColor()
-                : null,
-          ),
+          constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+          icon: Icon(Icons.arrow_forward_ios, size: 12, color: index == length ? AppColors.getMessageBranchDisabledColor() : null),
           onPressed: index == length
               ? null
               : () {

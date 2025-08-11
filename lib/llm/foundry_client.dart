@@ -13,23 +13,14 @@ class FoundryClient extends BaseLLMClient {
   final String modelVersion = '2023-03-15-preview';
   final Map<String, String> _headers;
 
-  FoundryClient({
-    required this.apiKey,
-    String? apiVersion,
-    String? baseUrl,
-  })  : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://YOUR_RESOURCE_NAME.openai.azure.com' : baseUrl,
-        apiVersion = apiVersion ?? 'preview',
-        _headers = {
-          'Content-Type': 'application/json; charset=utf-8',
-          'api-key': apiKey,
-        };
+  FoundryClient({required this.apiKey, String? apiVersion, String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://YOUR_RESOURCE_NAME.openai.azure.com' : baseUrl,
+      apiVersion = apiVersion ?? 'preview',
+      _headers = {'Content-Type': 'application/json; charset=utf-8', 'api-key': apiKey};
 
   @override
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
-    final body = {
-      'model': request.model,
-      'messages': chatMessageToOpenAIMessage(request.messages),
-    };
+    final body = {'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages)};
 
     addModelSettingsToBody(body, request.modelSetting);
 
@@ -47,11 +38,7 @@ class FoundryClient extends BaseLLMClient {
 
     try {
       final httpClient = BaseLLMClient.createHttpClient();
-      final response = await httpClient.post(
-        Uri.parse(endpoint),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
+      final response = await httpClient.post(Uri.parse(endpoint), headers: _headers, body: jsonEncode(body));
 
       final responseBody = utf8.decode(response.bodyBytes);
       Logger.root.fine('OpenAI response: $responseBody');
@@ -66,20 +53,16 @@ class FoundryClient extends BaseLLMClient {
 
       // Parse tool calls
       final toolCalls = message['tool_calls']
-          ?.map<ToolCall>((t) => ToolCall(
-                id: t['id'],
-                type: t['type'],
-                function: FunctionCall(
-                  name: t['function']['name'],
-                  arguments: t['function']['arguments'],
-                ),
-              ))
+          ?.map<ToolCall>(
+            (t) => ToolCall(
+              id: t['id'],
+              type: t['type'],
+              function: FunctionCall(name: t['function']['name'], arguments: t['function']['arguments']),
+            ),
+          )
           ?.toList();
 
-      return LLMResponse(
-        content: message['content'],
-        toolCalls: toolCalls,
-      );
+      return LLMResponse(content: message['content'], toolCalls: toolCalls);
     } catch (e) {
       throw await handleError(e, 'Foundry', endpoint, bodyStr);
     }
@@ -87,11 +70,7 @@ class FoundryClient extends BaseLLMClient {
 
   @override
   Stream<LLMResponse> chatStreamCompletion(CompletionRequest request) async* {
-    final body = {
-      'model': request.model,
-      'messages': chatMessageToOpenAIMessage(request.messages),
-      'stream': true,
-    };
+    final body = {'model': request.model, 'messages': chatMessageToOpenAIMessage(request.messages), 'stream': true};
 
     addModelSettingsToBody(body, request.modelSetting);
 
@@ -134,21 +113,17 @@ class FoundryClient extends BaseLLMClient {
           if (delta == null) continue;
 
           final toolCalls = delta['tool_calls']
-              ?.map<ToolCall>((t) => ToolCall(
-                    id: t['id'] ?? '',
-                    type: t['type'] ?? '',
-                    function: FunctionCall(
-                      name: t['function']?['name'] ?? '',
-                      arguments: t['function']?['arguments'] ?? '{}',
-                    ),
-                  ))
+              ?.map<ToolCall>(
+                (t) => ToolCall(
+                  id: t['id'] ?? '',
+                  type: t['type'] ?? '',
+                  function: FunctionCall(name: t['function']?['name'] ?? '', arguments: t['function']?['arguments'] ?? '{}'),
+                ),
+              )
               ?.toList();
 
           if (delta['content'] != null || toolCalls != null) {
-            yield LLMResponse(
-              content: delta['content'],
-              toolCalls: toolCalls,
-            );
+            yield LLMResponse(content: delta['content'], toolCalls: toolCalls);
           }
         } catch (e) {
           Logger.root.severe('Failed to parse event data: $data $e');
@@ -169,10 +144,7 @@ class FoundryClient extends BaseLLMClient {
 
     try {
       final httpClient = BaseLLMClient.createHttpClient();
-      final response = await httpClient.get(
-        Uri.parse("${getEndpoint(baseUrl, "/openai/deployments")}?api-version=$modelVersion"),
-        headers: _headers,
-      );
+      final response = await httpClient.get(Uri.parse("${getEndpoint(baseUrl, "/openai/deployments")}?api-version=$modelVersion"), headers: _headers);
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
@@ -201,9 +173,7 @@ class FoundryClient extends BaseLLMClient {
 
 List<Map<String, dynamic>> chatMessageToOpenAIMessage(List<ChatMessage> messages) {
   return messages.map((message) {
-    final json = <String, dynamic>{
-      'role': message.role.value,
-    };
+    final json = <String, dynamic>{'role': message.role.value};
 
     // If there is both text content and files, use array format
     if (message.content != null || message.files != null) {
@@ -215,26 +185,18 @@ List<Map<String, dynamic>> chatMessageToOpenAIMessage(List<ChatMessage> messages
           if (isImageFile(file.fileType)) {
             contentParts.add({
               'type': 'image_url',
-              'image_url': {
-                "url": "data:${file.fileType};base64,${file.fileContent}",
-              },
+              'image_url': {"url": "data:${file.fileType};base64,${file.fileContent}"},
             });
           }
           if (isTextFile(file.fileType)) {
-            contentParts.add({
-              'type': 'text',
-              'text': file.fileContent,
-            });
+            contentParts.add({'type': 'text', 'text': file.fileContent});
           }
         }
       }
 
       // Add text content
       if (message.content != null) {
-        contentParts.add({
-          'type': 'text',
-          'text': message.content,
-        });
+        contentParts.add({'type': 'text', 'text': message.content});
       }
 
       // If there is only one text content and no files, use simple string format

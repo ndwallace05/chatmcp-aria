@@ -190,10 +190,10 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                   history.platform.toLowerCase().contains('windows')
                       ? Icons.computer
                       : history.platform.toLowerCase().contains('android')
-                          ? Icons.phone_android
-                          : history.platform.toLowerCase().contains('ios')
-                              ? Icons.phone_iphone
-                              : Icons.devices,
+                      ? Icons.phone_android
+                      : history.platform.toLowerCase().contains('ios')
+                      ? Icons.phone_iphone
+                      : Icons.devices,
                   color: Colors.blue,
                 ),
                 title: Text(history.displayName),
@@ -233,10 +233,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
             },
             child: Text(l10n.clearAllHistory),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.close),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.close)),
         ],
       ),
     );
@@ -292,10 +289,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
 
             if (_isServerRunning && _serverAddress != null) ...[
               const SizedBox(height: 16),
-              Text(
-                '📱 ${l10n.scanQRToConnect}',
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-              ),
+              Text('📱 ${l10n.scanQRToConnect}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               const SizedBox(height: 12),
 
               // 服务器地址和二维码
@@ -304,9 +298,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                 decoration: BoxDecoration(
                   color: AppColors.getThemeBackgroundColor(context),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.getCodePreviewBorderColor(context),
-                  ),
+                  border: Border.all(color: AppColors.getCodePreviewBorderColor(context)),
                 ),
                 child: Column(
                   children: [
@@ -316,20 +308,12 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.getCodePreviewBorderColor(context),
-                        ),
+                        border: Border.all(color: AppColors.getCodePreviewBorderColor(context)),
                       ),
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              'http://$_serverAddress:$_serverPort',
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 14,
-                              ),
-                            ),
+                            child: Text('http://$_serverAddress:$_serverPort', style: const TextStyle(fontFamily: 'monospace', fontSize: 14)),
                           ),
                           IconButton(
                             icon: const Icon(Icons.copy, size: 20),
@@ -366,11 +350,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                     const SizedBox(height: 12),
                     Text(
                       '🔄 ${l10n.otherDevicesCanScan}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.getInactiveTextColor(context),
-                        fontStyle: FontStyle.italic,
-                      ),
+                      style: TextStyle(fontSize: 12, color: AppColors.getInactiveTextColor(context), fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -407,10 +387,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '📲 ${l10n.connectToOtherDevices}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text('📲 ${l10n.connectToOtherDevices}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
 
             // 扫码按钮 - 仅在移动平台显示
@@ -435,76 +412,59 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
             if (_connectionHistory.isNotEmpty) ...[
               const Divider(),
               const SizedBox(height: 8),
-              Text(
-                '📋 ${l10n.connectionHistory}',
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-              ),
+              Text('📋 ${l10n.connectionHistory}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              ...(_connectionHistory.take(3).map((history) => Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: AppColors.getCodePreviewBorderColor(context),
+              ...(_connectionHistory
+                  .take(3)
+                  .map(
+                    (history) => Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        dense: true,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: AppColors.getCodePreviewBorderColor(context)),
                         ),
-                      ),
-                      leading: Icon(
-                        history.platform.toLowerCase().contains('windows')
-                            ? Icons.computer
-                            : history.platform.toLowerCase().contains('android')
-                                ? Icons.phone_android
-                                : history.platform.toLowerCase().contains('ios')
-                                    ? Icons.phone_iphone
-                                    : Icons.devices,
-                        size: 20,
-                        color: AppColors.blue,
-                      ),
-                      title: Text(
-                        history.displayName,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-                      ),
-                      subtitle: Text(
-                        '${history.url} • ${_formatTime(history.lastConnected)}',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.getInactiveTextColor(context),
+                        leading: Icon(
+                          history.platform.toLowerCase().contains('windows')
+                              ? Icons.computer
+                              : history.platform.toLowerCase().contains('android')
+                              ? Icons.phone_android
+                              : history.platform.toLowerCase().contains('ios')
+                              ? Icons.phone_iphone
+                              : Icons.devices,
+                          size: 20,
+                          color: AppColors.blue,
                         ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.connect_without_contact, size: 16),
-                            onPressed: () => _connectToHistory(history),
-                            tooltip: l10n.connect,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, size: 16),
-                            onPressed: () => _removeHistory(history.url),
-                            tooltip: l10n.delete,
-                          ),
-                        ],
+                        title: Text(history.displayName, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                        subtitle: Text(
+                          '${history.url} • ${_formatTime(history.lastConnected)}',
+                          style: TextStyle(fontSize: 11, color: AppColors.getInactiveTextColor(context)),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.connect_without_contact, size: 16),
+                              onPressed: () => _connectToHistory(history),
+                              tooltip: l10n.connect,
+                            ),
+                            IconButton(icon: const Icon(Icons.delete, size: 16), onPressed: () => _removeHistory(history.url), tooltip: l10n.delete),
+                          ],
+                        ),
                       ),
                     ),
-                  ))),
+                  )),
               if (_connectionHistory.length > 3)
-                TextButton(
-                  onPressed: _showAllHistory,
-                  child: Text(l10n.viewAllConnections(_connectionHistory.length)),
-                ),
+                TextButton(onPressed: _showAllHistory, child: Text(l10n.viewAllConnections(_connectionHistory.length))),
               const SizedBox(height: 8),
             ],
 
             if (_connectionHistory.isNotEmpty) const Divider(),
             const SizedBox(height: 8),
 
-            Text(
-              l10n.manualInputAddress,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            ),
+            Text(l10n.manualInputAddress, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
 
             TextField(
@@ -527,37 +487,33 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                   color: _syncSuccess
                       ? AppColors.getThemeColor(context, lightColor: AppColors.green[50], darkColor: AppColors.green[900])
                       : _syncError != null
-                          ? AppColors.getThemeColor(context, lightColor: AppColors.red[50], darkColor: AppColors.red[900])
-                          : AppColors.getThemeColor(context, lightColor: AppColors.blue[50], darkColor: AppColors.blue[900]),
+                      ? AppColors.getThemeColor(context, lightColor: AppColors.red[50], darkColor: AppColors.red[900])
+                      : AppColors.getThemeColor(context, lightColor: AppColors.blue[50], darkColor: AppColors.blue[900]),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: _syncSuccess
                         ? AppColors.getThemeColor(context, lightColor: AppColors.green[200], darkColor: AppColors.green[700])
                         : _syncError != null
-                            ? AppColors.getThemeColor(context, lightColor: AppColors.red[200], darkColor: AppColors.red[700])
-                            : AppColors.getThemeColor(context, lightColor: AppColors.blue[200], darkColor: AppColors.blue[700]),
+                        ? AppColors.getThemeColor(context, lightColor: AppColors.red[200], darkColor: AppColors.red[700])
+                        : AppColors.getThemeColor(context, lightColor: AppColors.blue[200], darkColor: AppColors.blue[700]),
                   ),
                 ),
                 child: Row(
                   children: [
                     if (_isSyncing)
-                      const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                      const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                     else
                       Icon(
                         _syncSuccess
                             ? Icons.check_circle
                             : _syncError != null
-                                ? Icons.error
-                                : Icons.info,
+                            ? Icons.error
+                            : Icons.info,
                         color: _syncSuccess
                             ? AppColors.green
                             : _syncError != null
-                                ? AppColors.red
-                                : AppColors.blue,
+                            ? AppColors.red
+                            : AppColors.blue,
                         size: 16,
                       ),
                     const SizedBox(width: 8),
@@ -569,8 +525,8 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
                           color: _syncSuccess
                               ? AppColors.getThemeColor(context, lightColor: AppColors.green[800], darkColor: AppColors.green[200])
                               : _syncError != null
-                                  ? AppColors.getThemeColor(context, lightColor: AppColors.red[800], darkColor: AppColors.red[200])
-                                  : AppColors.getThemeColor(context, lightColor: AppColors.blue[800], darkColor: AppColors.blue[200]),
+                              ? AppColors.getThemeColor(context, lightColor: AppColors.red[800], darkColor: AppColors.red[200])
+                              : AppColors.getThemeColor(context, lightColor: AppColors.blue[800], darkColor: AppColors.blue[200]),
                         ),
                       ),
                     ),
@@ -612,10 +568,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '📖 ${l10n.usageInstructions}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text('📖 ${l10n.usageInstructions}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Text(
               '🖥️ ${l10n.desktopAsServer}\n'
@@ -660,12 +613,7 @@ class _NetworkSyncSettingState extends State<NetworkSyncSetting> {
 
   Future<void> _openQRScanner() async {
     try {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const QRScannerPage(),
-        ),
-      );
+      final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const QRScannerPage()));
 
       if (result != null && result is String && mounted) {
         _serverUrlController.text = result;
@@ -770,10 +718,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(
-              _isFlashOn ? Icons.flash_off : Icons.flash_on,
-              color: AppColors.getThemeTextColor(context),
-            ),
+            icon: Icon(_isFlashOn ? Icons.flash_off : Icons.flash_on, color: AppColors.getThemeTextColor(context)),
             onPressed: _toggleFlash,
           ),
         ],
@@ -783,10 +728,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.getToolbarBackgroundColor(context),
-              AppColors.getThemeBackgroundColor(context),
-            ],
+            colors: [AppColors.getToolbarBackgroundColor(context), AppColors.getThemeBackgroundColor(context)],
           ),
         ),
         child: Column(
@@ -798,13 +740,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 margin: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withAlpha(30),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: AppColors.black.withAlpha(30), blurRadius: 10, offset: const Offset(0, 5))],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
@@ -813,10 +749,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     onDetect: _onDetect,
                     overlayBuilder: (context, constraints) => Container(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.blue,
-                          width: 6,
-                        ),
+                        border: Border.all(color: AppColors.blue, width: 6),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -840,35 +773,21 @@ class _QRScannerPageState extends State<QRScannerPage> {
                       decoration: BoxDecoration(
                         color: AppColors.getMessageBubbleBackgroundColor(context, false),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.getCodePreviewBorderColor(context),
-                          width: 1,
-                        ),
+                        border: Border.all(color: AppColors.getCodePreviewBorderColor(context), width: 1),
                       ),
                       child: Column(
                         children: [
-                          Icon(
-                            Icons.qr_code_scanner,
-                            size: 32,
-                            color: AppColors.blue,
-                          ),
+                          Icon(Icons.qr_code_scanner, size: 32, color: AppColors.blue),
                           const SizedBox(height: 12),
                           Text(
                             l10n.aimQRCode,
-                            style: TextStyle(
-                              color: AppColors.getThemeTextColor(context),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(color: AppColors.getThemeTextColor(context), fontSize: 16, fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             l10n.scanSyncQRCode,
-                            style: TextStyle(
-                              color: AppColors.getInactiveTextColor(context),
-                              fontSize: 14,
-                            ),
+                            style: TextStyle(color: AppColors.getInactiveTextColor(context), fontSize: 14),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -885,10 +804,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                       ),
                       child: IconButton(
                         onPressed: _toggleFlash,
-                        icon: Icon(
-                          _isFlashOn ? Icons.flash_off : Icons.flash_on,
-                          size: 28,
-                        ),
+                        icon: Icon(_isFlashOn ? Icons.flash_off : Icons.flash_on, size: 28),
                         color: _isFlashOn ? Colors.yellow[600] : AppColors.getInactiveTextColor(context),
                         tooltip: _isFlashOn ? l10n.flashOff : l10n.flashOn,
                       ),

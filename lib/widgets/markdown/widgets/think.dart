@@ -16,9 +16,9 @@ class ThinkBlockSyntax extends TagBlockSyntax {
 }
 
 SpanNodeGeneratorWithTag thinkGenerator = SpanNodeGeneratorWithTag(
-    tag: _thinkTag,
-    generator: (e, config, visitor) =>
-        ThinkNode(e.attributes, e.textContent, config));
+  tag: _thinkTag,
+  generator: (e, config, visitor) => ThinkNode(e.attributes, e.textContent, config),
+);
 
 const _thinkTag = 'think';
 
@@ -41,8 +41,7 @@ class ThinkWidget extends StatefulWidget {
   final bool isClosed;
   final Map<String, String> attributes;
 
-  const ThinkWidget(this.textContent, this.isClosed, this.attributes,
-      {super.key});
+  const ThinkWidget(this.textContent, this.isClosed, this.attributes, {super.key});
 
   @override
   State<ThinkWidget> createState() => _ThinkWidgetState();
@@ -66,8 +65,7 @@ class _ThinkWidgetState extends State<ThinkWidget> {
       } else {
         prefix = t.thinkingEndWithDuration;
       }
-      Duration duration =
-          DateTime.parse(endTime).difference(DateTime.parse(startTime));
+      Duration duration = DateTime.parse(endTime).difference(DateTime.parse(startTime));
       durationTips = " ${t.seconds(duration.inSeconds)}";
     }
 
@@ -89,11 +87,7 @@ class _ThinkWidgetState extends State<ThinkWidget> {
       header: ExpandableRow(
         isExpanded: _isExpanded,
         children: [
-          Icon(
-            Icons.lightbulb_outline,
-            size: 14,
-            color: AppColors.getThinkIconColor(context),
-          ),
+          Icon(Icons.lightbulb_outline, size: 14, color: AppColors.getThinkIconColor(context)),
           const SizedBox(width: 4),
           Expanded(
             child: Text(
@@ -104,24 +98,12 @@ class _ThinkWidgetState extends State<ThinkWidget> {
             ),
           ),
           if (!widget.isClosed)
-            SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                color: AppColors.getProgressIndicatorColor(context),
-                strokeWidth: 1.5,
-              ),
-            ),
+            SizedBox(width: 12, height: 12, child: CircularProgressIndicator(color: AppColors.getProgressIndicatorColor(context), strokeWidth: 1.5)),
         ],
       ),
       expandedContent: Container(
         decoration: BoxDecoration(
-          border: Border(
-            left: BorderSide(
-              color: AppColors.getThinkIconColor(context).withAlpha(128),
-              width: 3,
-            ),
-          ),
+          border: Border(left: BorderSide(color: AppColors.getThinkIconColor(context).withAlpha(128), width: 3)),
         ),
         padding: const EdgeInsets.only(left: 12),
         child: Markit(data: widget.textContent),

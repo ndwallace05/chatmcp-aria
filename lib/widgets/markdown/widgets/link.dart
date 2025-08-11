@@ -6,9 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:chatmcp/utils/color.dart';
 
 SpanNodeGeneratorWithTag linkGenerator = SpanNodeGeneratorWithTag(
-    tag: _linkTag,
-    generator: (e, config, visitor) =>
-        MyLinkNode(e.attributes, e.textContent, config));
+  tag: _linkTag,
+  generator: (e, config, visitor) => MyLinkNode(e.attributes, e.textContent, config),
+);
 
 const _linkTag = 'a';
 
@@ -25,10 +25,7 @@ class MyLinkNode extends SpanNode {
     final content = attributes['content'] ?? href;
     return TextSpan(
       text: content,
-      style: TextStyle(
-        color: AppColors.getLinkColor(),
-        decoration: TextDecoration.none,
-      ),
+      style: TextStyle(color: AppColors.getLinkColor(), decoration: TextDecoration.none),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
           final url = href;

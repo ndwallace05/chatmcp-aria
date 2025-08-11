@@ -34,7 +34,9 @@ class ClaudeCodeClient extends BaseLLMClient {
       final result = await Process.run(executable, args, runInShell: true);
 
       if (result.exitCode != 0) {
-        throw Exception(result.stderr is String && (result.stderr as String).isNotEmpty ? result.stderr : 'Claude Code CLI exited with ${result.exitCode}');
+        throw Exception(
+          result.stderr is String && (result.stderr as String).isNotEmpty ? result.stderr : 'Claude Code CLI exited with ${result.exitCode}',
+        );
       }
 
       final output = result.stdout is String ? result.stdout as String : utf8.decode((result.stdout as List<int>));
@@ -42,12 +44,7 @@ class ClaudeCodeClient extends BaseLLMClient {
       return LLMResponse(content: content);
     } catch (e) {
       // Surface a structured error via BaseLLMClient.handleError contract
-      throw await handleError(
-        e,
-        'Claude Code',
-        executable,
-        jsonEncode({'args': args}),
-      );
+      throw await handleError(e, 'Claude Code', executable, jsonEncode({'args': args}));
     }
   }
 
@@ -99,12 +96,7 @@ class ClaudeCodeClient extends BaseLLMClient {
         throw Exception(stderrBuffer.isNotEmpty ? stderrBuffer.toString() : 'Claude Code CLI exited with $exitCode');
       }
     } catch (e) {
-      throw await handleError(
-        e,
-        'Claude Code',
-        executable,
-        jsonEncode({'args': args}),
-      );
+      throw await handleError(e, 'Claude Code', executable, jsonEncode({'args': args}));
     } finally {
       // Ensure process is killed if still alive
       if (process != null) {
@@ -119,12 +111,7 @@ class ClaudeCodeClient extends BaseLLMClient {
   Future<List<String>> models() async {
     // Claude Code CLI does not expose a model listing endpoint.
     // Return a common set; users can customize in settings.
-    return <String>[
-      'claude-3-7-sonnet',
-      'claude-3-opus',
-      'claude-3-5-sonnet',
-      'claude-3-5-haiku',
-    ];
+    return <String>['claude-3-7-sonnet', 'claude-3-opus', 'claude-3-5-sonnet', 'claude-3-5-haiku'];
   }
 
   String _buildPromptFromMessages(List<ChatMessage> messages) {
@@ -226,5 +213,3 @@ class ClaudeCodeClient extends BaseLLMClient {
     return '';
   }
 }
-
-

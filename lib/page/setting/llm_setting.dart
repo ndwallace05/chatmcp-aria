@@ -79,8 +79,7 @@ class _KeysSettingsState extends State<KeysSettings> {
 
   final List<LLMProviderSetting> _llmApiConfigs = [];
 
-  void _addModelsWithoutDuplicates(
-      LLMSettingControllers controllers, List<String> newModels) {
+  void _addModelsWithoutDuplicates(LLMSettingControllers controllers, List<String> newModels) {
     for (var model in newModels) {
       if (!controllers.models.contains(model)) {
         controllers.models.add(model);
@@ -97,8 +96,7 @@ class _KeysSettingsState extends State<KeysSettings> {
       }
     }
 
-    controllers.enabledModels.sort((a, b) =>
-        controllers.models.indexOf(a) - controllers.models.indexOf(b));
+    controllers.enabledModels.sort((a, b) => controllers.models.indexOf(a) - controllers.models.indexOf(b));
     setState(() {
       _hasChanges = true;
     });
@@ -132,24 +130,23 @@ class _KeysSettingsState extends State<KeysSettings> {
       setState(() {
         _llmApiConfigs.add(apiSetting);
         // 为每个配置添加一个控制器
-        _controllers.add(LLMSettingControllers(
-          keyController: TextEditingController(text: apiSetting.apiKey),
-          endpointController:
-              TextEditingController(text: apiSetting.apiEndpoint),
-          apiVersionController:
-              TextEditingController(text: apiSetting.apiVersion),
-          apiStyleController: apiSetting.apiStyle ?? 'openai',
-          providerNameController:
-              TextEditingController(text: apiSetting.providerName ?? ''),
-          providerId: apiSetting.providerId ?? '',
-          custom: apiSetting.custom,
-          models: apiSetting.models ?? [],
-          enabledModels: apiSetting.enabledModels ?? [],
-          icon: apiSetting.icon,
-          genTitleModel: apiSetting.genTitleModel ?? '',
-          link: apiSetting.link ?? '',
-          priority: apiSetting.priority ?? 0,
-        ));
+        _controllers.add(
+          LLMSettingControllers(
+            keyController: TextEditingController(text: apiSetting.apiKey),
+            endpointController: TextEditingController(text: apiSetting.apiEndpoint),
+            apiVersionController: TextEditingController(text: apiSetting.apiVersion),
+            apiStyleController: apiSetting.apiStyle ?? 'openai',
+            providerNameController: TextEditingController(text: apiSetting.providerName ?? ''),
+            providerId: apiSetting.providerId ?? '',
+            custom: apiSetting.custom,
+            models: apiSetting.models ?? [],
+            enabledModels: apiSetting.enabledModels ?? [],
+            icon: apiSetting.icon,
+            genTitleModel: apiSetting.genTitleModel ?? '',
+            link: apiSetting.link ?? '',
+            priority: apiSetting.priority ?? 0,
+          ),
+        );
       });
     }
   }
@@ -223,9 +220,7 @@ class _KeysSettingsState extends State<KeysSettings> {
       color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outline.withAlpha(26),
-        ),
+        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,16 +237,11 @@ class _KeysSettingsState extends State<KeysSettings> {
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  Expanded(
-                    child: _buildProviderCardHeader(config, controllers),
-                  ),
+                  Expanded(child: _buildProviderCardHeader(config, controllers)),
                   Icon(
-                    _expandedState[index] ?? false
-                        ? CupertinoIcons.chevron_up
-                        : CupertinoIcons.chevron_down,
+                    _expandedState[index] ?? false ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
                     size: 18,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
                   ),
                 ],
               ),
@@ -259,18 +249,14 @@ class _KeysSettingsState extends State<KeysSettings> {
           ),
           // 展开的配置内容
           if (_expandedState[index] ?? false)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
-              child: _buildProviderConfigForm(index, showTitle: false),
-            ),
+            Padding(padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0), child: _buildProviderConfigForm(index, showTitle: false)),
         ],
       ),
     );
   }
 
   // 构建提供商卡片头部
-  Widget _buildProviderCardHeader(
-      LLMProviderSetting config, LLMSettingControllers controllers) {
+  Widget _buildProviderCardHeader(LLMProviderSetting config, LLMSettingControllers controllers) {
     final isEnabled = config.enable ?? true; // null 表示启用，只有 false 为禁用
 
     return Row(
@@ -280,11 +266,7 @@ class _KeysSettingsState extends State<KeysSettings> {
         Expanded(
           child: Text(
             config.providerName ?? '',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
           ),
         ),
         SizedBox(
@@ -332,15 +314,9 @@ class _KeysSettingsState extends State<KeysSettings> {
       child: ElevatedButton(
         onPressed: _isLoading || !_hasChanges ? null : _saveSettings,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _hasChanges
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surfaceContainerHighest,
-          foregroundColor: _hasChanges
-              ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSurfaceVariant,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          backgroundColor: _hasChanges ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
+          foregroundColor: _hasChanges ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurfaceVariant,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: _hasChanges ? 0 : 0,
           padding: EdgeInsets.zero,
         ),
@@ -352,9 +328,7 @@ class _KeysSettingsState extends State<KeysSettings> {
                   Icon(
                     CupertinoIcons.checkmark_circle,
                     size: 18,
-                    color: _hasChanges
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: _hasChanges ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 8),
                   CText(text: l10n.saveSettings),
@@ -371,18 +345,12 @@ class _KeysSettingsState extends State<KeysSettings> {
       width: double.infinity,
       height: 44,
       child: OutlinedButton.icon(
-        icon: Icon(
-          CupertinoIcons.add_circled,
-          size: 18,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        icon: Icon(CupertinoIcons.add_circled, size: 18, color: Theme.of(context).colorScheme.primary),
         label: Text(l10n.addProvider),
         style: OutlinedButton.styleFrom(
           foregroundColor: Theme.of(context).colorScheme.primary,
           side: BorderSide(color: Theme.of(context).colorScheme.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onPressed: () => _showAddProviderDialog(),
       ),
@@ -410,15 +378,10 @@ class _KeysSettingsState extends State<KeysSettings> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 左侧提供商列表
-        SizedBox(
-          width: 220,
-          child: _buildProviderList(),
-        ),
+        SizedBox(width: 220, child: _buildProviderList()),
         const SizedBox(width: 12),
         // 右侧配置表单
-        Expanded(
-          child: _buildDesktopConfigSection(),
-        ),
+        Expanded(child: _buildDesktopConfigSection()),
       ],
     );
   }
@@ -430,9 +393,7 @@ class _KeysSettingsState extends State<KeysSettings> {
       color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outline.withAlpha(26),
-        ),
+        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
       ),
       child: Column(
         children: [
@@ -446,10 +407,7 @@ class _KeysSettingsState extends State<KeysSettings> {
               },
             ),
           ),
-          Divider(
-            color: Theme.of(context).colorScheme.outline.withAlpha(26),
-            height: 1,
-          ),
+          Divider(color: Theme.of(context).colorScheme.outline.withAlpha(26), height: 1),
           _buildAddServerListTile(),
         ],
       ),
@@ -465,19 +423,11 @@ class _KeysSettingsState extends State<KeysSettings> {
         dense: true,
         title: Row(
           children: [
-            Icon(
-              CupertinoIcons.add_circled,
-              size: 18,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(CupertinoIcons.add_circled, size: 18, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               l10n.addProvider,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.primary),
             ),
           ],
         ),
@@ -497,14 +447,9 @@ class _KeysSettingsState extends State<KeysSettings> {
             color: Theme.of(context).colorScheme.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                color: Theme.of(context).colorScheme.outline.withAlpha(26),
-              ),
+              side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: _buildProviderConfigForm(_selectedProvider),
-            ),
+            child: Padding(padding: const EdgeInsets.all(12.0), child: _buildProviderConfigForm(_selectedProvider)),
           ),
         ),
         const SizedBox(height: 12),
@@ -518,18 +463,13 @@ class _KeysSettingsState extends State<KeysSettings> {
     showDialog(
       context: context,
       builder: (context) {
-        final TextEditingController providerController =
-            TextEditingController();
+        final TextEditingController providerController = TextEditingController();
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           title: Text(l10n.addProvider),
           content: TextField(
             controller: providerController,
-            decoration: InputDecoration(
-              hintText: l10n.providerName,
-            ),
+            decoration: InputDecoration(hintText: l10n.providerName),
           ),
           actions: [
             TextButton(
@@ -544,31 +484,34 @@ class _KeysSettingsState extends State<KeysSettings> {
                 if (providerName.isNotEmpty) {
                   setState(() {
                     String providerId = Uuid().v4();
-                    _llmApiConfigs.add(LLMProviderSetting(
-                      providerName: providerName,
-                      providerId: providerId,
-                      apiKey: '',
-                      apiEndpoint: '',
-                      apiStyle: 'openai',
-                      custom: true,
-                      models: [],
-                      enabledModels: [],
-                      icon: '',
-                      enable: null, // 默认启用
-                    ));
-                    _controllers.add(LLMSettingControllers(
-                      keyController: TextEditingController(),
-                      endpointController: TextEditingController(),
-                      apiVersionController: TextEditingController(),
-                      providerNameController:
-                          TextEditingController(text: providerName),
-                      providerId: providerId,
-                      custom: true,
-                      models: [],
-                      enabledModels: [],
-                      icon: '',
-                      genTitleModel: '',
-                    ));
+                    _llmApiConfigs.add(
+                      LLMProviderSetting(
+                        providerName: providerName,
+                        providerId: providerId,
+                        apiKey: '',
+                        apiEndpoint: '',
+                        apiStyle: 'openai',
+                        custom: true,
+                        models: [],
+                        enabledModels: [],
+                        icon: '',
+                        enable: null, // 默认启用
+                      ),
+                    );
+                    _controllers.add(
+                      LLMSettingControllers(
+                        keyController: TextEditingController(),
+                        endpointController: TextEditingController(),
+                        apiVersionController: TextEditingController(),
+                        providerNameController: TextEditingController(text: providerName),
+                        providerId: providerId,
+                        custom: true,
+                        models: [],
+                        enabledModels: [],
+                        icon: '',
+                        genTitleModel: '',
+                      ),
+                    );
                   });
                 }
                 Navigator.pop(context);
@@ -588,17 +531,13 @@ class _KeysSettingsState extends State<KeysSettings> {
       builder: (context) {
         final TextEditingController modelController = TextEditingController();
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           title: Text(l10n.addModel),
           content: TextField(
             controller: modelController,
             decoration: InputDecoration(
               hintText: l10n.enterModelName,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             ),
           ),
           actions: [
@@ -644,21 +583,14 @@ class _KeysSettingsState extends State<KeysSettings> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
       selected: isSelected,
       selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(31),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      leading: SizedBox(
-        width: 20,
-        child: LlmIcon(icon: config.icon),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      leading: SizedBox(width: 20, child: LlmIcon(icon: config.icon)),
       title: Text(
         config.providerName ?? '',
         style: TextStyle(
           fontSize: 13,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurface,
+          color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
         ),
       ),
       trailing: SizedBox(
@@ -691,21 +623,11 @@ class _KeysSettingsState extends State<KeysSettings> {
 
   Widget _buildProviderConfigForm(int index, {bool showTitle = true}) {
     // 安全检查：确保索引有效且数组不为空
-    if (_llmApiConfigs.isEmpty ||
-        _controllers.isEmpty ||
-        index < 0 ||
-        index >= _llmApiConfigs.length ||
-        index >= _controllers.length) {
+    if (_llmApiConfigs.isEmpty || _controllers.isEmpty || index < 0 || index >= _llmApiConfigs.length || index >= _controllers.length) {
       // 返回一个空白界面或提示信息
       final l10n = AppLocalizations.of(context)!;
       return Center(
-        child: Text(
-          l10n.noApiConfigs,
-          style: TextStyle(
-            fontSize: 16,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
+        child: Text(l10n.noApiConfigs, style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface)),
       );
     }
 
@@ -726,11 +648,7 @@ class _KeysSettingsState extends State<KeysSettings> {
                 Expanded(
                   child: Text(
                     config.providerName ?? '',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
                 if (config.custom)
@@ -758,11 +676,7 @@ class _KeysSettingsState extends State<KeysSettings> {
           // Provider Name
           Text(
             l10n.providerName,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 4),
           TextFormField(
@@ -771,30 +685,20 @@ class _KeysSettingsState extends State<KeysSettings> {
               hintText: l10n.enterProviderName,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               isDense: true,
             ),
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return l10n.providerNameRequired;
@@ -805,8 +709,7 @@ class _KeysSettingsState extends State<KeysSettings> {
               return null;
             },
             maxLength: 50,
-            buildCounter: (context,
-                {required currentLength, required isFocused, maxLength}) {
+            buildCounter: (context, {required currentLength, required isFocused, maxLength}) {
               return null; // 隐藏字符计数器
             },
           ),
@@ -816,11 +719,7 @@ class _KeysSettingsState extends State<KeysSettings> {
           if (config.custom) ...[
             Text(
               l10n.apiStyle,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: 4),
             DropdownButtonFormField<String>(
@@ -828,62 +727,33 @@ class _KeysSettingsState extends State<KeysSettings> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 isDense: true,
               ),
               isDense: true,
-              icon: Icon(
-                CupertinoIcons.chevron_down,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              icon: Icon(CupertinoIcons.chevron_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
               items: [
                 DropdownMenuItem(
                   value: 'openai',
-                  child: Text(
-                    'OpenAI',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
+                  child: Text('OpenAI', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                 ),
                 DropdownMenuItem(
                   value: 'claude',
-                  child: Text(
-                    'Claude',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
+                  child: Text('Claude', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                 ),
                 DropdownMenuItem(
                   value: 'gemini',
-                  child: Text(
-                    'Gemini',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
+                  child: Text('Gemini', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                 ),
               ],
               onChanged: (value) {
@@ -906,46 +776,30 @@ class _KeysSettingsState extends State<KeysSettings> {
           // API URL
           Text(
             l10n.apiUrl,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 4),
           TextFormField(
             controller: controllers.endpointController,
             decoration: InputDecoration(
               hintText: l10n.enterApiEndpoint,
-              hintStyle: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-              ),
+              hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               isDense: true,
             ),
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 12),
 
@@ -955,11 +809,7 @@ class _KeysSettingsState extends State<KeysSettings> {
           if (config.providerId == 'foundry') ...[
             Text(
               l10n.apiVersion,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: 4),
             TextFormField(
@@ -967,35 +817,23 @@ class _KeysSettingsState extends State<KeysSettings> {
               decoration: InputDecoration(
                 //enabled: false,
                 hintText: l10n.enterApiVersion,
-                hintStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-                ),
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 isDense: true,
               ),
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: 12),
           ],
@@ -1005,11 +843,7 @@ class _KeysSettingsState extends State<KeysSettings> {
             children: [
               Text(
                 l10n.apiKey,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
               ),
               Gap(size: 4),
               if (config.link != null && config.link!.isNotEmpty)
@@ -1017,13 +851,7 @@ class _KeysSettingsState extends State<KeysSettings> {
                   onPressed: () async {
                     await launchUrl(Uri.parse(config.link!));
                   },
-                  child: Text(
-                    l10n.getApiKey,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: AppColors.blue,
-                    ),
-                  ),
+                  child: Text(l10n.getApiKey, style: TextStyle(fontSize: 10, color: AppColors.blue)),
                 ),
             ],
           ),
@@ -1033,35 +861,23 @@ class _KeysSettingsState extends State<KeysSettings> {
             obscureText: _obscureText,
             decoration: InputDecoration(
               hintText: l10n.enterApiKey(config.providerName ?? ''),
-              hintStyle: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
-              ),
+              hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(102)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(51),
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               isDense: true,
               suffixIcon: IconButton(
-                icon: Icon(
-                  _obscureText ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
-                  size: 16,
-                ),
+                icon: Icon(_obscureText ? CupertinoIcons.eye_slash : CupertinoIcons.eye, size: 16),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {
@@ -1071,10 +887,7 @@ class _KeysSettingsState extends State<KeysSettings> {
                 },
               ),
             ),
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
             validator: (value) {
               if (value != null && value.isNotEmpty && value.length < 10) {
                 return l10n.apiKeyValidation;
@@ -1089,11 +902,7 @@ class _KeysSettingsState extends State<KeysSettings> {
             children: [
               Text(
                 '${l10n.modelList} (${controllers.models.length})',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
               ),
               Spacer(),
               if (kIsDesktop) ...[
@@ -1104,19 +913,12 @@ class _KeysSettingsState extends State<KeysSettings> {
               // add custom model
               OutlinedButton.icon(
                 icon: const Icon(Icons.add_circle_outline, size: 14),
-                label: Text(
-                  l10n.add,
-                  style: const TextStyle(fontSize: 12),
-                ),
+                label: Text(l10n.add, style: const TextStyle(fontSize: 12)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.primary,
-                  side:
-                      BorderSide(color: Theme.of(context).colorScheme.primary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                   minimumSize: const Size(0, 30),
                 ),
                 onPressed: () {
@@ -1127,32 +929,25 @@ class _KeysSettingsState extends State<KeysSettings> {
               // fetch models
               OutlinedButton.icon(
                 icon: const Icon(CupertinoIcons.checkmark_seal, size: 14),
-                label: Text(
-                  l10n.fetch,
-                  style: const TextStyle(fontSize: 12),
-                ),
+                label: Text(l10n.fetch, style: const TextStyle(fontSize: 12)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.primary,
-                  side:
-                      BorderSide(color: Theme.of(context).colorScheme.primary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                   minimumSize: const Size(0, 30),
                 ),
                 onPressed: () async {
-                  var provider =
-                      LLMFactoryHelper.providerMap[controllers.providerId];
+                  var provider = LLMFactoryHelper.providerMap[controllers.providerId];
 
-                  provider ??=
-                      LLMProvider.values.byName(controllers.apiStyleController);
+                  provider ??= LLMProvider.values.byName(controllers.apiStyleController);
 
-                  final llm = LLMFactory.create(provider,
-                      apiKey: controllers.keyController.text,
-                      baseUrl: controllers.endpointController.text,
-                      apiVersion: controllers.apiVersionController.text);
+                  final llm = LLMFactory.create(
+                    provider,
+                    apiKey: controllers.keyController.text,
+                    baseUrl: controllers.endpointController.text,
+                    apiVersion: controllers.apiVersionController.text,
+                  );
 
                   try {
                     final models = await llm.models();
@@ -1169,31 +964,26 @@ class _KeysSettingsState extends State<KeysSettings> {
               const Gap(size: 8),
               // reset models
               OutlinedButton.icon(
-                icon:
-                    const Icon(CupertinoIcons.arrow_counterclockwise, size: 14),
+                icon: const Icon(CupertinoIcons.arrow_counterclockwise, size: 14),
                 label: Text(l10n.reset, style: const TextStyle(fontSize: 12)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.primary,
-                  side:
-                      BorderSide(color: Theme.of(context).colorScheme.primary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                   minimumSize: const Size(0, 30),
                 ),
                 onPressed: () async {
-                  var provider =
-                      LLMFactoryHelper.providerMap[controllers.providerId];
+                  var provider = LLMFactoryHelper.providerMap[controllers.providerId];
 
-                  provider ??=
-                      LLMProvider.values.byName(controllers.apiStyleController);
+                  provider ??= LLMProvider.values.byName(controllers.apiStyleController);
 
-                  final llm = LLMFactory.create(provider,
-                      apiKey: controllers.keyController.text,
-                      baseUrl: controllers.endpointController.text,
-                      apiVersion: controllers.apiVersionController.text);
+                  final llm = LLMFactory.create(
+                    provider,
+                    apiKey: controllers.keyController.text,
+                    baseUrl: controllers.endpointController.text,
+                    apiVersion: controllers.apiVersionController.text,
+                  );
 
                   final models = await llm.models();
                   setState(() {
@@ -1211,18 +1001,12 @@ class _KeysSettingsState extends State<KeysSettings> {
           ),
 
           // 模型列表
-
           const SizedBox(height: 12),
 
-          if (!kIsDesktop) ...[
-            const SizedBox(height: 12),
-            _buildGenTitleModel(controllers),
-            const SizedBox(height: 12),
-          ],
+          if (!kIsDesktop) ...[const SizedBox(height: 12), _buildGenTitleModel(controllers), const SizedBox(height: 12)],
 
           // 模型列表，直接显示所有模型
-          ...controllers.models.map((model) => _buildModelListItem(
-              model, controllers.enabledModels.contains(model))),
+          ...controllers.models.map((model) => _buildModelListItem(model, controllers.enabledModels.contains(model))),
           const SizedBox(height: 8), // 底部留一些空间
         ],
       ),
@@ -1239,47 +1023,35 @@ class _KeysSettingsState extends State<KeysSettings> {
         child: DropdownButtonFormField<String>(
           value: controllers.enabledModels.contains(controllers.genTitleModel)
               ? controllers.genTitleModel
-              : (controllers.enabledModels.isNotEmpty
-                  ? controllers.enabledModels.first
-                  : null),
+              : (controllers.enabledModels.isNotEmpty ? controllers.enabledModels.first : null),
           decoration: InputDecoration(
             labelText: l10n.genTitleModel,
             labelStyle: TextStyle(fontSize: 12),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.outline.withAlpha(51),
-              ),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.outline.withAlpha(51),
-              ),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(51)),
             ),
             isDense: true,
           ),
-          icon: Icon(
-            CupertinoIcons.chevron_down,
-            size: 14,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          icon: Icon(CupertinoIcons.chevron_down, size: 14, color: Theme.of(context).colorScheme.onSurface),
           style: TextStyle(fontSize: 12),
           isExpanded: true,
           items: controllers.enabledModels
-              .map((model) => DropdownMenuItem(
-                    value: model,
-                    child: Text(
-                      model,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ))
+              .map(
+                (model) => DropdownMenuItem(
+                  value: model,
+                  child: Text(
+                    model,
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
               .toList(),
           onChanged: (value) {
             if (value != null) {
@@ -1308,21 +1080,13 @@ class _KeysSettingsState extends State<KeysSettings> {
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withAlpha(26),
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              modelName,
-              style: TextStyle(
-                fontSize: 13,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
+            child: Text(modelName, style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface)),
           ),
           // delete model
           Container(
@@ -1360,9 +1124,7 @@ class _KeysSettingsState extends State<KeysSettings> {
                     if (!controllers.enabledModels.contains(modelName)) {
                       controllers.enabledModels.add(modelName);
                       // 确保enabledModels按照models中的顺序排序
-                      controllers.enabledModels.sort((a, b) =>
-                          controllers.models.indexOf(a) -
-                          controllers.models.indexOf(b));
+                      controllers.enabledModels.sort((a, b) => controllers.models.indexOf(a) - controllers.models.indexOf(b));
                     }
                   } else {
                     // 禁用模型
@@ -1396,72 +1158,69 @@ class _KeysSettingsState extends State<KeysSettings> {
       children: [
         ElevatedButton(
           onPressed: () async {
-            githubCopilotOAuth.getCopilotDeviceCode().then((success) {
-              if (success) {
-                setState(() {
-                  _hasChanges = true;
-                });
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Device Authorization'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SelectableText(
-                          'User Code: ${githubCopilotOAuth.userCode ?? ""}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+            githubCopilotOAuth
+                .getCopilotDeviceCode()
+                .then((success) {
+                  if (success) {
+                    setState(() {
+                      _hasChanges = true;
+                    });
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Device Authorization'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SelectableText('User Code: ${githubCopilotOAuth.userCode ?? ""}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 12),
+                              Text('Please enter this code at:'),
+                              InkWell(
+                                child: Text(
+                                  githubCopilotOAuth.verificationUri ?? 'https://github.com/login/device',
+                                  style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                                ),
+                                onTap: () async {
+                                  final url = githubCopilotOAuth.verificationUri ?? 'https://github.com/login/device';
+                                  await launchUrl(Uri.parse(url));
+                                },
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
-                          Text('Please enter this code at:'),
-                          InkWell(
-                          child: Text(
-                            githubCopilotOAuth.verificationUri ?? 'https://github.com/login/device',
-                            style: const TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          onTap: () async {
-                            final url = githubCopilotOAuth.verificationUri ?? 'https://github.com/login/device';
-                            await launchUrl(Uri.parse(url));
-                          },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('OK'),
-                        ),
-                      ],
+                          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+                        );
+                      },
                     );
-                  },
-                );
-                ToastUtils.success('Device code fetched successfully');
-              } else {
-                ToastUtils.error('Failed to fetch device code');
-              }
-            }).catchError((error) {
-              ToastUtils.error('Error fetching device code: $error');
-            });
+                    ToastUtils.success('Device code fetched successfully');
+                  } else {
+                    ToastUtils.error('Failed to fetch device code');
+                  }
+                })
+                .catchError((error) {
+                  ToastUtils.error('Error fetching device code: $error');
+                });
           },
           child: const Text('Get Device Code'),
         ),
         const SizedBox(width: 12),
         ElevatedButton(
-          onPressed: githubCopilotOAuth.userCode == null ? null : () {
-            githubCopilotOAuth.getCopilotAccessToken().then((token) {
-              setState(() {
-                _controllers[_selectedProvider].keyController.text = token;
-                _hasChanges = true;
-              });
-              ToastUtils.success('Token fetched successfully');
-            }).catchError((error) {
-              ToastUtils.error('Failed to fetch token: $error');
-            });
-          }, // Disabled
+          onPressed: githubCopilotOAuth.userCode == null
+              ? null
+              : () {
+                  githubCopilotOAuth
+                      .getCopilotAccessToken()
+                      .then((token) {
+                        setState(() {
+                          _controllers[_selectedProvider].keyController.text = token;
+                          _hasChanges = true;
+                        });
+                        ToastUtils.success('Token fetched successfully');
+                      })
+                      .catchError((error) {
+                        ToastUtils.error('Failed to fetch token: $error');
+                      });
+                }, // Disabled
           child: const Text('Get Token'),
         ),
       ],
@@ -1478,24 +1237,27 @@ class _KeysSettingsState extends State<KeysSettings> {
         final settings = ProviderManager.settingsProvider;
 
         await settings.updateApiSettings(
-            apiSettings: _controllers
-                .map((e) => LLMProviderSetting(
-                      providerId: e.providerId,
-                      providerName: e.providerNameController.text,
-                      apiKey: e.keyController.text,
-                      apiEndpoint: e.endpointController.text,
-                      apiVersion: e.apiVersionController.text,
-                      apiStyle: e.apiStyleController,
-                      custom: e.custom,
-                      models: e.models,
-                      enabledModels: e.enabledModels,
-                      icon: e.icon,
-                      genTitleModel: e.genTitleModel,
-                      link: e.link,
-                      priority: e.priority,
-                      enable: _llmApiConfigs[_controllers.indexOf(e)].enable,
-                    ))
-                .toList());
+          apiSettings: _controllers
+              .map(
+                (e) => LLMProviderSetting(
+                  providerId: e.providerId,
+                  providerName: e.providerNameController.text,
+                  apiKey: e.keyController.text,
+                  apiEndpoint: e.endpointController.text,
+                  apiVersion: e.apiVersionController.text,
+                  apiStyle: e.apiStyleController,
+                  custom: e.custom,
+                  models: e.models,
+                  enabledModels: e.enabledModels,
+                  icon: e.icon,
+                  genTitleModel: e.genTitleModel,
+                  link: e.link,
+                  priority: e.priority,
+                  enable: _llmApiConfigs[_controllers.indexOf(e)].enable,
+                ),
+              )
+              .toList(),
+        );
 
         // 重置变更状态
         if (mounted) {
@@ -1518,26 +1280,22 @@ class _KeysSettingsState extends State<KeysSettings> {
   final githubCopilotOAuth = GithubCopilotOAuth(clientId: "YOUR_CLIENT_ID_HERE");
 }
 
-class GithubCopilotOAuth{
+class GithubCopilotOAuth {
   final String clientId; // Replace with your actual client_id
   final String scope = 'read:user';
   final String grantType = 'urn:ietf:params:oauth:grant-type:device_code';
-  final Map<String, String> headers = {
-    'Accept': 'application/json',
-  };
+  final Map<String, String> headers = {'Accept': 'application/json'};
   final Map<String, dynamic> apiUrls = {
     'GITHUB_USER': 'https://api.github.com/user',
     'GITHUB_DEVICE_CODE': 'https://github.com/login/device/code',
     'GITHUB_ACCESS_TOKEN': 'https://github.com/login/oauth/access_token',
-    'COPILOT_TOKEN': 'https://api.github.com/copilot_internal/v2/token'
+    'COPILOT_TOKEN': 'https://api.github.com/copilot_internal/v2/token',
   };
   String? deviceCode;
   String? userCode;
   String? verificationUri;
 
-  GithubCopilotOAuth({
-    required this.clientId,
-  });
+  GithubCopilotOAuth({required this.clientId});
 
   Map<String, dynamic> toJson() {
     return {
@@ -1554,20 +1312,9 @@ class GithubCopilotOAuth{
   Future<bool> getCopilotDeviceCode() async {
     // Füge die Parameter korrekt zur URI hinzu
     final baseUri = Uri.parse(apiUrls['GITHUB_DEVICE_CODE']);
-    final requestBody = {
-      'client_id': clientId,
-      'scope': scope,
-    };
-    final uri = Uri(
-      scheme: baseUri.scheme,
-      host: baseUri.host,
-      path: baseUri.path,
-      queryParameters: requestBody,
-    );
-    final response = await post(
-      uri,
-      headers: headers
-    );
+    final requestBody = {'client_id': clientId, 'scope': scope};
+    final uri = Uri(scheme: baseUri.scheme, host: baseUri.host, path: baseUri.path, queryParameters: requestBody);
+    final response = await post(uri, headers: headers);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -1586,22 +1333,10 @@ class GithubCopilotOAuth{
     }
 
     final baseUri = Uri.parse(apiUrls['GITHUB_ACCESS_TOKEN']);
-    final requestBody = {
-      'client_id': clientId,
-      'device_code': deviceCode,
-      'grant_type': grantType,
-    };
-    final uri = Uri(
-      scheme: baseUri.scheme,
-      host: baseUri.host,
-      path: baseUri.path,
-      queryParameters: requestBody,
-    );
+    final requestBody = {'client_id': clientId, 'device_code': deviceCode, 'grant_type': grantType};
+    final uri = Uri(scheme: baseUri.scheme, host: baseUri.host, path: baseUri.path, queryParameters: requestBody);
 
-    final response = await post(
-      uri,
-      headers: headers,
-    );
+    final response = await post(uri, headers: headers);
 
     if (response.statusCode == 200) {
       // Handle success, parse response.body

@@ -57,19 +57,11 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary),
           ),
         ],
       ),
@@ -89,20 +81,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               color: Theme.of(context).colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                ),
+                side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
               ),
               child: ListTile(
                 title: CText(text: l10n.language),
                 trailing: DropdownButton<String>(
                   value: settings.generalSetting.locale,
                   underline: const SizedBox(),
-                  icon: Icon(
-                    CupertinoIcons.chevron_right,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                  ),
+                  icon: Icon(CupertinoIcons.chevron_right, size: 16, color: Theme.of(context).colorScheme.onSurface.withAlpha(50)),
                   items: const [
                     DropdownMenuItem(
                       value: 'en',
@@ -144,23 +130,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               color: Theme.of(context).colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                ),
+                side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 1.0),
                 child: DropdownButtonFormField<String>(
                   value: settings.generalSetting.theme,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 2.0),
-                  ),
-                  icon: Icon(
-                    CupertinoIcons.chevron_right,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                  ),
+                  decoration: InputDecoration(border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(vertical: 2.0)),
+                  icon: Icon(CupertinoIcons.chevron_right, size: 16, color: Theme.of(context).colorScheme.onSurface.withAlpha(50)),
                   items: [
                     DropdownMenuItem(
                       value: 'light',
@@ -177,9 +154,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   ],
                   onChanged: (value) {
                     if (value != null) {
-                      settings.updateGeneralSettingsPartially(
-                        theme: value,
-                      );
+                      settings.updateGeneralSettingsPartially(theme: value);
                     }
                   },
                 ),
@@ -204,9 +179,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               color: Theme.of(context).colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                ),
+                side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
               ),
               child: Column(
                 children: [
@@ -220,12 +193,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       settings.updateGeneralSettingsPartially(showAssistantAvatar: value);
                     },
                   ),
-                  Divider(
-                    height: 1,
-                    indent: 16,
-                    endIndent: 16,
-                    color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                  ),
+                  Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outline.withAlpha(50)),
                   SettingSwitch(
                     title: l10n.showUserAvatar,
                     subtitle: l10n.showUserAvatarDescription,
@@ -258,9 +226,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               color: Theme.of(context).colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                ),
+                side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -283,10 +249,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     // 如果启用代理，显示代理配置选项
                     if (settings.generalSetting.enableProxy) ...[
                       const SizedBox(height: 16),
-                      Divider(
-                        height: 1,
-                        color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                      ),
+                      Divider(height: 1, color: Theme.of(context).colorScheme.outline.withAlpha(50)),
                       const SizedBox(height: 16),
 
                       // 代理类型选择
@@ -296,11 +259,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                             flex: 2,
                             child: Text(
                               l10n.proxyType,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
                             ),
                           ),
                           Expanded(
@@ -310,17 +269,27 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.outline.withAlpha(20),
-                                  ),
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(20)),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
                               items: const [
-                                DropdownMenuItem(value: 'HTTP', child: CText(text: 'HTTP')),
-                                DropdownMenuItem(value: 'HTTPS', child: CText(text: 'HTTPS')),
-                                DropdownMenuItem(value: 'SOCKS4', child: CText(text: 'SOCKS4')),
-                                DropdownMenuItem(value: 'SOCKS5', child: CText(text: 'SOCKS5')),
+                                DropdownMenuItem(
+                                  value: 'HTTP',
+                                  child: CText(text: 'HTTP'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'HTTPS',
+                                  child: CText(text: 'HTTPS'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'SOCKS4',
+                                  child: CText(text: 'SOCKS4'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'SOCKS5',
+                                  child: CText(text: 'SOCKS5'),
+                                ),
                               ],
                               onChanged: (value) {
                                 if (value != null) {
@@ -344,15 +313,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               decoration: InputDecoration(
                                 labelText: l10n.proxyHost,
                                 hintText: l10n.enterProxyHost,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
                               validator: (value) {
                                 if (settings.generalSetting.enableProxy && (value == null || value.isEmpty)) {
                                   return l10n.proxyHostRequired;
@@ -375,15 +339,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               decoration: InputDecoration(
                                 labelText: l10n.proxyPort,
                                 hintText: l10n.enterProxyPort,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
                               keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -417,15 +376,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               decoration: InputDecoration(
                                 labelText: l10n.proxyUsername,
                                 hintText: l10n.enterProxyUsername,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
                               onChanged: (value) {
                                 settings.updateGeneralSettingsPartially(proxyUsername: value);
                                 ToastUtils.success(l10n.saved);
@@ -439,15 +393,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               decoration: InputDecoration(
                                 labelText: l10n.proxyPassword,
                                 hintText: l10n.enterProxyPassword,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
                               obscureText: true,
                               onChanged: (value) {
                                 settings.updateGeneralSettingsPartially(proxyPassword: value);
@@ -481,9 +430,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               color: Theme.of(context).colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(50),
-                ),
+                side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -495,43 +442,26 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(20),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(20)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline.withAlpha(20),
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(20)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                         ),
                         contentPadding: const EdgeInsets.all(12),
                       ),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                       maxLines: 5,
                       onChanged: (value) {
-                        settings.updateGeneralSettingsPartially(
-                          systemPrompt: value,
-                        );
+                        settings.updateGeneralSettingsPartially(systemPrompt: value);
                       },
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      l10n.systemPromptDescription,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(60),
-                      ),
-                    ),
+                    Text(l10n.systemPromptDescription, style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withAlpha(60))),
                   ],
                 ),
               ),
@@ -553,22 +483,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           color: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.outline.withAlpha(50),
-            ),
+            side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
           ),
           child: ListTile(
-            leading: Icon(
-              CupertinoIcons.delete,
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(200),
-            ),
+            leading: Icon(CupertinoIcons.delete, color: Theme.of(context).colorScheme.onSurface.withAlpha(200)),
             title: CText(text: l10n.cleanupLogs),
             subtitle: CText(text: l10n.cleanupLogsDescription),
-            trailing: Icon(
-              CupertinoIcons.chevron_right,
-              size: 16,
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-            ),
+            trailing: Icon(CupertinoIcons.chevron_right, size: 16, color: Theme.of(context).colorScheme.onSurface.withAlpha(50)),
             onTap: () async {
               final confirmed = await showDialog<bool>(
                 context: context,

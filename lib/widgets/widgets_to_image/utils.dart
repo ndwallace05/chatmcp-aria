@@ -7,13 +7,10 @@ class WidgetsToImageController {
   GlobalKey containerKey = GlobalKey();
 
   /// to capture widget to image by GlobalKey in RenderRepaintBoundary
-  Future<Uint8List?> capture({
-    double pixelRatio = 6,
-  }) async {
+  Future<Uint8List?> capture({double pixelRatio = 6}) async {
     try {
       /// boundary widget by GlobalKey
-      RenderRepaintBoundary? boundary = containerKey.currentContext
-          ?.findRenderObject() as RenderRepaintBoundary?;
+      RenderRepaintBoundary? boundary = containerKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
       /// convert boundary to image
       final image = await boundary!.toImage(pixelRatio: pixelRatio);

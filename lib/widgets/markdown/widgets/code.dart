@@ -12,8 +12,9 @@ import 'html_view.dart';
 import './artifact.dart';
 
 SpanNodeGeneratorWithTag codeBlockGenerator = SpanNodeGeneratorWithTag(
-    tag: "pre",
-    generator: (e, config, visitor) => CodeBlockNode(e, config.pre, visitor));
+  tag: "pre",
+  generator: (e, config, visitor) => CodeBlockNode(e, config.pre, visitor),
+);
 
 class CodeBlockNode extends ElementNode {
   CodeBlockNode(this.element, this.preConfig, this.visitor);
@@ -36,9 +37,7 @@ class CodeBlockNode extends ElementNode {
       language = null;
       debugPrint('get language error:$e');
     }
-    final splitContents = content
-        .trim()
-        .split(visitor.splitRegExp ?? WidgetVisitor.defaultSplitRegExp);
+    final splitContents = content.trim().split(visitor.splitRegExp ?? WidgetVisitor.defaultSplitRegExp);
     if (splitContents.last.isEmpty) splitContents.removeLast();
 
     final codeBuilder = preConfig.builder;
@@ -51,31 +50,25 @@ class CodeBlockNode extends ElementNode {
     final widget = SizedBox(
       width: double.infinity,
       child: _CodeBlock(
-          code: content,
-          language: language ?? '',
-          isClosed: isClosed,
-          preConfig: preConfig,
-          splitContents: splitContents,
-          visitor: visitor),
+        code: content,
+        language: language ?? '',
+        isClosed: isClosed,
+        preConfig: preConfig,
+        splitContents: splitContents,
+        visitor: visitor,
+      ),
     );
 
     if (language != 'html') {
-      return WidgetSpan(
-          child: preConfig.wrapper?.call(widget, content, language ?? '') ??
-              widget);
+      return WidgetSpan(child: preConfig.wrapper?.call(widget, content, language ?? '') ?? widget);
     }
 
-    final widget1 = ArtifactAntArtifactWidget(
-      content,
-      {
-        'title': content.length > 20 ? content.substring(0, 20) : content,
-        'closed': isClosed.toString(),
-        'type': language ?? '',
-      },
-    );
-    return WidgetSpan(
-        child: preConfig.wrapper?.call(widget1, content, language ?? '') ??
-            widget1);
+    final widget1 = ArtifactAntArtifactWidget(content, {
+      'title': content.length > 20 ? content.substring(0, 20) : content,
+      'closed': isClosed.toString(),
+      'type': language ?? '',
+    });
+    return WidgetSpan(child: preConfig.wrapper?.call(widget1, content, language ?? '') ?? widget1);
   }
 
   @override
@@ -103,8 +96,7 @@ class _CodeBlock extends StatefulWidget {
   State<_CodeBlock> createState() => _CodeBlockState();
 }
 
-class _CodeBlockState extends State<_CodeBlock>
-    with AutomaticKeepAliveClientMixin {
+class _CodeBlockState extends State<_CodeBlock> with AutomaticKeepAliveClientMixin {
   // whether to show preview
   bool _isPreviewVisible = false;
   // whether to support preview
@@ -146,15 +138,9 @@ class _CodeBlockState extends State<_CodeBlock>
   /// build preview component
   Widget? _buildPreviewWidget() {
     if (widget.language == 'mermaid') {
-      return MermaidDiagramView(
-        key: ValueKey(widget.code),
-        code: widget.code,
-      );
+      return MermaidDiagramView(key: ValueKey(widget.code), code: widget.code);
     } else if (_htmlLanguages.contains(widget.language)) {
-      return HtmlView(
-        key: ValueKey(widget.code),
-        html: widget.code,
-      );
+      return HtmlView(key: ValueKey(widget.code), html: widget.code);
     }
     return null;
   }
@@ -169,12 +155,7 @@ class _CodeBlockState extends State<_CodeBlock>
   /// copy code to clipboard
   void _copyCodeToClipboard(BuildContext context, AppLocalizations t) {
     Clipboard.setData(ClipboardData(text: widget.code));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(t.codeCopiedToClipboard),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t.codeCopiedToClipboard), duration: const Duration(seconds: 2)));
   }
 
   @override
@@ -185,13 +166,7 @@ class _CodeBlockState extends State<_CodeBlock>
     return Container(
       width: double.infinity,
       decoration: widget.preConfig.decoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildToolBar(t),
-          _buildContentSection(),
-        ],
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [_buildToolBar(t), _buildContentSection()]),
     );
   }
 
@@ -200,12 +175,7 @@ class _CodeBlockState extends State<_CodeBlock>
     if (_isSupportPreview && _isPreviewVisible && _previewWidget != null) {
       return _previewWidget!;
     } else {
-      return HighlightView(
-        widget.code,
-        language: widget.language,
-        theme: widget.preConfig.theme,
-        padding: const EdgeInsets.all(5),
-      );
+      return HighlightView(widget.code, language: widget.language, theme: widget.preConfig.theme, padding: const EdgeInsets.all(5));
     }
   }
 
@@ -221,11 +191,7 @@ class _CodeBlockState extends State<_CodeBlock>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildLanguageLabel(),
-          const Spacer(),
-          _buildToolbarActions(t),
-        ],
+        children: [_buildLanguageLabel(), const Spacer(), _buildToolbarActions(t)],
       ),
     );
   }
@@ -234,11 +200,7 @@ class _CodeBlockState extends State<_CodeBlock>
   Widget _buildLanguageLabel() {
     return Text(
       widget.language.isEmpty ? 'text' : widget.language,
-      style: TextStyle(
-        color: AppColors.getCodeBlockLanguageTextColor(context),
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-      ),
+      style: TextStyle(color: AppColors.getCodeBlockLanguageTextColor(context), fontSize: 12, fontWeight: FontWeight.bold),
     );
   }
 
@@ -248,14 +210,8 @@ class _CodeBlockState extends State<_CodeBlock>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        GestureDetector(
-          child: const Icon(Icons.copy, size: 14),
-          onTap: () => _copyCodeToClipboard(context, t),
-        ),
-        if (_isSupportPreview) ...[
-          Gap(size: 8),
-          _buildPreviewToggleButton(),
-        ]
+        GestureDetector(child: const Icon(Icons.copy, size: 14), onTap: () => _copyCodeToClipboard(context, t)),
+        if (_isSupportPreview) ...[Gap(size: 8), _buildPreviewToggleButton()],
       ],
     );
   }
@@ -268,15 +224,10 @@ class _CodeBlockState extends State<_CodeBlock>
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: AppColors.getCodePreviewButtonBackgroundColor(context),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(11),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
       ),
       onPressed: _togglePreviewVisibility,
-      child: Text(
-        _isPreviewVisible ? 'Code' : 'Preview',
-        style: const TextStyle(fontSize: 9, height: 1),
-      ),
+      child: Text(_isPreviewVisible ? 'Code' : 'Preview', style: const TextStyle(fontSize: 9, height: 1)),
     );
   }
 
@@ -285,19 +236,20 @@ class _CodeBlockState extends State<_CodeBlock>
     return List.generate(widget.splitContents.length, (index) {
       final currentContent = widget.splitContents[index];
       return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: ProxyRichText(
-            TextSpan(
-              children: highLightSpans(
-                currentContent,
-                language: widget.preConfig.language,
-                theme: widget.preConfig.theme,
-                textStyle: widget.preConfig.textStyle,
-                styleNotMatched: widget.preConfig.styleNotMatched,
-              ),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ProxyRichText(
+          TextSpan(
+            children: highLightSpans(
+              currentContent,
+              language: widget.preConfig.language,
+              theme: widget.preConfig.theme,
+              textStyle: widget.preConfig.textStyle,
+              styleNotMatched: widget.preConfig.styleNotMatched,
             ),
-            richTextBuilder: widget.visitor.richTextBuilder,
-          ));
+          ),
+          richTextBuilder: widget.visitor.richTextBuilder,
+        ),
+      );
     });
   }
 }
@@ -329,9 +281,7 @@ class FencedCodeBlockSyntax extends m.BlockSyntax {
       final closingMatch = pattern.firstMatch(currentLine);
 
       // check if it is end mark
-      if (closingMatch != null &&
-          closingMatch.group(1)!.startsWith(openingFence) &&
-          closingMatch.group(2)!.trim().isEmpty) {
+      if (closingMatch != null && closingMatch.group(1)!.startsWith(openingFence) && closingMatch.group(2)!.trim().isEmpty) {
         isClosed = true;
         parser.advance();
         break;

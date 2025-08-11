@@ -28,16 +28,11 @@ class McpInfo extends StatelessWidget {
     if (resp.error != null) {
       return [];
     }
-    final toolsData =
-        resp.result['tools'] as List<dynamic>?; // Handle null case
+    final toolsData = resp.result['tools'] as List<dynamic>?; // Handle null case
     if (toolsData == null) {
       return [];
     }
-    return toolsData
-        .map((tool) => Tool(
-            name: tool['name'] as String? ?? '',
-            desc: tool['description'] as String? ?? ''))
-        .toList();
+    return toolsData.map((tool) => Tool(name: tool['name'] as String? ?? '', desc: tool['description'] as String? ?? '')).toList();
   }
 
   // Helper method to build an expandable card
@@ -52,18 +47,14 @@ class McpInfo extends StatelessWidget {
       margin: EdgeInsets.zero,
       elevation: 0,
       color: Theme.of(context).colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           leading: Icon(iconData, color: Theme.of(context).colorScheme.primary),
           title: Text(
             title,
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface),
+            style: TextStyle(fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
           ),
           initiallyExpanded: initiallyExpanded,
           childrenPadding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
@@ -87,10 +78,7 @@ class McpInfo extends StatelessWidget {
             }
             if (snapshot.hasError) {
               return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('${l10n.error}: ${snapshot.error}'),
-                ),
+                child: Padding(padding: const EdgeInsets.all(16.0), child: Text('${l10n.error}: ${snapshot.error}')),
               );
             }
 
@@ -107,49 +95,32 @@ class McpInfo extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final tool = tools[index];
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                       elevation: 1,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withAlpha(26)),
+                        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(26)),
                       ),
                       child: ListTile(
-                        leading: Icon(CupertinoIcons.tag_fill,
-                            color: Theme.of(context).colorScheme.secondary),
+                        leading: Icon(CupertinoIcons.tag_fill, color: Theme.of(context).colorScheme.secondary),
                         title: Text(
                           tool.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
                         ),
-                        subtitle: Text(
-                          tool.desc,
-                          style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant),
-                        ),
+                        subtitle: Text(tool.desc, style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                       ),
                     );
                   },
-                )
+                ),
               ];
             } else {
               toolsChildren = [
                 ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 16.0),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                   title: Text(
                     "No tools available for this server.", // TODO: Localize
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ),
               ];
@@ -201,8 +172,7 @@ class McpInfo extends StatelessWidget {
             ];
 
             return ListView.separated(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
               itemCount: sections.length,
               itemBuilder: (context, index) {
                 final section = sections[index];

@@ -17,10 +17,7 @@ import 'package:chatmcp/generated/app_localizations.dart';
 class MermaidDiagramView extends StatefulWidget {
   final String code;
 
-  const MermaidDiagramView({
-    super.key,
-    required this.code,
-  });
+  const MermaidDiagramView({super.key, required this.code});
 
   @override
   State<MermaidDiagramView> createState() => _MermaidDiagramViewState();
@@ -45,7 +42,9 @@ class _MermaidDiagramViewState extends State<MermaidDiagramView> {
   Future<void> _initWebView(InAppWebViewController controller) async {
     this.controller = controller;
     try {
-      await controller.loadData(data: '''
+      await controller.loadData(
+        data:
+            '''
         <!DOCTYPE html>
         <html>
         <head>
@@ -118,7 +117,8 @@ class _MermaidDiagramViewState extends State<MermaidDiagramView> {
           </div>
         </body>
         </html>
-      ''');
+      ''',
+      );
     } catch (e) {
       debugPrint('Error loading WebView data: $e');
       _handleError();
@@ -142,12 +142,7 @@ class _MermaidDiagramViewState extends State<MermaidDiagramView> {
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
     if (_hasError) {
-      return const SizedBox(
-        height: 100,
-        child: Center(
-          child: Text('load diagram failed, please try again'),
-        ),
-      );
+      return const SizedBox(height: 100, child: Center(child: Text('load diagram failed, please try again')));
     }
 
     return SizedBox(
@@ -155,16 +150,11 @@ class _MermaidDiagramViewState extends State<MermaidDiagramView> {
       child: Stack(
         children: [
           InAppWebView(
-            initialSettings: InAppWebViewSettings(
-              javaScriptEnabled: true,
-              transparentBackground: true,
-              isInspectable: kDebugMode,
-            ),
+            initialSettings: InAppWebViewSettings(javaScriptEnabled: true, transparentBackground: true, isInspectable: kDebugMode),
             onWebViewCreated: _initWebView,
             onLoadStop: (controller, url) async {
               try {
-                final height = await controller.evaluateJavascript(
-                    source: 'document.body.scrollHeight');
+                final height = await controller.evaluateJavascript(source: 'document.body.scrollHeight');
                 if (mounted) {
                   setState(() {
                     _height = (height as num).toDouble();
@@ -186,9 +176,7 @@ class _MermaidDiagramViewState extends State<MermaidDiagramView> {
               }
             },
           ),
-          _progress < 1.0
-              ? LinearProgressIndicator(value: _progress)
-              : Container(),
+          _progress < 1.0 ? LinearProgressIndicator(value: _progress) : Container(),
           if (_screenshot != null) Image.memory(_screenshot!),
         ],
       ),

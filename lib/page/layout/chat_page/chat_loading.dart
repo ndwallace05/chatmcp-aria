@@ -8,26 +8,16 @@ class ChatLoading extends StatefulWidget {
   State<ChatLoading> createState() => _ChatLoadingState();
 }
 
-class _ChatLoadingState extends State<ChatLoading>
-    with SingleTickerProviderStateMixin {
+class _ChatLoadingState extends State<ChatLoading> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    )..repeat(reverse: true);
+    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this)..repeat(reverse: true);
 
-    _animation = Tween<double>(
-      begin: 8.0,
-      end: 16.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    _animation = Tween<double>(begin: 8.0, end: 16.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -50,10 +40,7 @@ class _ChatLoadingState extends State<ChatLoading>
               child: Container(
                 width: _animation.value,
                 height: _animation.value,
-                decoration: BoxDecoration(
-                  color: AppColors.getChatLoadingColor(context),
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: AppColors.getChatLoadingColor(context), shape: BoxShape.circle),
               ),
             ),
           );

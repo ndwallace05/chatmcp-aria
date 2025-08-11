@@ -23,38 +23,25 @@ class TopToolbar extends StatelessWidget {
   final bool hideSidebar;
   final VoidCallback onToggleSidebar;
 
-  const TopToolbar({
-    super.key,
-    required this.hideSidebar,
-    required this.onToggleSidebar,
-  });
+  const TopToolbar({super.key, required this.hideSidebar, required this.onToggleSidebar});
 
   void _onShowChatSetting(BuildContext context) {
     if (kIsMobile) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: SafeArea(
-              child: const ChatSetting(),
-            ),
-          ),
+          builder: (context) => Scaffold(body: SafeArea(child: const ChatSetting())),
         ),
       );
     } else {
       showDialog(
         context: context,
         builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: const ChatSetting(),
-            ),
+            child: Padding(padding: const EdgeInsets.all(16), child: const ChatSetting()),
           ),
         ),
       );
@@ -81,12 +68,7 @@ class TopToolbar extends StatelessWidget {
                   children: [
                     const Icon(CupertinoIcons.share, size: 18),
                     const SizedBox(width: 12),
-                    Text(
-                      l10n.share,
-                      style: TextStyle(
-                        color: AppColors.getThemeTextColor(context),
-                      ),
-                    ),
+                    Text(l10n.share, style: TextStyle(color: AppColors.getThemeTextColor(context))),
                   ],
                 ),
               ),
@@ -101,12 +83,7 @@ class TopToolbar extends StatelessWidget {
                 children: [
                   const Icon(CupertinoIcons.slider_horizontal_3, size: 18),
                   const SizedBox(width: 12),
-                  Text(
-                    l10n.modelConfig,
-                    style: TextStyle(
-                      color: AppColors.getThemeTextColor(context),
-                    ),
-                  ),
+                  Text(l10n.modelConfig, style: TextStyle(color: AppColors.getThemeTextColor(context))),
                 ],
               ),
             ),
@@ -118,9 +95,7 @@ class TopToolbar extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: Text(l10n.webSearchTest),
-                      ),
+                      appBar: AppBar(title: Text(l10n.webSearchTest)),
                       body: const MarkitTestPage(),
                     ),
                   ),
@@ -132,12 +107,7 @@ class TopToolbar extends StatelessWidget {
                   children: [
                     const Icon(CupertinoIcons.ant, size: 18),
                     const SizedBox(width: 12),
-                    Text(
-                      l10n.debug,
-                      style: TextStyle(
-                        color: AppColors.getThemeTextColor(context),
-                      ),
-                    ),
+                    Text(l10n.debug, style: TextStyle(color: AppColors.getThemeTextColor(context))),
                   ],
                 ),
               ),
@@ -152,14 +122,8 @@ class TopToolbar extends StatelessWidget {
                     title: Text(l10n.confirmDelete),
                     content: Text('${l10n.confirmThisChat}?'),
                     actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                      ),
+                      TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
+                      TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(MaterialLocalizations.of(context).okButtonLabel)),
                     ],
                   ),
                 );
@@ -187,11 +151,7 @@ class TopToolbar extends StatelessWidget {
       maxWidth: 200,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: InkIcon(
-          icon: CupertinoIcons.ellipsis_vertical,
-          size: 18,
-          tooltip: AppLocalizations.of(context)!.more,
-        ),
+        child: InkIcon(icon: CupertinoIcons.ellipsis_vertical, size: 18, tooltip: AppLocalizations.of(context)!.more),
       ),
     );
   }
@@ -223,23 +183,10 @@ class TopToolbar extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: AppColors.getToolbarBottomBorderColor(context),
-                      ),
-                    ),
+                    border: Border(bottom: BorderSide(color: AppColors.getToolbarBottomBorderColor(context))),
                   ),
-                  padding: kIsDesktop
-                      ? EdgeInsets.only(
-                          left: hideSidebar ? (kIsMacOS ? 70 : 8) : 0,
-                          top: 2,
-                        )
-                      : null,
-                  child: kIsDesktop
-                      ? wm.DragToMoveArea(
-                          child: _buildToolbarContent(context),
-                        )
-                      : _buildToolbarContent(context),
+                  padding: kIsDesktop ? EdgeInsets.only(left: hideSidebar ? (kIsMacOS ? 70 : 8) : 0, top: 2) : null,
+                  child: kIsDesktop ? wm.DragToMoveArea(child: _buildToolbarContent(context)) : _buildToolbarContent(context),
                 ),
               ),
             );
@@ -260,25 +207,13 @@ class TopToolbar extends StatelessWidget {
               if (hideSidebar && kIsDesktop) ...[
                 // Show app logo and name when sidebar is hidden
                 if (!kIsMacOS) ...[
-                  Image.asset(
-                    'assets/logo.png',
-                    width: 24,
-                    height: 24,
-                  ),
+                  Image.asset('assets/logo.png', width: 24, height: 24),
                   const Gap(size: 8),
-                  CText(
-                    text: 'ChatMCP',
-                    size: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  CText(text: 'ChatMCP', size: 12, fontWeight: FontWeight.w700),
                   const Gap(size: 24),
                 ],
 
-                InkIcon(
-                  icon: CupertinoIcons.sidebar_right,
-                  onTap: onToggleSidebar,
-                  tooltip: AppLocalizations.of(context)!.toggleSidebar,
-                ),
+                InkIcon(icon: CupertinoIcons.sidebar_right, onTap: onToggleSidebar, tooltip: AppLocalizations.of(context)!.toggleSidebar),
                 const Gap(size: 8),
               ],
               Flexible(
@@ -313,9 +248,7 @@ class TopToolbar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width < 400 ? 30 : 120,
-          ),
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width < 400 ? 30 : 120),
           child: UpgradeNotice(),
         ),
         if (ProviderManager.chatProvider.activeChat != null) ...[
@@ -328,10 +261,7 @@ class TopToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.newChat,
           ),
         ],
-        if (kIsWindows || kIsLinux) ...[
-          const Gap(size: 8),
-          const WindowControls(),
-        ],
+        if (kIsWindows || kIsLinux) ...[const Gap(size: 8), const WindowControls()],
         _buildMoreMenu(context),
       ],
     );

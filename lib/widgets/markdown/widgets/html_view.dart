@@ -6,10 +6,7 @@ import 'package:chatmcp/generated/app_localizations.dart';
 class HtmlView extends StatefulWidget {
   final String html;
 
-  const HtmlView({
-    super.key,
-    required this.html,
-  });
+  const HtmlView({super.key, required this.html});
 
   @override
   State<HtmlView> createState() => _HtmlViewState();
@@ -59,27 +56,18 @@ class _HtmlViewState extends State<HtmlView> {
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
     if (_hasError) {
-      return const SizedBox(
-        height: 100,
-        child: Center(child: Text('加载内容失败，请重试')),
-      );
+      return const SizedBox(height: 100, child: Center(child: Text('加载内容失败，请重试')));
     }
 
     return SizedBox(
       height: _height,
       child: InAppWebView(
         key: _webViewKey,
-        initialSettings: InAppWebViewSettings(
-          javaScriptEnabled: true,
-          transparentBackground: true,
-          isInspectable: kDebugMode,
-        ),
+        initialSettings: InAppWebViewSettings(javaScriptEnabled: true, transparentBackground: true, isInspectable: kDebugMode),
         onWebViewCreated: (controller) => _initWebView(controller),
         onLoadStop: (controller, url) async {
           try {
-            final height = await controller.evaluateJavascript(
-              source: 'document.body.scrollHeight',
-            );
+            final height = await controller.evaluateJavascript(source: 'document.body.scrollHeight');
             if (mounted) setState(() => _height = (height as num).toDouble());
           } catch (e) {
             debugPrint('Error on load stop: $e');

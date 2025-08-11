@@ -4,9 +4,7 @@ import 'package:markdown/markdown.dart' as m;
 
 import "package:chatmcp/widgets/cache_image.dart";
 
-SpanNodeGeneratorWithTag imageGenerator = SpanNodeGeneratorWithTag(
-    tag: "img",
-    generator: (e, config, visitor) => ImageNode(e, config.img, visitor));
+SpanNodeGeneratorWithTag imageGenerator = SpanNodeGeneratorWithTag(tag: "img", generator: (e, config, visitor) => ImageNode(e, config.img, visitor));
 
 class ImageNode extends ElementNode {
   ImageNode(this.element, this.imgConfig, this.visitor);
@@ -21,8 +19,6 @@ class ImageNode extends ElementNode {
     if (src == null) {
       return WidgetSpan(child: Text(''));
     }
-    return WidgetSpan(
-      child: CacheImage(imageUrl: src),
-    );
+    return WidgetSpan(child: CacheImage(imageUrl: src));
   }
 }

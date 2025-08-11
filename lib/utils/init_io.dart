@@ -18,8 +18,7 @@ Future<void> initNonWeb() async {
   await server.close();
 
   if (!kIsDesktop) {
-    final InAppLocalhostServer localhostServer =
-        InAppLocalhostServer(documentRoot: 'assets/sandbox', port: port);
+    final InAppLocalhostServer localhostServer = InAppLocalhostServer(documentRoot: 'assets/sandbox', port: port);
 
     ProviderManager.settingsProvider.updateSandboxServerPort(port: port);
 
@@ -28,4 +27,4 @@ Future<void> initNonWeb() async {
 
     Logger.root.info('Sandbox server started @ http://localhost:$port');
   }
-} 
+}

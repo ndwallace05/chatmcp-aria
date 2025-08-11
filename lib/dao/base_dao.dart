@@ -15,20 +15,10 @@ abstract class BaseDao<T> {
   // Generic CRUD operations
   Future<int> insert(T entity) async {
     final db = await database;
-    return db.insert(
-      tableName,
-      toJson(entity),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    return db.insert(tableName, toJson(entity), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<T>> query({
-    String? where,
-    List<Object?>? whereArgs,
-    String? orderBy,
-    int? limit,
-    int? offset,
-  }) async {
+  Future<List<T>> query({String? where, List<Object?>? whereArgs, String? orderBy, int? limit, int? offset}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
@@ -43,31 +33,18 @@ abstract class BaseDao<T> {
 
   Future<T?> queryById(String id) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final List<Map<String, dynamic>> maps = await db.query(tableName, where: 'id = ?', whereArgs: [id]);
     if (maps.isEmpty) return null;
     return fromJson(maps.first);
   }
 
   Future<int> update(T entity, String id) async {
     final db = await database;
-    return db.update(
-      tableName,
-      toJson(entity),
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return db.update(tableName, toJson(entity), where: 'id = ?', whereArgs: [id]);
   }
 
   Future<int> delete(String id) async {
     final db = await database;
-    return db.delete(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return db.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 }

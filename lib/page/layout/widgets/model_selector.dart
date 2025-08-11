@@ -41,8 +41,7 @@ class _ModelSelectorState extends State<ModelSelector> {
 
   bool isCurrentModel(llm_model.Model model) {
     return model.name == ProviderManager.chatModelProvider.currentModel.name &&
-        model.providerId ==
-            ProviderManager.chatModelProvider.currentModel.providerId;
+        model.providerId == ProviderManager.chatModelProvider.currentModel.providerId;
   }
 
   @override
@@ -72,12 +71,7 @@ class ModelSelectorPopup extends StatefulWidget {
   final bool Function(llm_model.Model) isCurrentModel;
   final void Function(llm_model.Model) onModelSelected;
 
-  const ModelSelectorPopup({
-    super.key,
-    required this.availableModels,
-    required this.isCurrentModel,
-    required this.onModelSelected,
-  });
+  const ModelSelectorPopup({super.key, required this.availableModels, required this.isCurrentModel, required this.onModelSelected});
 
   @override
   State<ModelSelectorPopup> createState() => _ModelSelectorPopupState();
@@ -85,15 +79,12 @@ class ModelSelectorPopup extends StatefulWidget {
 
 class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
   // 按 provider 对模型进行分组并根据搜索文本过滤
-  Map<String, List<llm_model.Model>> _getFilteredModelsByProvider(
-      String searchText) {
+  Map<String, List<llm_model.Model>> _getFilteredModelsByProvider(String searchText) {
     final modelsByProvider = <String, List<llm_model.Model>>{};
 
     // 筛选匹配搜索文本的模型
     final filteredModels = widget.availableModels.where((model) {
-      return searchText.isEmpty ||
-          model.label.toLowerCase().contains(searchText) ||
-          model.providerId.toLowerCase().contains(searchText);
+      return searchText.isEmpty || model.label.toLowerCase().contains(searchText) || model.providerId.toLowerCase().contains(searchText);
     }).toList();
 
     for (var model in filteredModels) {
@@ -142,10 +133,8 @@ class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
             child: Text(
               model.label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: widget.isCurrentModel(model)
-                        ? AppColors.getTextButtonColor(context)
-                        : AppColors.getThemeTextColor(context),
-                  ),
+                color: widget.isCurrentModel(model) ? AppColors.getTextButtonColor(context) : AppColors.getThemeTextColor(context),
+              ),
             ),
           ),
         );
@@ -153,11 +142,7 @@ class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
     });
 
     return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: items,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: items),
     );
   }
 
@@ -165,14 +150,7 @@ class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
   Widget build(BuildContext context) {
     final currentModel = widget.availableModels.firstWhere(
       (model) => widget.isCurrentModel(model),
-      orElse: () => llm_model.Model(
-        name: '',
-        label: 'Loading...',
-        providerId: '',
-        icon: '',
-        providerName: '',
-        apiStyle: '',
-      ),
+      orElse: () => llm_model.Model(name: '', label: 'Loading...', providerId: '', icon: '', providerName: '', apiStyle: ''),
     );
 
     return SearchablePopup(
@@ -190,9 +168,7 @@ class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
                   const SizedBox(width: 4),
                   Text(
                     currentModel.label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.getThemeTextColor(context),
-                        ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.getThemeTextColor(context)),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -200,11 +176,7 @@ class _ModelSelectorPopupState extends State<ModelSelectorPopup> {
               ),
             ),
             const SizedBox(width: 4),
-            Icon(
-              Icons.expand_more,
-              size: 18,
-              color: AppColors.getInactiveTextColor(context),
-            ),
+            Icon(Icons.expand_more, size: 18, color: AppColors.getInactiveTextColor(context)),
           ],
         ),
       ),

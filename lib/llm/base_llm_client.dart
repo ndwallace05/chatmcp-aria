@@ -75,27 +75,14 @@ abstract class BaseLLMClient {
     return urlObj.replace(path: newPath).toString();
   }
 
-  Future<Map<String, dynamic>> checkToolCall(
-    String model,
-    CompletionRequest request,
-    Map<String, List<Map<String, dynamic>>> toolsResponse,
-  ) async {
+  Future<Map<String, dynamic>> checkToolCall(String model, CompletionRequest request, Map<String, List<Map<String, dynamic>>> toolsResponse) async {
     final openaiTools = convertToOpenAITools(toolsResponse);
 
     try {
-      final response = await chatCompletion(
-        CompletionRequest(
-          model: model,
-          messages: request.messages,
-          tools: openaiTools,
-        ),
-      );
+      final response = await chatCompletion(CompletionRequest(model: model, messages: request.messages, tools: openaiTools));
 
       if (!response.needToolCall) {
-        return {
-          'need_tool_call': false,
-          'content': response.content,
-        };
+        return {'need_tool_call': false, 'content': response.content};
       }
 
       // Return tool call details
@@ -103,11 +90,7 @@ abstract class BaseLLMClient {
         'need_tool_call': true,
         'content': response.content,
         'tool_calls': response.toolCalls
-            ?.map((call) => {
-                  'id': call.id,
-                  'name': call.function.name,
-                  'arguments': call.function.parsedArguments,
-                })
+            ?.map((call) => {'id': call.id, 'name': call.function.name, 'arguments': call.function.parsedArguments})
             .toList(),
       };
     } catch (e) {
@@ -117,33 +100,16 @@ abstract class BaseLLMClient {
 
   Future<LLMException> handleError(dynamic e, String name, String endpoint, String bodyStr) async {
     if (e is http.ClientException) {
-      return LLMException(
-        name: name,
-        endpoint: endpoint,
-        requestBody: bodyStr,
-        originalError: e,
-      );
+      return LLMException(name: name, endpoint: endpoint, requestBody: bodyStr, originalError: e);
     } else if (e is Exception && e.toString().contains('HTTP')) {
       // Handle HTTP errors (like "HTTP 400: Bad Request")
       final errorMsg = e.toString();
       final statusCodeMatch = RegExp(r'HTTP (\d+)').firstMatch(errorMsg);
       final statusCode = statusCodeMatch != null ? int.tryParse(statusCodeMatch.group(1) ?? '') : null;
 
-      return LLMException(
-        name: name,
-        endpoint: endpoint,
-        requestBody: bodyStr,
-        statusCode: statusCode,
-        responseData: errorMsg,
-        originalError: e,
-      );
+      return LLMException(name: name, endpoint: endpoint, requestBody: bodyStr, statusCode: statusCode, responseData: errorMsg, originalError: e);
     } else {
-      return LLMException(
-        name: name,
-        endpoint: endpoint,
-        requestBody: bodyStr,
-        originalError: e,
-      );
+      return LLMException(name: name, endpoint: endpoint, requestBody: bodyStr, originalError: e);
     }
   }
 
@@ -157,13 +123,15 @@ abstract class BaseLLMClient {
     if (messages.isEmpty) return "new chat";
 
     // 限制内容长度，避免触发内容过滤器
-    final conversationText = messages.map((msg) {
-      final role = msg.role == MessageRole.user ? "Human" : "Assistant";
-      final content = msg.content ?? '';
-      // 限制每条消息最多100个字符，避免内容过长
-      final truncatedContent = content.length > 100 ? '${content.substring(0, 100)}...' : content;
-      return "$role: $truncatedContent";
-    }).join("\n");
+    final conversationText = messages
+        .map((msg) {
+          final role = msg.role == MessageRole.user ? "Human" : "Assistant";
+          final content = msg.content ?? '';
+          // 限制每条消息最多100个字符，避免内容过长
+          final truncatedContent = content.length > 100 ? '${content.substring(0, 100)}...' : content;
+          return "$role: $truncatedContent";
+        })
+        .join("\n");
 
     // 进一步限制总长度
     final finalText = conversationText.length > 500 ? '${conversationText.substring(0, 500)}...' : conversationText;
@@ -171,7 +139,8 @@ abstract class BaseLLMClient {
     try {
       final prompt = ChatMessage(
         role: MessageRole.user,
-        content: """Generate a concise title based on the following conversation content.
+        content:
+            """Generate a concise title based on the following conversation content.
 
 Conversation content:
 $finalText
@@ -182,10 +151,7 @@ Please return the result in the following XML format:
 Note: Only return the XML format result, the title should be concise and clear.""",
       );
 
-      final response = await chatCompletion(CompletionRequest(
-        model: getGenTitleModel(),
-        messages: [prompt],
-      ));
+      final response = await chatCompletion(CompletionRequest(model: getGenTitleModel(), messages: [prompt]));
 
       Logger.root.info('genTitle response: ${response.content}');
 
@@ -257,14 +223,7 @@ class LLMException implements Exception {
   final dynamic responseData;
   final dynamic originalError;
 
-  LLMException({
-    required this.name,
-    required this.endpoint,
-    required this.requestBody,
-    this.statusCode,
-    this.responseData,
-    this.originalError,
-  });
+  LLMException({required this.name, required this.endpoint, required this.requestBody, this.statusCode, this.responseData, this.originalError});
 
   @override
   String toString() {

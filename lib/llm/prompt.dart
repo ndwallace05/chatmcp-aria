@@ -60,9 +60,7 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
   /// [tools] - JSON tool definitions
   /// [userSystemPrompt] - Optional user system prompt
   /// [toolConfig] - Optional tool configuration information
-  String generatePrompt({
-    required List<Map<String, dynamic>> tools,
-  }) {
+  String generatePrompt({required List<Map<String, dynamic>> tools}) {
     // Start with base template
 
     var userPrompt = ProviderManager.settingsProvider.generalSetting.systemPrompt;

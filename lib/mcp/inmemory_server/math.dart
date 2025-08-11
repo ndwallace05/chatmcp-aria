@@ -6,262 +6,279 @@ import '../models/json_rpc_message.dart';
 
 class MathServer extends MemoryServer {
   MathServer() : super(name: 'math-server') {
-    addTool(Tool(
-      name: 'add',
-      description: 'Add two numbers',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'add',
         description: 'Add two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Add two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'subtract',
-      description: 'Subtract two numbers',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'subtract',
         description: 'Subtract two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Subtract two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'multiply',
-      description: 'Multiply two numbers',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'multiply',
         description: 'Multiply two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Multiply two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'divide',
-      description: 'Divide two numbers',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'divide',
         description: 'Divide two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Divide two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'power',
-      description: 'Power of two numbers',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'power',
         description: 'Power of two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Power of two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'sqrt',
-      description: 'Square root of a number',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'sqrt',
         description: 'Square root of a number',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Square root of a number',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'cbrt',
-      description: 'Cube root of a number',
-      inputSchema: ToolInput(
-        type: 'object',
+    addTool(
+      Tool(
+        name: 'cbrt',
         description: 'Cube root of a number',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Cube root of a number',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'abs',
-      description: 'Calculate absolute value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the absolute value of a number',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'abs',
+        description: 'Calculate absolute value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the absolute value of a number',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'sin',
-      description: 'Calculate sine value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the sine of an angle (input in radians)',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'sin',
+        description: 'Calculate sine value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the sine of an angle (input in radians)',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'cos',
-      description: 'Calculate cosine value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the cosine of an angle (input in radians)',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'cos',
+        description: 'Calculate cosine value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the cosine of an angle (input in radians)',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'tan',
-      description: 'Calculate tangent value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the tangent of an angle (input in radians)',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'tan',
+        description: 'Calculate tangent value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the tangent of an angle (input in radians)',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'log',
-      description: 'Calculate logarithm',
-      inputSchema: ToolInput(
-        type: 'object',
-        description:
-            'Calculate the logarithm with specific base, defaults to natural logarithm',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'base', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'log',
+        description: 'Calculate logarithm',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the logarithm with specific base, defaults to natural logarithm',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'base', type: ToolInputType.integer),
+          ],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'max',
-      description: 'Find maximum value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Return the maximum of two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+    addTool(
+      Tool(
+        name: 'max',
+        description: 'Find maximum value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Return the maximum of two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'min',
-      description: 'Find minimum value',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Return the minimum of two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+    addTool(
+      Tool(
+        name: 'min',
+        description: 'Find minimum value',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Return the minimum of two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'round',
-      description: 'Round to nearest integer',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Round a number to the nearest integer',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'round',
+        description: 'Round to nearest integer',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Round a number to the nearest integer',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'ceil',
-      description: 'Round up to the nearest integer',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Round a number up to the nearest integer',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'ceil',
+        description: 'Round up to the nearest integer',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Round a number up to the nearest integer',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'floor',
-      description: 'Round down to the nearest integer',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Round a number down to the nearest integer',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'floor',
+        description: 'Round down to the nearest integer',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Round a number down to the nearest integer',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'mod',
-      description: 'Modulo operation',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the remainder of division of two numbers',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-          Property(name: 'b', type: ToolInputType.integer),
-        ],
-        required: ['a', 'b'],
+    addTool(
+      Tool(
+        name: 'mod',
+        description: 'Modulo operation',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the remainder of division of two numbers',
+          properties: [
+            Property(name: 'a', type: ToolInputType.integer),
+            Property(name: 'b', type: ToolInputType.integer),
+          ],
+          required: ['a', 'b'],
+        ),
       ),
-    ));
+    );
 
-    addTool(Tool(
-      name: 'factorial',
-      description: 'Calculate factorial',
-      inputSchema: ToolInput(
-        type: 'object',
-        description: 'Calculate the factorial of a non-negative integer',
-        properties: [
-          Property(name: 'a', type: ToolInputType.integer),
-        ],
-        required: ['a'],
+    addTool(
+      Tool(
+        name: 'factorial',
+        description: 'Calculate factorial',
+        inputSchema: ToolInput(
+          type: 'object',
+          description: 'Calculate the factorial of a non-negative integer',
+          properties: [Property(name: 'a', type: ToolInputType.integer)],
+          required: ['a'],
+        ),
       ),
-    ));
+    );
   }
 
   @override
@@ -274,8 +291,7 @@ class MathServer extends MemoryServer {
         return {'error': 'Arguments cannot be empty'};
       }
 
-      Logger.root
-          .fine('memory_server onToolCall name: $name arguments: $arguments');
+      Logger.root.fine('memory_server onToolCall name: $name arguments: $arguments');
 
       // Execute operations based on tool name
       switch (name) {
@@ -393,8 +409,7 @@ class MathServer extends MemoryServer {
             return {'error': 'Parameter must be a valid number'};
           }
           // Check for singularities in the tan function
-          if ((a % (math.pi / 2)).abs() < 1e-10 &&
-              (a % math.pi).abs() > 1e-10) {
+          if ((a % (math.pi / 2)).abs() < 1e-10 && (a % math.pi).abs() > 1e-10) {
             return {'error': 'Tangent is undefined at π/2 + nπ'};
           }
           return {'result': tan(a)};
@@ -416,9 +431,7 @@ class MathServer extends MemoryServer {
               return {'error': 'Base parameter must be a valid number'};
             }
             if (base <= 0 || base == 1) {
-              return {
-                'error': 'Logarithm base must be positive and not equal to 1'
-              };
+              return {'error': 'Logarithm base must be positive and not equal to 1'};
             }
             return {'result': logWithBase(a, base)};
           } else {
@@ -496,10 +509,7 @@ class MathServer extends MemoryServer {
             return {'error': 'Factorial cannot be applied to negative numbers'};
           }
           if (a > 20) {
-            return {
-              'error':
-                  'Factorial too large, please use a number less than or equal to 20'
-            };
+            return {'error': 'Factorial too large, please use a number less than or equal to 20'};
           }
           try {
             return {'result': factorial(a)};
@@ -516,8 +526,7 @@ class MathServer extends MemoryServer {
   }
 
   // 验证必要参数是否存在
-  bool _validateRequiredArgs(
-      Map<String, dynamic> args, List<String> requiredArgs) {
+  bool _validateRequiredArgs(Map<String, dynamic> args, List<String> requiredArgs) {
     for (var arg in requiredArgs) {
       if (!args.containsKey(arg) || args[arg] == null) {
         return false;
@@ -547,8 +556,7 @@ class MathServer extends MemoryServer {
 
   int power(num a, num b) {
     if (b < 0) {
-      throw ArgumentError(
-          'Negative exponents are not supported in this implementation');
+      throw ArgumentError('Negative exponents are not supported in this implementation');
     }
     return math.pow(a, b).toInt();
   }
@@ -633,8 +641,7 @@ class MathServer extends MemoryServer {
       throw ArgumentError('Factorial cannot be applied to negative numbers');
     }
     if (a > 20) {
-      throw ArgumentError(
-          'Factorial too large, please use a number less than or equal to 20');
+      throw ArgumentError('Factorial too large, please use a number less than or equal to 20');
     }
     if (a <= 1) {
       return 1;

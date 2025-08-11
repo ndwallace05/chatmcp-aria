@@ -11,15 +11,8 @@ class ScrollDownButton extends StatelessWidget {
       height: 30,
       width: 30,
       child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: const Icon(Icons.keyboard_arrow_down, size: 20),
-          onPressed: onPressed,
-        ),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.onSurface.withAlpha(50), shape: BoxShape.circle),
+        child: IconButton(padding: EdgeInsets.zero, icon: const Icon(Icons.keyboard_arrow_down, size: 20), onPressed: onPressed),
       ),
     );
   }

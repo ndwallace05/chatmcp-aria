@@ -23,11 +23,7 @@ class StdioClient implements McpClient {
   // Provide public Stream
   Stream<ProcessState> get processStateStream => _processStateController.stream;
 
-  StdioClient({
-    required this.serverConfig,
-    this.stdErrCallback = const [],
-    this.stdOutCallback = const [],
-  });
+  StdioClient({required this.serverConfig, this.stdErrCallback = const [], this.stdOutCallback = const []});
 
   void _handleMessage(JSONRPCMessage message) {
     if (message.id != null && _pendingRequests.containsKey(message.id)) {
@@ -52,11 +48,7 @@ class StdioClient implements McpClient {
         return processed;
       }).toList();
 
-      process = await startProcess(
-        serverConfig.command,
-        args,
-        serverConfig.env,
-      );
+      process = await startProcess(serverConfig.command, args, serverConfig.env);
 
       Logger.root.info('Process startup status: PID=${process.pid}');
 
@@ -87,20 +79,22 @@ class StdioClient implements McpClient {
         },
       );
 
-      process.stderr.transform(utf8.decoder).listen(
-        (String text) {
-          Logger.root.warning('Server error output: $text');
-          for (final callback in stdErrCallback) {
-            callback(text);
-          }
-        },
-        onError: (error) {
-          Logger.root.severe('stderr error: $error');
-          for (final callback in stdErrCallback) {
-            callback(error.toString());
-          }
-        },
-      );
+      process.stderr
+          .transform(utf8.decoder)
+          .listen(
+            (String text) {
+              Logger.root.warning('Server error output: $text');
+              for (final callback in stdErrCallback) {
+                callback(text);
+              }
+            },
+            onError: (error) {
+              Logger.root.severe('stderr error: $error');
+              for (final callback in stdErrCallback) {
+                callback(error.toString());
+              }
+            },
+          );
 
       // Listen for process exit
       process.exitCode.then((code) {
@@ -170,14 +164,18 @@ class StdioClient implements McpClient {
   @override
   Future<JSONRPCMessage> sendInitialize() async {
     // Step 1: Send initialization request
-    final initMessage = JSONRPCMessage(id: 'init-1', method: 'initialize', params: {
-      'protocolVersion': '2024-11-05',
-      'capabilities': {
-        'roots': {'listChanged': true},
-        'sampling': {}
+    final initMessage = JSONRPCMessage(
+      id: 'init-1',
+      method: 'initialize',
+      params: {
+        'protocolVersion': '2024-11-05',
+        'capabilities': {
+          'roots': {'listChanged': true},
+          'sampling': {},
+        },
+        'clientInfo': {'name': 'DartMCPClient', 'version': '1.0.0'},
       },
-      'clientInfo': {'name': 'DartMCPClient', 'version': '1.0.0'}
-    });
+    );
 
     final initResponse = await sendMessage(initMessage);
     Logger.root.info('Initialization request response: $initResponse');
@@ -202,11 +200,7 @@ class StdioClient implements McpClient {
   }
 
   @override
-  Future<JSONRPCMessage> sendToolCall({
-    required String name,
-    required Map<String, dynamic> arguments,
-    String? id,
-  }) async {
+  Future<JSONRPCMessage> sendToolCall({required String name, required Map<String, dynamic> arguments, String? id}) async {
     final message = JSONRPCMessage(
       method: 'tools/call',
       params: {
@@ -222,12 +216,7 @@ class StdioClient implements McpClient {
 }
 
 // Add process state enum
-enum ProcessStateType {
-  starting,
-  running,
-  error,
-  exited,
-}
+enum ProcessStateType { starting, running, error, exited }
 
 // Add process state class
 class ProcessState {

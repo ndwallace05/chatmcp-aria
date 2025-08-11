@@ -17,9 +17,9 @@ class FunctionResultBlockSyntax extends TagBlockSyntax {
 }
 
 SpanNodeGeneratorWithTag functionResultGenerator = SpanNodeGeneratorWithTag(
-    tag: _functionResultTag,
-    generator: (e, config, visitor) =>
-        FunctionResultNode(e.attributes, e.textContent, config));
+  tag: _functionResultTag,
+  generator: (e, config, visitor) => FunctionResultNode(e.attributes, e.textContent, config),
+);
 
 class FunctionResultNode extends SpanNode {
   final Map<String, String> attributes;
@@ -31,8 +31,7 @@ class FunctionResultNode extends SpanNode {
   @override
   InlineSpan build() {
     bool isClosed = attributes['closed'] == 'true';
-    return WidgetSpan(
-        child: FunctionResultWidget(textContent, isClosed, attributes));
+    return WidgetSpan(child: FunctionResultWidget(textContent, isClosed, attributes));
   }
 }
 
@@ -41,8 +40,7 @@ class FunctionResultWidget extends StatefulWidget {
   final bool isClosed;
   final Map<String, String> attributes;
 
-  const FunctionResultWidget(this.textContent, this.isClosed, this.attributes,
-      {super.key});
+  const FunctionResultWidget(this.textContent, this.isClosed, this.attributes, {super.key});
 
   @override
   State<FunctionResultWidget> createState() => _FunctionResultWidgetState();
@@ -76,26 +74,18 @@ class _FunctionResultWidgetState extends State<FunctionResultWidget> {
       header: ExpandableRow(
         isExpanded: _isExpanded,
         children: [
-          Icon(_getToolIcon(),
-              size: 14, color: AppColors.getFunctionIconColor(context)),
+          Icon(_getToolIcon(), size: 14, color: AppColors.getFunctionIconColor(context)),
           Gap(size: 4),
           Expanded(
             child: Text(
-                "${widget.attributes['name']} result: ${widget.textContent}",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style:
-                    TextStyle(color: AppColors.getFunctionTextColor(context))),
+              "${widget.attributes['name']} result: ${widget.textContent}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: AppColors.getFunctionTextColor(context)),
+            ),
           ),
           if (!widget.isClosed)
-            SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                color: AppColors.getProgressIndicatorColor(context),
-                strokeWidth: 1.5,
-              ),
-            ),
+            SizedBox(width: 12, height: 12, child: CircularProgressIndicator(color: AppColors.getProgressIndicatorColor(context), strokeWidth: 1.5)),
         ],
       ),
       expandedContent: Text(widget.textContent),

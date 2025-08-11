@@ -8,10 +8,8 @@ class GeminiClient extends BaseLLMClient {
   final String apiKey;
   final String baseUrl;
 
-  GeminiClient({
-    required this.apiKey,
-    String? baseUrl,
-  }) : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://generativelanguage.googleapis.com' : baseUrl;
+  GeminiClient({required this.apiKey, String? baseUrl})
+    : baseUrl = (baseUrl == null || baseUrl.isEmpty) ? 'https://generativelanguage.googleapis.com' : baseUrl;
 
   @override
   Future<LLMResponse> chatCompletion(CompletionRequest request) async {
@@ -24,16 +22,14 @@ class GeminiClient extends BaseLLMClient {
           'temperature': request.modelSetting!.temperature,
           'topP': request.modelSetting!.topP,
           if (request.modelSetting!.maxTokens != null) 'maxOutputTokens': request.modelSetting!.maxTokens,
-        }
+        },
     };
 
     try {
       final httpClient = BaseLLMClient.createHttpClient();
       final response = await httpClient.post(
         Uri.parse("$baseUrl/models/$modelName:generateContent?key=$apiKey"),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
 
@@ -52,9 +48,7 @@ class GeminiClient extends BaseLLMClient {
       final content = candidates[0]['content'];
       final text = content['parts'][0]['text'];
 
-      return LLMResponse(
-        content: text,
-      );
+      return LLMResponse(content: text);
     } catch (e) {
       throw await handleError(e, 'Gemini', '$baseUrl/models/$modelName:generateContent', jsonEncode(body));
     }
@@ -78,9 +72,7 @@ class GeminiClient extends BaseLLMClient {
 
     try {
       final request = http.Request('POST', Uri.parse("$baseUrl/models/$modelName:streamGenerateContent?key=$apiKey&alt=sse"));
-      request.headers.addAll({
-        'Content-Type': 'application/json',
-      });
+      request.headers.addAll({'Content-Type': 'application/json'});
       request.body = jsonEncode(body);
 
       final httpClient = BaseLLMClient.createHttpClient();
@@ -107,9 +99,7 @@ class GeminiClient extends BaseLLMClient {
           final content = candidates[0]['content'];
           final text = content['parts'][0]['text'];
 
-          yield LLMResponse(
-            content: text,
-          );
+          yield LLMResponse(content: text);
         } catch (e) {
           Logger.root.severe('Failed to parse chunk: $line $e');
           continue;
@@ -129,20 +119,17 @@ class GeminiClient extends BaseLLMClient {
 
     try {
       final httpClient = BaseLLMClient.createHttpClient();
-      final response = await httpClient.get(
-        Uri.parse("$baseUrl/models?key=$apiKey"),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await httpClient.get(Uri.parse("$baseUrl/models?key=$apiKey"), headers: {'Content-Type': 'application/json'});
 
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
 
       final data = jsonDecode(response.body);
-      final models =
-          (data['models'] as List).map((m) => m['name'].toString().replaceAll('models/', '')).where((name) => name.startsWith('gemini-')).toList();
+      final models = (data['models'] as List)
+          .map((m) => m['name'].toString().replaceAll('models/', ''))
+          .where((name) => name.startsWith('gemini-'))
+          .toList();
 
       return models;
     } catch (e, trace) {
@@ -158,9 +145,7 @@ List<Map<String, dynamic>> chatMessageToGeminiMessage(List<ChatMessage> messages
 
     // Add text content
     if (message.content != null && message.content!.isNotEmpty) {
-      parts.add({
-        'text': message.content,
-      });
+      parts.add({'text': message.content});
     }
 
     // Add file content
@@ -168,10 +153,7 @@ List<Map<String, dynamic>> chatMessageToGeminiMessage(List<ChatMessage> messages
       for (final file in message.files!) {
         if (isImageFile(file.fileType)) {
           parts.add({
-            'inlineData': {
-              'mimeType': file.fileType,
-              'data': file.fileContent,
-            },
+            'inlineData': {'mimeType': file.fileType, 'data': file.fileContent},
           });
         }
       }
@@ -184,10 +166,7 @@ List<Map<String, dynamic>> chatMessageToGeminiMessage(List<ChatMessage> messages
       });
     }
 
-    return {
-      'role': message.role == MessageRole.user ? 'user' : 'model',
-      'parts': parts,
-    };
+    return {'role': message.role == MessageRole.user ? 'user' : 'model', 'parts': parts};
   }).toList();
 }
 

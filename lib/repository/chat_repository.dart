@@ -7,11 +7,7 @@ class ChatListResult {
   final int total;
   final bool hasMore;
 
-  ChatListResult({
-    required this.chats,
-    required this.total,
-    required this.hasMore,
-  });
+  ChatListResult({required this.chats, required this.total, required this.hasMore});
 }
 
 abstract class ChatRepository {
@@ -26,7 +22,7 @@ abstract class ChatRepository {
   Future<void> deleteChat(int id);
   Future<void> addChatMessage(int chatId, List<ChatMessage> messages);
   Future<List<ChatMessage>> getChatMessages(int chatId);
-  
+
   @Deprecated('Use getChats() instead')
   Future<List<Chat>> getAllChats() async {
     final result = await getChats(pageSize: PaginationConfig.maxPageSize);

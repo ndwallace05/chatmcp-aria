@@ -14,12 +14,7 @@ class MessageList extends StatefulWidget {
   final List<ChatMessage> messages;
   final Function(ChatMessage) onRetry;
   final Function(String messageId) onSwitch;
-  const MessageList({
-    super.key,
-    required this.messages,
-    required this.onRetry,
-    required this.onSwitch,
-  });
+  const MessageList({super.key, required this.messages, required this.onRetry, required this.onSwitch});
 
   @override
   State<MessageList> createState() => _MessageListState();
@@ -27,8 +22,7 @@ class MessageList extends StatefulWidget {
 
 class _MessageListState extends State<MessageList> {
   final ScrollController _scrollController = ScrollController();
-  late final Stream<ScrollDirection> _scrollDirectionChangedStream =
-      asStream<ScrollDirection>(_scrollController, () {
+  late final Stream<ScrollDirection> _scrollDirectionChangedStream = asStream<ScrollDirection>(_scrollController, () {
     return _scrollController.position.userScrollDirection;
   }).distinct();
 
@@ -70,11 +64,8 @@ class _MessageListState extends State<MessageList> {
   }
 
   bool _userAddedMessage(MessageList oldWidget) {
-    var currentUserMessages =
-        widget.messages.where((msg) => msg.role == MessageRole.user).toList();
-    var oldUserMessages = oldWidget.messages
-        .where((msg) => msg.role == MessageRole.user)
-        .toList();
+    var currentUserMessages = widget.messages.where((msg) => msg.role == MessageRole.user).toList();
+    var oldUserMessages = oldWidget.messages.where((msg) => msg.role == MessageRole.user).toList();
     return currentUserMessages.length != oldUserMessages.length;
   }
 
@@ -149,12 +140,7 @@ class _MessageListState extends State<MessageList> {
               itemBuilder: (context, index) {
                 final group = groupedMessages[index];
 
-                return ChatUIMessage(
-                  key: ValueKey(group.first.messageId),
-                  messages: group,
-                  onRetry: widget.onRetry,
-                  onSwitch: widget.onSwitch,
-                );
+                return ChatUIMessage(key: ValueKey(group.first.messageId), messages: group, onRetry: widget.onRetry, onSwitch: widget.onSwitch);
               },
             ),
             // if (!_isScrolledToBottom())

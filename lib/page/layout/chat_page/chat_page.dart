@@ -40,7 +40,7 @@ class _ChatPageState extends State<ChatPage> {
   String _parentMessageId = ''; // Parent message ID
   bool _isCancelled = false; // Indicates if the current operation has been cancelled by the user
   bool _isWaiting = false; // Indicates if the system is waiting for a response from the LLM
-  
+
   // GlobalKey for InputArea to access focus methods
   final GlobalKey<InputAreaState> _inputAreaKey = GlobalKey<InputAreaState>();
 
@@ -132,19 +132,10 @@ class _ChatPageState extends State<ChatPage> {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               title: Text(t.functionCallAuth),
               content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(t.allowFunctionExecution),
-                    SizedBox(height: 8),
-                    Text(event.name),
-                    SizedBox(height: 8),
-                  ],
-                ),
+                child: ListBody(children: <Widget>[Text(t.allowFunctionExecution), SizedBox(height: 8), Text(event.name), SizedBox(height: 8)]),
               ),
               actions: <Widget>[
                 TextButton(
@@ -277,18 +268,15 @@ class _ChatPageState extends State<ChatPage> {
 
       currentMessage = messages.firstWhere(
         (m) => m.messageId == parentId,
-        orElse: () => ChatMessage(
-          messageId: '',
-          content: '',
-          role: MessageRole.user,
-          parentMessageId: '',
-        ),
+        orElse: () => ChatMessage(messageId: '', content: '', role: MessageRole.user, parentMessageId: ''),
       );
 
       if (currentMessage.messageId.isEmpty) break;
     }
 
-    ChatMessage? nextMessage = messages.where((m) => m.role == MessageRole.user).firstWhere(
+    ChatMessage? nextMessage = messages
+        .where((m) => m.role == MessageRole.user)
+        .firstWhere(
           (m) => m.parentMessageId == lastMessage.messageId,
           orElse: () => ChatMessage(messageId: '', content: '', role: MessageRole.user),
         );
@@ -377,13 +365,7 @@ class _ChatPageState extends State<ChatPage> {
         child: Container(
           color: AppColors.transparent,
           child: Center(
-            child: Text(
-              l10n.welcomeMessage,
-              style: TextStyle(
-                fontSize: 18,
-                color: AppColors.getWelcomeMessageColor(),
-              ),
-            ),
+            child: Text(l10n.welcomeMessage, style: TextStyle(fontSize: 18, color: AppColors.getWelcomeMessageColor())),
           ),
         ),
       );
@@ -392,9 +374,7 @@ class _ChatPageState extends State<ChatPage> {
     final parentMsgIndex = _messages.length - 1;
     for (var i = 0; i < parentMsgIndex; i++) {
       if (_messages[i].content?.contains('<function') == true && _messages[i].content?.contains('<function done="true"') == false) {
-        _messages[i] = _messages[i].copyWith(
-          content: _messages[i].content?.replaceAll("<function ", "<function done=\"true\" "),
-        );
+        _messages[i] = _messages[i].copyWith(content: _messages[i].content?.replaceAll("<function ", "<function done=\"true\" "));
       }
     }
 
@@ -455,12 +435,7 @@ class _ChatPageState extends State<ChatPage> {
       try {
         Logger.root.info('send tool call attempt ${attempt + 1}/$maxRetries - name: $toolName arguments: $toolArguments');
 
-        response = await mcpClient
-            .sendToolCall(
-              name: toolName,
-              arguments: toolArguments,
-            )
-            .timeout(timeout);
+        response = await mcpClient.sendToolCall(name: toolName, arguments: toolArguments).timeout(timeout);
 
         // Exits retry loop on successful response
         break;
@@ -483,13 +458,15 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _parentMessageId = _messages.last.messageId;
         final msgId = Uuid().v4();
-        _messages.add(ChatMessage(
-          messageId: msgId,
-          content: '<call_function_result name="$toolName">\n failed to call function: $lastError\n</call_function_result>',
-          role: MessageRole.assistant,
-          name: toolName,
-          parentMessageId: _parentMessageId,
-        ));
+        _messages.add(
+          ChatMessage(
+            messageId: msgId,
+            content: '<call_function_result name="$toolName">\n failed to call function: $lastError\n</call_function_result>',
+            role: MessageRole.assistant,
+            name: toolName,
+            parentMessageId: _parentMessageId,
+          ),
+        );
         _parentMessageId = msgId;
       });
       return;
@@ -547,10 +524,7 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     await _handleSubmitted(
-      SubmitData(
-        userMessage.content ?? '',
-        (userMessage.files ?? []).map((f) => f as PlatformFile).toList(),
-      ),
+      SubmitData(userMessage.content ?? '', (userMessage.files ?? []).map((f) => f as PlatformFile).toList()),
       addUserMessage: false,
     );
   }
@@ -570,12 +544,7 @@ class _ChatPageState extends State<ChatPage> {
 
     final result = await _llmClient!.checkToolCall(
       ProviderManager.chatModelProvider.currentModel.name,
-      CompletionRequest(
-        model: ProviderManager.chatModelProvider.currentModel.name,
-        messages: [
-          ..._prepareMessageList(),
-        ],
-      ),
+      CompletionRequest(model: ProviderManager.chatModelProvider.currentModel.name, messages: [..._prepareMessageList()]),
       ProviderManager.mcpServerProvider.tools,
     );
     final needToolCall = result['need_tool_call'] ?? false;
@@ -586,18 +555,17 @@ class _ChatPageState extends State<ChatPage> {
 
     final toolCalls = result['tool_calls'] as List;
     for (var toolCall in toolCalls) {
-      final functionEvent = RunFunctionEvent(
-        toolCall['name'],
-        toolCall['arguments'],
-      );
+      final functionEvent = RunFunctionEvent(toolCall['name'], toolCall['arguments']);
 
       _runFunctionEvents.add(functionEvent);
 
-      _messages.add(ChatMessage(
-        content: "<function name=\"${functionEvent.name}\">\n${jsonEncode(functionEvent.arguments)}\n</function>",
-        role: MessageRole.assistant,
-        parentMessageId: _parentMessageId,
-      ));
+      _messages.add(
+        ChatMessage(
+          content: "<function name=\"${functionEvent.name}\">\n${jsonEncode(functionEvent.arguments)}\n</function>",
+          role: MessageRole.assistant,
+          parentMessageId: _parentMessageId,
+        ),
+      );
 
       _onRunFunction(functionEvent);
     }
@@ -689,12 +657,7 @@ class _ChatPageState extends State<ChatPage> {
               });
               final msgId = Uuid().v4();
               _messages.add(
-                ChatMessage(
-                  messageId: msgId,
-                  content: 'call function rejected',
-                  role: MessageRole.assistant,
-                  parentMessageId: _parentMessageId,
-                ),
+                ChatMessage(messageId: msgId, content: 'call function rejected', role: MessageRole.assistant, parentMessageId: _parentMessageId),
               );
               _parentMessageId = msgId;
               break;
@@ -775,9 +738,7 @@ class _ChatPageState extends State<ChatPage> {
     // Converts assistant's function call results to user role for proper context
     for (var message in messageList) {
       if (message.role == MessageRole.assistant && message.content?.contains('done="true"') == true) {
-        messageList[messageList.indexOf(message)] = message.copyWith(
-          content: message.content?.replaceAll('done="true"', ''),
-        );
+        messageList[messageList.indexOf(message)] = message.copyWith(content: message.content?.replaceAll('done="true"', ''));
       }
       if (message.role == MessageRole.assistant && message.content?.startsWith('<call_function_result') == true) {
         messageList[messageList.indexOf(message)] = message.copyWith(
@@ -793,27 +754,23 @@ class _ChatPageState extends State<ChatPage> {
     var messageList0 = messageMerge(messageList);
 
     if (messageList0.isNotEmpty && messageList0.last.role == MessageRole.assistant) {
-      messageList0.add(ChatMessage(
-        content: 'continue',
-        role: MessageRole.user,
-      ));
+      messageList0.add(ChatMessage(content: 'continue', role: MessageRole.user));
     }
 
     final systemPrompt = await _getSystemPrompt();
 
     Logger.root.info('Start processing LLM response: $messageList0');
 
-    final stream = _llmClient!.chatStreamCompletion(CompletionRequest(
-      model: ProviderManager.chatModelProvider.currentModel.name,
-      messages: [
-        ChatMessage(
-          content: systemPrompt,
-          role: MessageRole.system,
-        ),
-        ...messageList0,
-      ],
-      modelSetting: modelSetting,
-    ));
+    final stream = _llmClient!.chatStreamCompletion(
+      CompletionRequest(
+        model: ProviderManager.chatModelProvider.currentModel.name,
+        messages: [
+          ChatMessage(content: systemPrompt, role: MessageRole.system),
+          ...messageList0,
+        ],
+        modelSetting: modelSetting,
+      ),
+    );
 
     _initializeAssistantResponse();
     await _processResponseStream(stream);
@@ -822,14 +779,7 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatMessage> _prepareMessageList() {
     final List<ChatMessage> messageList = _messages
-        .map((m) => ChatMessage(
-              role: m.role,
-              content: m.content,
-              toolCallId: m.toolCallId,
-              name: m.name,
-              toolCalls: m.toolCalls,
-              files: m.files,
-            ))
+        .map((m) => ChatMessage(role: m.role, content: m.content, toolCallId: m.toolCallId, name: m.name, toolCalls: m.toolCalls, files: m.files))
         .toList();
 
     _reorderMessages(messageList);
@@ -845,19 +795,14 @@ class _ChatPageState extends State<ChatPage> {
       if (newMessages.isNotEmpty && newMessages.last.role == message.role) {
         String content = message.content ?? '';
 
-        newMessages.last = newMessages.last.copyWith(
-          content: '${newMessages.last.content}\n\n$content',
-        );
+        newMessages.last = newMessages.last.copyWith(content: '${newMessages.last.content}\n\n$content');
       } else {
         newMessages.add(message);
       }
     }
 
     if (newMessages.isNotEmpty && newMessages.last.role != MessageRole.user) {
-      newMessages.add(ChatMessage(
-        content: 'continue',
-        role: MessageRole.user,
-      ));
+      newMessages.add(ChatMessage(content: 'continue', role: MessageRole.user));
     }
 
     return newMessages;
@@ -877,13 +822,7 @@ class _ChatPageState extends State<ChatPage> {
   void _initializeAssistantResponse() {
     setState(() {
       _currentResponse = '';
-      _messages.add(
-        ChatMessage(
-          content: _currentResponse,
-          role: MessageRole.assistant,
-          parentMessageId: _parentMessageId,
-        ),
-      );
+      _messages.add(ChatMessage(content: _currentResponse, role: MessageRole.assistant, parentMessageId: _parentMessageId));
     });
   }
 
@@ -899,9 +838,7 @@ class _ChatPageState extends State<ChatPage> {
       if (_isCancelled) break;
       _currentResponse += chunk.content ?? '';
       if (_messages.isNotEmpty) {
-        _messages.last = _messages.last.copyWith(
-          content: _currentResponse,
-        );
+        _messages.last = _messages.last.copyWith(content: _currentResponse);
       }
 
       if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -933,10 +870,7 @@ class _ChatPageState extends State<ChatPage> {
 
     String title;
     try {
-      title = await _llmClient!.genTitle([
-        if (_messages.isNotEmpty) _messages.first,
-        if (_messages.length > 1) _messages.last else _messages.first,
-      ]);
+      title = await _llmClient!.genTitle([if (_messages.isNotEmpty) _messages.first, if (_messages.length > 1) _messages.last else _messages.first]);
     } catch (e) {
       Logger.root.warning('Failed to generate title: $e');
       // Creates fallback title from user message if title generation fails
@@ -977,9 +911,7 @@ class _ChatPageState extends State<ChatPage> {
     if (relevantMessages.length > 2) {
       String secondMessageId = relevantMessages[1].messageId;
       for (int i = 2; i < relevantMessages.length; i++) {
-        relevantMessages[i] = relevantMessages[i].copyWith(
-          parentMessageId: secondMessageId,
-        );
+        relevantMessages[i] = relevantMessages[i].copyWith(parentMessageId: secondMessageId);
       }
     }
 
@@ -988,12 +920,9 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _updateExistingChat() async {
     final activeChat = ProviderManager.chatProvider.activeChat!;
-    await ProviderManager.chatProvider.updateChat(Chat(
-      id: activeChat.id!,
-      title: activeChat.title,
-      createdAt: activeChat.createdAt,
-      updatedAt: DateTime.now(),
-    ));
+    await ProviderManager.chatProvider.updateChat(
+      Chat(id: activeChat.id!, title: activeChat.title, createdAt: activeChat.createdAt, updatedAt: DateTime.now()),
+    );
 
     await ProviderManager.chatProvider.addChatMessage(activeChat.id!, _handleParentMessageId(_messages));
   }
@@ -1022,9 +951,7 @@ class _ChatPageState extends State<ChatPage> {
                 Text(AppLocalizations.of(context)!.error),
               ],
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             content: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1032,36 +959,16 @@ class _ChatPageState extends State<ChatPage> {
                 children: [
                   Text(
                     _getUserFriendlyErrorMessage(error),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.getErrorTextColor(),
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.getErrorTextColor()),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'error type: ${error.runtimeType}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.getErrorTextColor().withAlpha(128),
-                    ),
-                  ),
+                  Text('error type: ${error.runtimeType}', style: TextStyle(fontSize: 12, color: AppColors.getErrorTextColor().withAlpha(128))),
                   if (error is LLMException)
-                    Text(
-                      error.toString(),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.getErrorTextColor().withAlpha(128),
-                      ),
-                    ),
+                    Text(error.toString(), style: TextStyle(fontSize: 12, color: AppColors.getErrorTextColor().withAlpha(128))),
                 ],
               ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(AppLocalizations.of(context)!.close),
-              ),
-            ],
+            actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.close))],
           );
         },
       );
@@ -1095,12 +1002,7 @@ class _ChatPageState extends State<ChatPage> {
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       if (kIsMobile) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ListViewToImageScreen(messages: _messages),
-          ),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ListViewToImageScreen(messages: _messages)));
       } else {
         showDialog(
           context: context,
@@ -1174,10 +1076,7 @@ class _ChatPageState extends State<ChatPage> {
                     width: 40,
                     height: 4,
                     margin: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.getBottomSheetHandleColor(context),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                    decoration: BoxDecoration(color: AppColors.getBottomSheetHandleColor(context), borderRadius: BorderRadius.circular(2)),
                   ),
                   Expanded(
                     child: ProviderManager.chatProvider.artifactEvent != null
@@ -1208,20 +1107,12 @@ class _ChatPageState extends State<ChatPage> {
             SizedBox(
               width: 16,
               height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
             ),
             const SizedBox(width: 12),
             Text(
               AppLocalizations.of(context)!.functionRunning,
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.7 * 255).round()),
-              ),
+              style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha((0.7 * 255).round())),
             ),
           ],
         ),
@@ -1269,12 +1160,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         if (!mobile && _showCodePreview && ProviderManager.chatProvider.artifactEvent != null)
-          Expanded(
-            flex: 2,
-            child: ChatCodePreview(
-              codePreviewEvent: ProviderManager.chatProvider.artifactEvent!,
-            ),
-          ),
+          Expanded(flex: 2, child: ChatCodePreview(codePreviewEvent: ProviderManager.chatProvider.artifactEvent!)),
       ],
     );
   }

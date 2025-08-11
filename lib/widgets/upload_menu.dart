@@ -10,12 +10,7 @@ class UploadMenu extends StatelessWidget {
   final VoidCallback onPickImages;
   final VoidCallback onPickFiles;
 
-  const UploadMenu({
-    super.key,
-    required this.disabled,
-    required this.onPickImages,
-    required this.onPickFiles,
-  });
+  const UploadMenu({super.key, required this.disabled, required this.onPickImages, required this.onPickFiles});
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +37,7 @@ class UploadMenu extends StatelessWidget {
                   Expanded(
                     child: Text(
                       t.selectFromGallery,
-                      style: TextStyle(
-                        color: AppColors.getThemeTextColor(context),
-                      ),
+                      style: TextStyle(color: AppColors.getThemeTextColor(context)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -68,9 +61,7 @@ class UploadMenu extends StatelessWidget {
                   Expanded(
                     child: Text(
                       t.selectFile,
-                      style: TextStyle(
-                        color: AppColors.getThemeTextColor(context),
-                      ),
+                      style: TextStyle(color: AppColors.getThemeTextColor(context)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

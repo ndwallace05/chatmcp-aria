@@ -162,13 +162,7 @@ class ChatSetting {
   double frequencyPenalty = 0.0;
   double presencePenalty = 0.0;
 
-  ChatSetting({
-    this.temperature = 1.0,
-    this.maxTokens,
-    this.topP = 1.0,
-    this.frequencyPenalty = 0.0,
-    this.presencePenalty = 0.0,
-  });
+  ChatSetting({this.temperature = 1.0, this.maxTokens, this.topP = 1.0, this.frequencyPenalty = 0.0, this.presencePenalty = 0.0});
 
   Map<String, dynamic> toJson() {
     return {
@@ -192,7 +186,7 @@ class ChatSetting {
 }
 
 final List<LLMProviderSetting> defaultApiSettings = [
-    LLMProviderSetting(
+  LLMProviderSetting(
     apiKey: '',
     apiEndpoint: 'https://api.githubcopilot.com',
     apiStyle: 'openai',
@@ -238,16 +232,8 @@ final List<LLMProviderSetting> defaultApiSettings = [
     icon: 'claude',
     custom: false,
     link: 'https://docs.anthropic.com/en/docs/claude-code/sdk',
-    models: [
-      'claude-3-7-sonnet',
-      'claude-3-opus',
-      'claude-3-5-sonnet',
-      'claude-3-5-haiku',
-    ],
-    enabledModels: [
-      'claude-3-7-sonnet',
-      'claude-3-5-sonnet',
-    ],
+    models: ['claude-3-7-sonnet', 'claude-3-opus', 'claude-3-5-sonnet', 'claude-3-5-haiku'],
+    enabledModels: ['claude-3-7-sonnet', 'claude-3-5-sonnet'],
   ),
   LLMProviderSetting(
     apiKey: '',
@@ -307,18 +293,13 @@ class SettingsProvider extends ChangeNotifier {
 
   List<LLMProviderSetting> _apiSettings = [];
 
-  GeneralSetting _generalSetting = GeneralSetting(
-    theme: 'light',
-    systemPrompt: defaultSystemPrompt,
-  );
+  GeneralSetting _generalSetting = GeneralSetting(theme: 'light', systemPrompt: defaultSystemPrompt);
 
   ChatSetting _modelSetting = ChatSetting();
 
   List<LLMProviderSetting> get apiSettings => _apiSettings;
 
-  LLMProviderSetting getProviderSetting(String providerId) => _apiSettings.firstWhere(
-        (element) => element.providerId == providerId,
-      );
+  LLMProviderSetting getProviderSetting(String providerId) => _apiSettings.firstWhere((element) => element.providerId == providerId);
 
   GeneralSetting get generalSetting => _generalSetting;
 
@@ -349,13 +330,14 @@ class SettingsProvider extends ChangeNotifier {
 
       for (var model in setting.enabledModels ?? []) {
         var m = llm_model.Model(
-            name: model,
-            label: model,
-            providerId: setting.providerId ?? '',
-            icon: setting.icon,
-            providerName: setting.providerName ?? '',
-            apiStyle: setting.apiStyle ?? '',
-            priority: setting.priority ?? 0);
+          name: model,
+          label: model,
+          providerId: setting.providerId ?? '',
+          icon: setting.icon,
+          providerName: setting.providerName ?? '',
+          apiStyle: setting.apiStyle ?? '',
+          priority: setting.priority ?? 0,
+        );
 
         if (LLMFactoryHelper.isChatModel(m)) {
           models.add(m);
@@ -413,9 +395,7 @@ class SettingsProvider extends ChangeNotifier {
     return _apiSettings;
   }
 
-  Future<void> updateApiSettings({
-    required List<LLMProviderSetting> apiSettings,
-  }) async {
+  Future<void> updateApiSettings({required List<LLMProviderSetting> apiSettings}) async {
     final prefs = await SharedPreferences.getInstance();
 
     _apiSettings = apiSettings;
