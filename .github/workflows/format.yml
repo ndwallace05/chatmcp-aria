@@ -21,7 +21,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check formatting (dry-run)
+      - name: Check formatting (dry-run, excluding generated)
         run: |
-          dart format --output=none --set-exit-if-changed .
+          set -e
+          FILES=$(git ls-files '*.dart' ':!lib/generated/**')
+          if [ -z "$FILES" ]; then
+            echo "No Dart files to check."
+            exit 0
+          fi
+          dart --version
+          dart format --output=none --set-exit-if-changed $FILES
 
