@@ -828,6 +828,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _processResponseStream(Stream<LLMResponse> stream) async {
     bool isFirstChunk = true;
+    LLMResponse? lastChunk;
     await for (final chunk in stream) {
       if (isFirstChunk) {
         setState(() {
@@ -847,6 +848,11 @@ class _ChatPageState extends State<ChatPage> {
           setState(() {});
         }
       });
+      lastChunk = chunk;
+    }
+
+    if (lastChunk?.tokenUsage != null) {
+      _messages.last = _messages.last.copyWith(tokenUsage: lastChunk!.tokenUsage);
     }
 
     _debounce?.cancel();

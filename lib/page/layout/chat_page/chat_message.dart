@@ -365,6 +365,28 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = const Text('');
+    if (message.content != null) {
+      if (message.role == MessageRole.user){
+        child = Markit(data: (message.content!).trim());
+      } else {
+        child = Markit(data: (message.content!).trim());
+        if (message.tokenUsage != null) {
+          child = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              child,
+              const SizedBox(height: 4),
+              ExpansionTile(
+                title: const Text('Token Usage', style: TextStyle(fontSize: 12)),
+                controlAffinity: ListTileControlAffinity.leading,
+                children: <Widget>[ListTile(title: Markit(data: message.tokenUsage!.toMarkdown()))],
+              ),
+            ],
+          );
+        }
+      }
+    }
     return Container(
       margin: _getMargin(),
       padding: _getPadding(),
@@ -372,11 +394,7 @@ class MessageBubble extends StatelessWidget {
         color: useTransparentBackground ? Colors.transparent : AppColors.getMessageBubbleBackgroundColor(context, message.role == MessageRole.user),
         borderRadius: _getBorderRadius(),
       ),
-      child: message.content != null
-          ? message.role == MessageRole.user
-                ? Markit(data: (message.content!).trim())
-                : Markit(data: (message.content!).trim())
-          : const Text(''),
+      child: child
     );
   }
 }
