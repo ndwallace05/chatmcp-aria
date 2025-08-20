@@ -339,7 +339,9 @@ class TokenUsage {
       inputTokens: inputTokens + other.inputTokens,
       outputTokens: outputTokens + other.outputTokens,
       totalTokens: totalTokens + other.totalTokens,
-      thoughtTokens: (thoughtTokens ?? 0) + (other.thoughtTokens ?? 0),
+      thoughtTokens: (thoughtTokens != null || other.thoughtTokens != null)
+          ? (thoughtTokens ?? 0) + (other.thoughtTokens ?? 0)
+          : null,
       timestamp: timestamp.isAfter(other.timestamp) ? timestamp : other.timestamp,
       modelName: modelName ?? other.modelName,
       cost: (cost ?? 0.0) + (other.cost ?? 0.0),

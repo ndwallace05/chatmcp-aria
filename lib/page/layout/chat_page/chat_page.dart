@@ -852,7 +852,7 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     if (lastChunk?.tokenUsage != null) {
-      _messages.last = _messages.last.copyWith(tokenUsage: lastChunk!.tokenUsage);
+      _messages.last = _messages.last.copyWith(tokenUsage: lastChunk?.tokenUsage);
     }
 
     _debounce?.cancel();

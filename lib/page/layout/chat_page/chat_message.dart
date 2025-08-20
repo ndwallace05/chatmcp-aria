@@ -367,7 +367,7 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = const Text('');
     if (message.content != null) {
-      if (message.role == MessageRole.user){
+      if (message.role == MessageRole.user) {
         child = Markit(data: (message.content!).trim());
       } else {
         child = Markit(data: (message.content!).trim());
