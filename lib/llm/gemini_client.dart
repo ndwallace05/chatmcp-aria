@@ -48,7 +48,9 @@ class GeminiClient extends BaseLLMClient {
       final content = candidates[0]['content'];
       final text = content['parts'][0]['text'];
 
-      return LLMResponse(content: text);
+      final usage = TokenUsage.fromGemini(jsonData['usageMetadata'], modelName: jsonData['modelVersion']);
+
+      return LLMResponse(content: text, tokenUsage: usage);
     } catch (e) {
       throw await handleError(e, 'Gemini', '$baseUrl/models/$modelName:generateContent', jsonEncode(body));
     }
@@ -99,7 +101,9 @@ class GeminiClient extends BaseLLMClient {
           final content = candidates[0]['content'];
           final text = content['parts'][0]['text'];
 
-          yield LLMResponse(content: text);
+          final usage = TokenUsage.fromGemini(json['usageMetadata'], modelName: json['modelVersion']);
+
+          yield LLMResponse(content: text, tokenUsage: usage);
         } catch (e) {
           Logger.root.severe('Failed to parse chunk: $line $e');
           continue;

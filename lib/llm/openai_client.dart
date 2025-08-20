@@ -57,8 +57,11 @@ class OpenAIClient extends BaseLLMClient {
             ),
           )
           ?.toList();
-
-      return LLMResponse(content: message['content'], toolCalls: toolCalls);
+      TokenUsage? tokenUsage;
+      if (jsonData['usage'] != null) {
+        tokenUsage = TokenUsage.fromOpenAI(jsonData['usage'], modelName: jsonData['model']);
+      }
+      return LLMResponse(content: message['content'], toolCalls: toolCalls, tokenUsage: tokenUsage);
     } catch (e) {
       throw await handleError(e, 'OpenAI', endpoint, bodyStr);
     } finally {
@@ -121,6 +124,10 @@ class OpenAIClient extends BaseLLMClient {
 
           if (delta['content'] != null || toolCalls != null) {
             yield LLMResponse(content: delta['content'], toolCalls: toolCalls);
+          }
+
+          if (json['usage'] != null) {
+            yield LLMResponse(tokenUsage: TokenUsage.fromOpenAI(json['usage'], modelName: json['model']));
           }
         } catch (e) {
           Logger.root.severe('Failed to parse event data: $data $e');
