@@ -102,6 +102,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       value: 'tr',
                       child: CText(text: 'Türkçe'),
                     ),
+                    DropdownMenuItem(
+                      value: 'de',
+                      child: CText(text: 'Deutsch'),
+                    ),
                   ],
                   onChanged: (String? value) {
                     if (value != null) {
