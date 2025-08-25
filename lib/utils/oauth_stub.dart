@@ -2,7 +2,7 @@
 class WebOAuthHandler {
   static Future<Map<String, dynamic>> startOAuthFlow({
     required String authorizationUrl,
-    required String clientId,
+    String? clientId,
     required String redirectUri,
     required String scope,
     String? state,
@@ -12,7 +12,7 @@ class WebOAuthHandler {
 
   static Future<Map<String, dynamic>> exchangeCodeForToken({
     required String tokenUrl,
-    required String clientId,
+    String? clientId,
     String? clientSecret,
     required String code,
     required String codeVerifier,
@@ -23,7 +23,7 @@ class WebOAuthHandler {
 
   static Future<Map<String, dynamic>> refreshToken({
     required String tokenUrl,
-    required String clientId,
+    String? clientId,
     String? clientSecret,
     required String refreshToken,
   }) async {
