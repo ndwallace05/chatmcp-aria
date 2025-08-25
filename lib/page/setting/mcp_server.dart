@@ -13,6 +13,7 @@ import 'package:logging/logging.dart';
 import 'package:chatmcp/utils/process.dart';
 import 'package:chatmcp/generated/app_localizations.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:chatmcp/utils/oauth_discovery.dart';
 
 class McpServer extends StatefulWidget {
   const McpServer({super.key});
@@ -26,6 +27,10 @@ class _McpServerState extends State<McpServer> {
   String _selectedTab = 'installed'; // 使用固定的英文标识符
   int _refreshCounter = 0;
   final Map<String, bool> _serverLoading = {};
+  
+  // OAuth auto-discovery state
+  OAuthDiscoveryResult? _oauthDiscovery;
+  bool _isCheckingOAuth = false;
 
   // 标签映射：内部标识符 -> 显示文本
   Map<String, String> _getTabLabels(AppLocalizations l10n) {
@@ -39,6 +44,31 @@ class _McpServerState extends State<McpServer> {
       return uri.scheme.isNotEmpty && uri.host.isNotEmpty;
     } catch (e) {
       return false;
+    }
+  }
+
+  // Check OAuth requirement for URL
+  Future<void> _checkOAuthRequirement(String url) async {
+    if (!kIsWeb || !isValidUrl(url)) return;
+    
+    setState(() {
+      _isCheckingOAuth = true;
+    });
+    
+    try {
+      final provider = Provider.of<McpServerProvider>(context, listen: false);
+      final result = await provider.discoverOAuthForServer(url);
+      
+      setState(() {
+        _oauthDiscovery = result;
+        _isCheckingOAuth = false;
+      });
+    } catch (e) {
+      Logger.root.warning('OAuth discovery failed: $e');
+      setState(() {
+        _oauthDiscovery = null;
+        _isCheckingOAuth = false;
+      });
     }
   }
 
@@ -283,6 +313,63 @@ class _McpServerState extends State<McpServer> {
               ),
             ),
             if (installed) ...[
+              // OAuth authentication button (web only)
+              if (kIsWeb) ...[
+                FutureBuilder<Map<String, dynamic>>(
+                  future: provider.getServerOAuthStatus(serverName),
+                  builder: (context, snapshot) {
+                    final oauthStatus = snapshot.data ?? {};
+                    final oauthEnabled = oauthStatus['enabled'] == true;
+                    final isAuthenticated = oauthStatus['authenticated'] == true;
+                    final needsRefresh = oauthStatus['needs_refresh'] == true;
+                    
+                    if (!oauthEnabled) return const SizedBox.shrink();
+                    
+                    return _buildActionButton(
+                      icon: isAuthenticated 
+                        ? (needsRefresh ? CupertinoIcons.refresh : CupertinoIcons.checkmark_shield)
+                        : CupertinoIcons.lock,
+                      tooltip: isAuthenticated 
+                        ? (needsRefresh ? 'Refresh OAuth Token' : 'OAuth Authenticated')
+                        : 'Authenticate with OAuth',
+                      onPressed: () async {
+                        setState(() {
+                          _serverLoading[serverName] = true;
+                        });
+                        try {
+                          if (needsRefresh) {
+                            await provider.refreshServerToken(serverName);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('OAuth token refreshed successfully')),
+                            );
+                          } else if (!isAuthenticated) {
+                            await provider.authenticateServer(serverName);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('OAuth authentication successful')),
+                            );
+                          }
+                          setState(() {
+                            _refreshCounter++;
+                          });
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('OAuth error: ${e.toString()}')),
+                          );
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              _serverLoading[serverName] = false;
+                            });
+                          }
+                        }
+                      },
+                      isLoading: _serverLoading[serverName] == true,
+                    );
+                  },
+                ),
+                const Gap(size: 10),
+              ],
+              
               _buildActionButton(
                 icon: provider.mcpServerIsRunning(serverName) ? CupertinoIcons.stop : CupertinoIcons.play,
                 tooltip: provider.mcpServerIsRunning(serverName) ? l10n.stop : l10n.start,
@@ -587,7 +674,68 @@ class _McpServerState extends State<McpServer> {
                         }
                         return null;
                       },
+                      onChanged: (value) {
+                        if (value != null && value.trim().isNotEmpty && value.startsWith('http')) {
+                          _checkOAuthRequirement(value.trim());
+                        }
+                      },
                     ),
+                    
+                    // OAuth discovery status
+                    if (_isCheckingOAuth) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const SizedBox(width: 40), // Align with field content
+                          SizedBox(
+                            width: 16, 
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Checking authentication requirements...',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else if (_oauthDiscovery?.requiresOAuth == true) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        margin: const EdgeInsets.only(left: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer.withAlpha(100),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.security,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'This server requires OAuth authentication. You\'ll be prompted to login after saving.',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     FormBuilderTextField(
                       name: 'args',
@@ -646,6 +794,53 @@ class _McpServerState extends State<McpServer> {
                       title: Text(l10n.autoApprove, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
                       decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
                     ),
+                    const SizedBox(height: 16),
+                    
+                    // OAuth Auto-Discovery Information
+                    if (kIsWeb) ...[
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(100),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline.withAlpha(100),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.info_outline,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Authentication',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Authentication is now handled automatically. When you enter a server URL that requires authentication, you\'ll be prompted to login after saving.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onSurface.withAlpha(200),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -712,14 +907,17 @@ class _McpServerState extends State<McpServer> {
                     config['mcpServers'] = <String, dynamic>{};
                   }
 
-                  await provider.addMcpServer({
+                  // Build server configuration
+                  final serverConfigData = {
                     'name': saveServerName,
                     'type': type,
                     'command': command,
                     'args': args,
                     'env': env,
                     'auto_approve': values['auto_approve'] as bool? ?? false,
-                  });
+                  };
+
+                  await provider.addMcpServer(serverConfigData);
 
                   if (mounted) {
                     setState(() {
@@ -731,7 +929,71 @@ class _McpServerState extends State<McpServer> {
                     Navigator.pop(dialogContext, true);
                   }
 
-                  // if server is running, restart it
+                  // Handle auto-discovered OAuth authentication BEFORE starting server
+                  if (_oauthDiscovery?.requiresOAuth == true && kIsWeb) {
+                    if (mounted) {
+                      // Always try automatic OAuth first
+                      final shouldAuth = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Authentication Required'),
+                          content: Text(
+                            'This server requires OAuth authentication. Would you like to login now?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Later'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Login Now'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (shouldAuth == true) {
+                        try {
+                          Logger.root.info('Starting OAuth authentication for $saveServerName');
+                          
+                          final success = await provider.autoAuthenticateServer(
+                            saveServerName, 
+                            _oauthDiscovery!
+                          );
+                          
+                          if (success && mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Authentication successful for $saveServerName'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Authentication failed: No success response'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          Logger.root.severe('OAuth authentication error: $e');
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Authentication failed: ${e.toString()}'),
+                                backgroundColor: Colors.red,
+                                duration: const Duration(seconds: 5),
+                              ),
+                            );
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  // if server is running, restart it (AFTER OAuth authentication)
                   if (provider.mcpServerIsRunning(saveServerName)) {
                     await provider.stopMcpServer(saveServerName);
                     setState(() {

@@ -9,6 +9,9 @@ import 'package:chatmcp/utils/platform.dart';
 import 'package:chatmcp/utils/storage_manager.dart';
 import '../mcp/client/mcp_client_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../mcp/models/server.dart';
+import '../utils/oauth_web.dart' if (dart.library.io) '../utils/oauth_stub.dart';
+import '../utils/oauth_discovery.dart';
 
 var defaultInMemoryServers = [
   {'name': 'Math', 'type': 'inmemory', 'command': 'math', 'env': {}, 'args': [], 'tools': []},
@@ -427,6 +430,313 @@ class McpServerProvider extends ChangeNotifier {
     } catch (e, stackTrace) {
       Logger.root.severe('Failed to load market servers: $e, stackTrace: $stackTrace');
       throw Exception('Failed to load market servers: $e');
+    }
+  }
+
+  // OAuth-related methods
+  
+  /// Discovers OAuth configuration for a server URL automatically
+  Future<OAuthDiscoveryResult> discoverOAuthForServer(String serverUrl) async {
+    if (!kIsWeb) {
+      return OAuthDiscoveryResult(requiresOAuth: false);
+    }
+    
+    try {
+      Logger.root.info('Discovering OAuth for server: $serverUrl');
+      final result = await OAuthDiscoveryService.discoverOAuth(serverUrl);
+      
+      if (result.requiresOAuth) {
+        Logger.root.info('OAuth required for server: $serverUrl');
+        Logger.root.info('  Authorization URL: ${result.authorizationUrl}');
+        Logger.root.info('  Token URL: ${result.tokenUrl}');
+        Logger.root.info('  Client ID: ${result.clientId}');
+      } else {
+        Logger.root.info('No OAuth required for server: $serverUrl');
+      }
+      
+      return result;
+    } catch (e) {
+      Logger.root.warning('OAuth discovery failed for $serverUrl: $e');
+      return OAuthDiscoveryResult(requiresOAuth: false);
+    }
+  }
+
+  /// Automatically configures and authenticates a server with discovered OAuth
+  Future<bool> autoAuthenticateServer(String serverName, OAuthDiscoveryResult oauthConfig) async {
+    if (!kIsWeb || !oauthConfig.requiresOAuth) {
+      return false;
+    }
+
+    try {
+      Logger.root.info('Auto-authenticating server: $serverName');
+      
+      // Use discovered client ID or null for public clients (like Notion MCP)
+      String? clientId = oauthConfig.clientId;
+      String scope = oauthConfig.scope ?? 'read write';
+      String redirectUri = oauthConfig.redirectUri ?? '${Uri.base.origin}/oauth_callback.html';
+      
+      Logger.root.info('Using clientId: $clientId, scope: $scope, redirectUri: $redirectUri');
+      
+      // Start OAuth flow with discovered configuration
+      final authResult = await WebOAuthHandler.startOAuthFlow(
+        authorizationUrl: oauthConfig.authorizationUrl!,
+        clientId: clientId,
+        redirectUri: redirectUri,
+        scope: scope,
+      );
+
+      // Exchange code for token
+      final tokenResult = await WebOAuthHandler.exchangeCodeForToken(
+        tokenUrl: oauthConfig.tokenUrl!,
+        clientId: clientId,
+        clientSecret: null, // Public clients don't require client secret
+        code: authResult['code'] as String,
+        codeVerifier: authResult['code_verifier'] as String,
+        redirectUri: redirectUri,
+      );
+
+      // Update server configuration with OAuth info and tokens  
+      final updatedConfig = OAuthDiscoveryResult(
+        requiresOAuth: oauthConfig.requiresOAuth,
+        authorizationUrl: oauthConfig.authorizationUrl,
+        tokenUrl: oauthConfig.tokenUrl,
+        clientId: clientId,
+        scope: scope,
+        redirectUri: redirectUri,
+      );
+      await _saveOAuthConfigForServer(serverName, updatedConfig, tokenResult);
+      
+      Logger.root.info('Auto-authentication successful for: $serverName');
+      notifyListeners();
+      return true;
+
+    } catch (e) {
+      Logger.root.severe('Auto-authentication failed for $serverName: $e');
+      return false;
+    }
+  }
+
+  /// Saves discovered OAuth configuration and tokens to server config
+  Future<void> _saveOAuthConfigForServer(
+    String serverName, 
+    OAuthDiscoveryResult oauthConfig, 
+    Map<String, dynamic> tokenResult
+  ) async {
+    final allServerConfig = await _loadServers();
+    final serverConfig = allServerConfig['mcpServers'][serverName] as Map<String, dynamic>?;
+    
+    if (serverConfig != null) {
+      serverConfig['oauth'] = {
+        'enabled': true,
+        'client_id': oauthConfig.clientId,
+        'authorization_url': oauthConfig.authorizationUrl,
+        'token_url': oauthConfig.tokenUrl,
+        'scope': oauthConfig.scope,
+        'redirect_uri': oauthConfig.redirectUri,
+        'access_token': tokenResult['access_token'],
+        'refresh_token': tokenResult['refresh_token'],
+        'token_expiry': tokenResult['expires_at'] ?? 
+          DateTime.now().add(Duration(seconds: tokenResult['expires_in'] ?? 3600)).toIso8601String(),
+      };
+      
+      // Save updated configuration
+      await saveServers(allServerConfig);
+    }
+  }
+  
+  /// Initiates OAuth flow for a server
+  Future<bool> authenticateServer(String serverName) async {
+    try {
+      final allServerConfig = await _loadServers();
+      final serverConfig = allServerConfig['mcpServers'][serverName] as Map<String, dynamic>?;
+      
+      Logger.root.info('Authenticating server: $serverName');
+      Logger.root.info('Server config: $serverConfig');
+      
+      if (serverConfig == null) {
+        throw Exception('Server not found: $serverName');
+      }
+
+      final oauth = serverConfig['oauth'] as Map<String, dynamic>?;
+      Logger.root.info('OAuth config: $oauth');
+      
+      if (oauth == null || oauth['enabled'] != true) {
+        throw Exception('OAuth not enabled for server: $serverName');
+      }
+
+      if (!kIsWeb) {
+        throw Exception('OAuth is only supported on web platform');
+      }
+
+      // Extract OAuth parameters with debugging
+      final authorizationUrl = oauth['authorization_url'] as String? ?? '';
+      final clientId = oauth['client_id'] as String? ?? '';
+      final redirectUri = oauth['redirect_uri'] as String? ?? '';
+      final scope = oauth['scope'] as String? ?? '';
+      
+      Logger.root.info('OAuth params extracted:');
+      Logger.root.info('  authorizationUrl: "$authorizationUrl"');
+      Logger.root.info('  clientId: "$clientId"');
+      Logger.root.info('  redirectUri: "$redirectUri"');
+      Logger.root.info('  scope: "$scope"');
+
+      // Start OAuth flow
+      final authResult = await WebOAuthHandler.startOAuthFlow(
+        authorizationUrl: authorizationUrl,
+        clientId: clientId,
+        redirectUri: redirectUri,
+        scope: scope,
+      );
+
+      // Exchange code for token
+      final tokenResult = await WebOAuthHandler.exchangeCodeForToken(
+        tokenUrl: oauth['token_url'] as String,
+        clientId: oauth['client_id'] as String,
+        clientSecret: oauth['client_secret'] as String?,
+        code: authResult['code'] as String,
+        codeVerifier: authResult['code_verifier'] as String,
+        redirectUri: oauth['redirect_uri'] as String,
+      );
+
+      // Update server config with tokens
+      final updatedOAuth = {
+        ...oauth,
+        'access_token': tokenResult['access_token'],
+        'refresh_token': tokenResult['refresh_token'],
+        'token_expiry': tokenResult['expires_at'] ?? 
+          DateTime.now().add(Duration(seconds: tokenResult['expires_in'] ?? 3600)).toIso8601String(),
+      };
+
+      serverConfig['oauth'] = updatedOAuth;
+      allServerConfig['mcpServers'][serverName] = serverConfig;
+      
+      await saveServers(allServerConfig);
+      
+      Logger.root.info('OAuth authentication successful for server: $serverName');
+      return true;
+    } catch (e, stackTrace) {
+      Logger.root.severe('OAuth authentication failed for server $serverName: $e, stackTrace: $stackTrace');
+      rethrow;
+    }
+  }
+
+  /// Refreshes OAuth token for a server
+  Future<bool> refreshServerToken(String serverName) async {
+    try {
+      final allServerConfig = await _loadServers();
+      final serverConfig = allServerConfig['mcpServers'][serverName] as Map<String, dynamic>?;
+      
+      if (serverConfig == null) {
+        throw Exception('Server not found: $serverName');
+      }
+
+      final oauth = serverConfig['oauth'] as Map<String, dynamic>?;
+      if (oauth == null || oauth['enabled'] != true) {
+        throw Exception('OAuth not enabled for server: $serverName');
+      }
+
+      final refreshToken = oauth['refresh_token'] as String?;
+      if (refreshToken == null) {
+        throw Exception('No refresh token available for server: $serverName');
+      }
+
+      if (!kIsWeb) {
+        throw Exception('OAuth is only supported on web platform');
+      }
+
+      // Refresh token
+      final tokenResult = await WebOAuthHandler.refreshToken(
+        tokenUrl: oauth['token_url'] as String,
+        clientId: oauth['client_id'] as String,
+        clientSecret: oauth['client_secret'] as String?,
+        refreshToken: refreshToken,
+      );
+
+      // Update server config with new tokens
+      final updatedOAuth = {
+        ...oauth,
+        'access_token': tokenResult['access_token'],
+        if (tokenResult['refresh_token'] != null) 'refresh_token': tokenResult['refresh_token'],
+        'token_expiry': tokenResult['expires_at'] ?? 
+          DateTime.now().add(Duration(seconds: tokenResult['expires_in'] ?? 3600)).toIso8601String(),
+      };
+
+      serverConfig['oauth'] = updatedOAuth;
+      allServerConfig['mcpServers'][serverName] = serverConfig;
+      
+      await saveServers(allServerConfig);
+      
+      Logger.root.info('OAuth token refresh successful for server: $serverName');
+      return true;
+    } catch (e, stackTrace) {
+      Logger.root.severe('OAuth token refresh failed for server $serverName: $e, stackTrace: $stackTrace');
+      rethrow;
+    }
+  }
+
+  /// Checks if server has valid OAuth token
+  Future<bool> isServerAuthenticated(String serverName) async {
+    try {
+      final allServerConfig = await _loadServers();
+      final serverConfig = allServerConfig['mcpServers'][serverName] as Map<String, dynamic>?;
+      if (serverConfig == null) return false;
+
+      final oauth = serverConfig['oauth'] as Map<String, dynamic>?;
+      if (oauth == null || oauth['enabled'] != true) return false;
+
+      final accessToken = oauth['access_token'] as String?;
+      if (accessToken == null) return false;
+
+      final tokenExpiry = oauth['token_expiry'] as String?;
+      if (tokenExpiry != null) {
+        final expiry = DateTime.parse(tokenExpiry);
+        if (DateTime.now().isAfter(expiry)) return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Gets current OAuth status for a server
+  Future<Map<String, dynamic>> getServerOAuthStatus(String serverName) async {
+    try {
+      final allServerConfig = await _loadServers();
+      final serverConfig = allServerConfig['mcpServers'][serverName] as Map<String, dynamic>?;
+      
+      if (serverConfig == null) {
+        return {'enabled': false, 'authenticated': false, 'error': 'Server not found'};
+      }
+
+      final oauth = serverConfig['oauth'] as Map<String, dynamic>?;
+      if (oauth == null || oauth['enabled'] != true) {
+        return {'enabled': false, 'authenticated': false};
+      }
+
+      final accessToken = oauth['access_token'] as String?;
+      if (accessToken == null) {
+        return {'enabled': true, 'authenticated': false, 'error': 'No access token'};
+      }
+
+      final tokenExpiry = oauth['token_expiry'] as String?;
+      bool isExpired = false;
+      bool needsRefresh = false;
+      
+      if (tokenExpiry != null) {
+        final expiry = DateTime.parse(tokenExpiry);
+        isExpired = DateTime.now().isAfter(expiry);
+        needsRefresh = DateTime.now().isAfter(expiry.subtract(const Duration(minutes: 5)));
+      }
+
+      return {
+        'enabled': true,
+        'authenticated': !isExpired,
+        'needs_refresh': needsRefresh,
+        'token_expiry': tokenExpiry,
+      };
+    } catch (e) {
+      return {'enabled': false, 'authenticated': false, 'error': e.toString()};
     }
   }
 }

@@ -112,7 +112,13 @@ class StreamableClient implements McpClient {
       headers['mcp-session-id'] = _sessionId!;
     }
 
-    // 如果有授权信息，可以在这里添加
+    // Add OAuth Bearer token if available and valid
+    if (serverConfig.oauth != null && 
+        serverConfig.oauth!.enabled && 
+        serverConfig.oauth!.accessToken != null &&
+        serverConfig.oauth!.isTokenValid) {
+      headers['Authorization'] = 'Bearer ${serverConfig.oauth!.accessToken}';
+    }
 
     return headers;
   }
