@@ -89,12 +89,12 @@ Install commands:
 
 - Ubuntu 22.04:
 ```bash
-sudo apt install -y libfuse2 libgtk-3-0 libegl1-mesa libgles2 libgl1-mesa-dri libglx-mesa0 libx11-6 xdg-utils libsqlite3-0
+sudo apt install -y libfuse2 libgtk-3-0 libegl1-mesa libgles2 libgl1-mesa-dri libglx-mesa0 libx11-6 xdg-utils libsqlite3-0 libsqlite3-dev
 ```
 
 - Ubuntu 24.04:
 ```bash
-sudo apt install -y libfuse2 libgtk-3-0 libegl1 libgles2 libgl1-mesa-dri libglx-mesa0 libx11-6 xdg-utils libsqlite3-0
+sudo apt install -y libfuse2 libgtk-3-0 libegl1 libgles2 libgl1-mesa-dri libglx-mesa0 libx11-6 xdg-utils libsqlite3-0 libsqlite3-dev
 ```
 
 Optional (recommended): `mesa-vulkan-drivers`, `mesa-utils` (for diagnostics like glxinfo)
