@@ -163,11 +163,17 @@ class _ChatPageState extends State<ChatPage> {
   void _addListeners() {
     ProviderManager.chatModelProvider.addListener(_initializeLLMClient);
     ProviderManager.chatProvider.addListener(_onChatProviderChanged);
+    ProviderManager.settingsProvider.addListener(_onSettingsChanged);
   }
 
   void _removeListeners() {
     ProviderManager.chatModelProvider.removeListener(_initializeLLMClient);
     ProviderManager.chatProvider.removeListener(_onChatProviderChanged);
+    ProviderManager.settingsProvider.removeListener(_onSettingsChanged);
+  }
+
+  void _onSettingsChanged() {
+    _initializeLLMClient();
   }
 
   void _initializeLLMClient() {
