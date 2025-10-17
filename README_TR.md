@@ -96,19 +96,19 @@ Opsiyonel (önerilir): `mesa-vulkan-drivers`, `mesa-utils` (glxinfo gibi teşhis
 macOS:
 
 ```bash
-~/Library/Application Support/ChatMcp
+~/Library/Application Support/ARIA
 ```
 
 Windows:
 
 ```bash
-%APPDATA%\ChatMcp
+%APPDATA%\\ARIA
 ```
 
 Linux:
 
 ```bash
-~/.local/share/ChatMcp
+~/.local/share/ARIA
 ```
 
 Mobil:
@@ -119,19 +119,19 @@ Uygulamayı sıfırlamak için bu komutları kullanabilirsiniz:
 macOS:
 
 ```bash
-rm -rf ~/Library/Application\ Support/ChatMcp
+rm -rf ~/Library/Application\ Support/ARIA
 ```
 
 Windows:
 
 ```bash
-rd /s /q "%APPDATA%\ChatMcp"
+rd /s /q "%APPDATA%\\ARIA"
 ```
 
 Linux:
 
 ```bash
-rm -rf ~/.local/share/ChatMcp
+rm -rf ~/.local/share/ARIA
 rm -rf ~/.local/share/run.daodao.chatmcp
 ```
 

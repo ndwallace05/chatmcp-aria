@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}ChatMcp Android 签名配置验证工具${NC}"
+echo -e "${BLUE}ARIA Android 签名配置验证工具${NC}"
 echo "=============================================="
 
 # 检查必要工具

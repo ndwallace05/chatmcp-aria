@@ -11,7 +11,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}ChatMcp Android 签名密钥生成工具${NC}"
+echo -e "${GREEN}ARIA Android 签名密钥生成工具${NC}"
 echo "=============================================="
 
 # 检查是否安装了keytool
@@ -56,14 +56,14 @@ fi
 
 echo
 echo -e "${YELLOW}请输入证书信息:${NC}"
-read -p "您的姓名 [ChatMcp]: " CN
-CN=${CN:-"ChatMcp"}
+read -p "您的姓名 [ARIA]: " CN
+CN=${CN:-"ARIA"}
 
 read -p "组织单位 [IT Department]: " OU
 OU=${OU:-"IT Department"}
 
-read -p "组织名称 [ChatMcp Team]: " O
-O=${O:-"ChatMcp Team"}
+read -p "组织名称 [ARIA Team]: " O
+O=${O:-"ARIA Team"}
 
 read -p "城市或地区 [Beijing]: " L
 L=${L:-"Beijing"}

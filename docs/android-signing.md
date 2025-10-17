@@ -1,6 +1,6 @@
 # Android 应用签名配置指南
 
-本文档介绍如何为 ChatMcp Android 应用配置签名，以便发布到 Google Play Store 或其他应用商店。
+本文档介绍如何为 ARIA Android 应用配置签名，以便发布到 Google Play Store 或其他应用商店。
 
 ## 📋 目录
 
@@ -20,8 +20,8 @@
 ```
 
 脚本会引导您完成以下步骤：
-- 输入密钥库文件名（默认：`chatmcp-release-key.jks`）
-- 输入密钥别名（默认：`chatmcp`）
+- 输入密钥库文件名（默认：`aria-release-key.jks`）
+- 输入密钥别名（默认：`aria`）
 - 设置密钥库密码和密钥密码
 - 输入证书信息（姓名、组织等）
 
@@ -30,8 +30,8 @@
 脚本会自动创建 `android/signing.env` 文件，包含以下配置：
 
 ```bash
-SIGNING_STORE_PATH=keystore/chatmcp-release-key.jks
-SIGNING_KEY_ALIAS=chatmcp
+SIGNING_STORE_PATH=keystore/aria-release-key.jks
+SIGNING_KEY_ALIAS=aria
 SIGNING_STORE_PASSWORD=your_store_password
 SIGNING_KEY_PASSWORD=your_key_password
 ```
@@ -55,7 +55,7 @@ flutter build appbundle --release
 | Secret 名称 | 描述 | 示例值 |
 |------------|------|--------|
 | `SIGNING_KEYSTORE` | 密钥库文件的 base64 编码 | `MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC...` |
-| `SIGNING_KEY_ALIAS` | 密钥别名 | `chatmcp` |
+| `SIGNING_KEY_ALIAS` | 密钥别名 | `aria` |
 | `SIGNING_STORE_PASSWORD` | 密钥库密码 | `your_store_password` |
 | `SIGNING_KEY_PASSWORD` | 密钥密码 | `your_key_password` |
 
@@ -65,17 +65,17 @@ flutter build appbundle --release
 
 **macOS:**
 ```bash
-base64 -i android/app/keystore/chatmcp-release-key.jks | pbcopy
+base64 -i android/app/keystore/aria-release-key.jks | pbcopy
 ```
 
 **Linux:**
 ```bash
-base64 -w 0 android/app/keystore/chatmcp-release-key.jks | xclip -selection clipboard
+base64 -w 0 android/app/keystore/aria-release-key.jks | xclip -selection clipboard
 ```
 
 **Windows:**
 ```cmd
-certutil -encode android/app/keystore/chatmcp-release-key.jks temp.base64 && type temp.base64 | clip && del temp.base64
+certutil -encode android/app/keystore/aria-release-key.jks temp.base64 && type temp.base64 | clip && del temp.base64
 ```
 
 ### 3. 触发构建

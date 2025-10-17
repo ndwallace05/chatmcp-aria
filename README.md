@@ -117,17 +117,17 @@ ChatMCP follows platform-specific best practices for data storage:
 
 **macOS:**
 ```bash
-~/Library/Application Support/ChatMcp/
+~/Library/Application Support/ARIA/
 ```
 
 **Windows:**
 ```bash
-%APPDATA%\ChatMcp\
+%APPDATA%\\ARIA\\
 ```
 
 **Linux:**
 ```bash
-~/.local/share/ChatMcp/           # Honors $XDG_DATA_HOME if set
+~/.local/share/ARIA/           # Honors $XDG_DATA_HOME if set
 ~/.local/share/run.daodao.chatmcp # Flutter dependency
 ```
 
@@ -148,17 +148,17 @@ To completely reset the application (delete all chat history, settings, and conf
 
 **macOS:**
 ```bash
-rm -rf ~/Library/Application\ Support/ChatMcp
+rm -rf ~/Library/Application\ Support/ARIA
 ```
 
 **Windows:**
 ```bash
-rd /s /q "%APPDATA%\ChatMcp"
+rd /s /q "%APPDATA%\\ARIA"
 ```
 
 **Linux:**
 ```bash
-rm -rf ~/.local/share/ChatMcp
+rm -rf ~/.local/share/ARIA
 rm -rf ~/.local/share/run.daodao.chatmcp
 ```
 
