@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}ChatMcp 构建问题诊断工具${NC}"
+echo -e "${BLUE}ARIA 构建问题诊断工具${NC}"
 echo "=============================================="
 
 # 1. 检查Flutter环境

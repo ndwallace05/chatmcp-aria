@@ -4,7 +4,7 @@ import 'package:chatmcp/utils/platform.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StorageManager {
-  static const String _appName = 'ChatMcp';
+  static const String _appName = 'ARIA';
   static String? _appDataDirectory;
 
   /// 获取应用数据目录

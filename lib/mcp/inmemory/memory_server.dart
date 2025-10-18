@@ -1,4 +1,4 @@
-import 'package:chatmcp/mcp/models/json_rpc_message.dart';
+import 'package:aria/mcp/models/json_rpc_message.dart';
 import 'package:logging/logging.dart';
 
 enum ToolInputType { string, integer, boolean, object }

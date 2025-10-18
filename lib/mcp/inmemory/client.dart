@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 
 import '../client/mcp_client_interface.dart';
 import 'memory_server.dart';
+import 'package:aria/mcp/models/json_rpc_message.dart';
 
 class InMemoryClient implements McpClient {
   final MemoryServer server;

@@ -90,7 +90,7 @@ class NetworkSyncService {
         'platform': Platform.operatingSystem,
         'version': Platform.operatingSystemVersion,
         'timestamp': DateTime.now().toIso8601String(),
-        'appName': 'ChatMcp',
+        'appName': 'ARIA',
         'serverUrl': 'http://$_ipAddress:$_port',
         'displayName': '${Platform.localHostname} (${Platform.operatingSystem})',
       };

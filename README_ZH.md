@@ -99,17 +99,17 @@ sudo apt install -y libfuse2 libgtk-3-0 libegl1 libgles2 libgl1-mesa-dri libglx-
 
 macOS:
 ```bash
-~/Library/Application Support/ChatMcp
+~/Library/Application Support/ARIA
 ```
 
 Windows:
 ```bash
-%APPDATA%\ChatMcp
+%APPDATA%\\ARIA
 ```
 
 Linux:
 ```bash
-~/.local/share/ChatMcp
+~/.local/share/ARIA
 ```
 
 Mobile:
@@ -119,17 +119,17 @@ reset app can use this command
 
 macOS:
 ```bash
-rm -rf ~/Library/Application\ Support/ChatMcp
+rm -rf ~/Library/Application\ Support/ARIA
 ```
 
 Windows:
 ```bash
-rd /s /q "%APPDATA%\ChatMcp"
+rd /s /q "%APPDATA%\\ARIA"
 ```
 
 Linux:
 ```bash
-rm -rf ~/.local/share/ChatMcp
+rm -rf ~/.local/share/ARIA
 rm -rf ~/.local/share/run.daodao.chatmcp
 ```
 
