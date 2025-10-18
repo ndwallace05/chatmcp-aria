@@ -1,4 +1,4 @@
-import 'package:chatmcp/mcp/stdio/stdio_client.dart';
+import 'package:aria/mcp/stdio/stdio_client.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:eventflux/eventflux.dart';
 

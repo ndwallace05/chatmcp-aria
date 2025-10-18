@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chatmcp/utils/color.dart';
+import 'package:aria/utils/color.dart';
+import 'package:aria/utils/color.dart';
 
 class ChatLoading extends StatefulWidget {
   const ChatLoading({super.key});
